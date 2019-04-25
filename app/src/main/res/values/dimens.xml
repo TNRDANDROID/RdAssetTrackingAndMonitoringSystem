@@ -39,5 +39,7 @@
 
     <dimen name="input_label_vertical_spacing">8dp</dimen>
     <dimen name="input_label_horizontal_spacing">4dp</dimen>
+    <dimen name="dashboard_icon_size">50dp</dimen>
+    <dimen name="dashboard_count_size">30dp</dimen>
     <dimen name="radius">50dp</dimen>
 </resources>

@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="colorPrimary">#e3833ab4</color>
-    <color name="colorPrimaryDark">#e3833ab4</color>
-    <color name="colorAccent">#e3833ab4</color>
+    <color name="colorPrimary">#D6CCC8</color>
+    <color name="colorPrimaryDark">#D6CCC8</color>
+    <color name="colorAccent">#D6CCC8</color>
+    <color name="lightgray">#ededed</color>
+    <color name="deeppurple">#7c4dff</color>
+    <color name="yello">#ffb300</color>
+    <color name="green">#00bfa5</color>
+    <color name="darkblue">#23283a</color>
+    <color name="testcolorblue">#152b38</color>
+    <color name="pink">#fe104d</color>
+
+    <color name="black_overlay">#66000000</color>
 
     <color name="blue_background" tools:ignore="MissingDefaultResource">#242b35</color>
     <color name="border_line">#252b34</color>
@@ -10,7 +19,11 @@
     <color name="subscription_type_red_color">#fc4b5f</color>
     <color name="background_light_gray">#f1f1f1</color>
     <color name="sky_blue">#7661bee1</color>
-
+    <color name="dashboard_color_1">#288BCF</color>
+    <color name="dashboard_color_2">#E89C19</color>
+    <color name="dashboard_color_3">#35B37D</color>
+    <color name="dashboard_color_4">#D6383F</color>
+    <color name="app_bg">#343434</color>
     <color name="dashboard_line_dark">#818080</color>
     <color name="dashboard_line_light">#EBEBEB</color>
     <color name="tool_bar_blue">#344050</color>

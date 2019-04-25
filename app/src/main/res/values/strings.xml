@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Road Assets And Tracking</string>
+    <string name="app_name" translatable="false">Road Assets Monitoring And Tracking</string>
     <string name="hint_password" translatable="false">Password</string>
     <string name="hint_username" translatable="false">UserName</string>
     <string name="btn_login" translatable="false">Login</string>
@@ -11,4 +11,5 @@
     <string name="font_avenir_medium" translatable="false">Avenir_Next_Medium.ttf</string>
     <string name="font_italic" translatable="false">AvenirNextMediumItalic.ttf</string>
     <string name="no_internet" translatable="false">Your internet seems to be offline!</string>
+    <string name="app_Name" translatable="false">Road Assets \n Monitoring \n And Tracking</string>
 </resources>

@@ -28,6 +28,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyEditTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.FontCache;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,8 +76,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         login_btn.setOnClickListener(this);
         passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         login_btn.setTypeface(FontCache.getInstance(this).getFont(FontCache.Font.MEDIUM));
-        inputLayoutEmail.setHintTextAppearance(R.style.InActive);
-        inputLayoutPassword.setHintTextAppearance(R.style.InActive);
+
 
         passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -221,7 +221,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
-                        Log.d("userdata", "" + prefManager.getDistrictCode() + prefManager.getBlockCode() + prefManager.getPvCode() + prefManager.getDistrictName() + prefManager.getBlockName() + prefManager.getPvName() + prefManager.getLevels()+prefManager.getInspectedOfficerName());
                         prefManager.setUserPassKey(decryptedKey);
                         showHomeScreen();
                     } else {
