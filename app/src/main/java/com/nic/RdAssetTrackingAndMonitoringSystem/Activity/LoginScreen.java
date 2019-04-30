@@ -6,15 +6,19 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -24,11 +28,11 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyEditTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.FontCache;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
-import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,15 +49,20 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private Button login_btn;
     private String name, pass, randString;
 
-    private MyEditTextView userName, passWord;
+    private MyEditTextView userName;
 
-    private ShowHidePasswordEditText passwordEditText;
+    private MyEditTextView passwordEditText;
+    private ImageView redEye;
+
+
 
     public static SQLiteDatabase db;
     JSONObject jsonObject;
+    private int setPType;
 
     String sb;
     private PrefManager prefManager;
+    Handler myHandler = new Handler();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,9 +77,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         login_btn = (Button) findViewById(R.id.btn_sign_in);
         userName = (MyEditTextView) findViewById(R.id.user_name);
+        redEye = (ImageView) findViewById(R.id.red_eye);
 
 
-        passwordEditText = (ShowHidePasswordEditText) findViewById(R.id.password);
+
+
+
+        passwordEditText = (MyEditTextView) findViewById(R.id.password);
 
 
         login_btn.setOnClickListener(this);
@@ -88,6 +101,8 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         });
         passwordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
+        setPType = 1;
+        redEye.setOnClickListener(this);
     }
 
     @Override
@@ -95,17 +110,31 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_sign_in:
                 checkLoginScreen();
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        checkLoginScreen();
-//
-//                    }
-//                }, 500);
-//                break;
+                break;
+            case R.id.red_eye:
+                showPassword();
+                break;
         }
     }
 
+    public void showPassword() {
+        if (setPType == 1) {
+            setPType = 0;
+            passwordEditText.setTransformationMethod(null);
+            if (passwordEditText.getText().length() > 0) {
+                passwordEditText.setSelection(passwordEditText.getText().length());
+                redEye.setBackgroundResource(R.drawable.red_eye);
+            }
+        } else {
+            setPType = 1;
+            passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+            if (passwordEditText.getText().length() > 0) {
+                passwordEditText.setSelection(passwordEditText.getText().length());
+                redEye.setBackgroundResource(R.drawable.light_gray_eye);
+            }
+        }
+
+    }
     public boolean validate() {
         boolean valid = true;
         String username = userName.getText().toString().trim();
@@ -218,9 +247,17 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         String key = loginResponse.getString(AppConstant.KEY_USER);
                         String user_data = loginResponse.getString(AppConstant.USER_DATA);
                         String decryptedKey = Utils.decrypt(prefManager.getEncryptPass(), key);
+                        Log.d("loginkey",""+key);
                         String userDataDecrypt = Utils.decrypt(prefManager.getEncryptPass(), user_data);
                         Log.d("userdatadecry", "" + userDataDecrypt);
                         jsonObject = new JSONObject(userDataDecrypt);
+                        prefManager.setDistrictCode(jsonObject.get(AppConstant.DISTRICT_CODE));
+                        prefManager.setBlockCode(jsonObject.get(AppConstant.BLOCK_CODE));
+                        prefManager.setPvCode(jsonObject.get(AppConstant.PV_CODE));
+                        prefManager.setDistrictName(jsonObject.get(AppConstant.DISTRICT_NAME));
+                        prefManager.setBlockName(jsonObject.get(AppConstant.BLOCK_NAME));
+                        prefManager.setPvName(jsonObject.get(AppConstant.PV_NAME));
+                        prefManager.setLevels(jsonObject.get(AppConstant.LEVELS));
                         prefManager.setUserPassKey(decryptedKey);
                         showHomeScreen();
                     } else {

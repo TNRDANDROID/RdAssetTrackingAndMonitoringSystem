@@ -8,7 +8,7 @@ public class AppConstant {
     public static String KEY_SERVICE_ID = "service_id";
     public static String KEY_APP_CODE = "appcode";
     public static String KEY_ARGUMENTS = "arguments";
-    public static String KEY_SERVICE_LIST = "service_list";
+    public static String KEY_ROAD_LIST = "road_list";
     public static String KEY_INSPECTION_LIST = "inspection_list";
     public static String KEY_WORK_LIST_BLOCK_WISE = "work_list_block_wise";
     public static String KEY_WORK_LIST_DISTRICT_FINYEAR_WISE = "work_list_district_finyear_wise";

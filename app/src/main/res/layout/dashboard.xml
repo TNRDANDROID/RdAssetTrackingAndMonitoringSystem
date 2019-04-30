@@ -1,357 +1,336 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:customfontdemo="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#EDE2E0"
+    android:orientation="vertical"
+    tools:context=".Activity.Dashboard">
 
     <RelativeLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight=".25">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorAccent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             >
+        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/margin"
+            android:text="Dashboard"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            customfontdemo:fontName="@string/font_demi_bold" />
+
+        <ImageView
+            android:id="@+id/tv_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin"
+            android:src="@drawable/power_off_2" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/district_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header_layout"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:id="@+id/district_user_layout"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="@drawable/white_background_two_corners"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
 
             <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                android:id="@+id/tv_select_group"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:lineSpacingExtra="2dp"
-                android:text=" "
-                android:textSize="@dimen/menu_title_size"
+                            android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="District:"
+                android:textAlignment="center"
+                android:textColor="#FF0000"
+                android:textSize="18sp"
+                android:textStyle="normal"
                 customfontdemo:fontName="@string/font_normal" />
 
-            <ImageView
+            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                android:id="@+id/district_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Kanchipuram"
+                android:textColor="#FF0000"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                customfontdemo:fontName="@string/font_normal" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/block_user_layout"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="@drawable/white_background_two_corners"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:orientation="horizontal"
+            android:padding="@dimen/_5sdp">
+
+
+            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="@dimen/margin"
-              />
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Block:"
+                android:textAlignment="center"
+                android:textColor="#FF0000"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                customfontdemo:fontName="@string/font_normal" />
 
-        </RelativeLayout>
+            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                android:id="@+id/block_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="Kanchipuram"
+                android:textColor="#FF0000"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                customfontdemo:fontName="@string/font_normal" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+        android:id="@+id/on_road_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/district_card"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/white_background_two_corners"
+        android:padding="@dimen/_5sdp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="On Road"
+        android:textAlignment="center"
+        android:textColor="#FF0000"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        customfontdemo:fontName="@string/font_normal" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/on_road_tv"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:id="@+id/tail_social_media"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_frame_layout_width"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"
+
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/VPR_Layout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/village_road"
+                    android:orientation="vertical">
+
+                    <!--<ImageView-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:background="@mipmap/youtube"-->
+                    <!--android:scaleType="fitCenter" />-->
+
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/VPR_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="VPR"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        customfontdemo:fontName="@string/font_demi_bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/PUR_Layout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/panchayat"
+                    android:orientation="vertical">
+
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/PUR_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:padding="@dimen/_5sdp"
+                        android:text="PUR"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_15sdp"
+                        customfontdemo:fontName="@string/font_demi_bold" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/settings_frame_layout_width"
+            android:layout_below="@+id/tail_social_media"
+            android:layout_marginLeft="25dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/VPR_PUR_Layout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/vpr_pur"
+                    android:orientation="vertical">
+
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/VPR_PUR_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="@dimen/_5sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:text="VPR/PUR"
+                        android:textAlignment="center"
+                        android:textColor="#FF0000"
+                        android:textSize="@dimen/_15sdp"
+                        customfontdemo:fontName="@string/font_normal" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/Highway_Road_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/road"
+                    android:orientation="vertical">
+
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/Highway_Road_tv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerInParent="true"
+                        android:padding="@dimen/_5sdp"
+                        android:text="Highway Road"
+                        android:textAlignment="center"
+                        android:textColor="#FF0000"
+                        android:textSize="@dimen/_15sdp"
+                        customfontdemo:fontName="@string/font_normal" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/center_circle"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circlewhite" />
+
+        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/app_Name"
+            android:textAlignment="center"
+            android:textColor="#FFDC071F"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            customfontdemo:fontName="@string/font_demi_bold" />
 
     </RelativeLayout>
 
-    <LinearLayout
+    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/asset_layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dashboard_item_1_bg"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dashboard_icon_size"
-                            android:contentDescription="@string/app_name"
-                            android:src="@drawable/icon_dashboard_1"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/corner_bg_white"
-                        android:elevation="5dp"
-                        android:orientation="vertical">
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_value"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center|bottom"
-                            android:text="0"
-                            android:textColor="@color/app_bg"
-                            android:textSize="@dimen/dashboard_count_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_below="@+id/tv_view_assets_value"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="center|top"
-                            android:marqueeRepeatLimit="marquee_forever"
-                            android:maxLines="2"
-                            android:text="View Assets"
-                            android:textColor="#727272"
-                            android:textSize="@dimen/menu_title_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/assets_reporting_layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/dashboard_item_3_bg"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dashboard_icon_size"
-                            android:layout_centerInParent="true"
-                            android:layout_margin="10dp"
-                            android:contentDescription="@string/app_name"
-                            android:src="@drawable/icon_dashboard_2" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/corner_bg_white"
-                        android:elevation="5dp"
-                        android:orientation="vertical">
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_reporting_value"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center|bottom"
-                            android:text="0"
-                            android:textColor="@color/app_bg"
-                            android:textSize="@dimen/dashboard_count_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_reporting_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="center|top"
-                            android:maxLines="2"
-                            android:text="View Reports"
-                            android:textColor="#727272"
-                            android:textSize="@dimen/menu_title_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_weight="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/assets_not_reporting_layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/dashboard_item_2_bg"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dashboard_icon_size"
-                            android:layout_centerInParent="true"
-                            android:layout_margin="10dp"
-                            android:contentDescription="@string/app_name"
-                            android:src="@drawable/icon_dashboard_3" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/corner_bg_white"
-                        android:elevation="5dp"
-                        android:orientation="vertical">
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_not_reporting_value"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center|bottom"
-                            android:text="0"
-                            android:textColor="@color/app_bg"
-                            android:textSize="@dimen/dashboard_count_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_assets_not_reporting_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:ellipsize="end"
-                            android:gravity="center|top"
-                            android:maxLines="2"
-                            android:text="Asset Not Reporting"
-                            android:textColor="#727272"
-                            android:textSize="@dimen/menu_title_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/alerts_layout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/dashboard_item_4_bg"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dashboard_icon_size"
-                            android:layout_centerInParent="true"
-                            android:layout_margin="10dp"
-                            android:contentDescription="@string/app_name"
-                            android:src="@drawable/icon_dashboard_4" />
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/corner_bg_white"
-                        android:elevation="5dp"
-                        android:orientation="vertical">
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_alerts_value"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1"
-                            android:gravity="center|bottom"
-                            android:text="0"
-                            android:textColor="@color/app_bg"
-                            android:textSize="@dimen/dashboard_count_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                            android:id="@+id/tv_view_alerts_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:gravity="center|top"
-                            android:text="View Alert"
-                            android:textColor="#727272"
-                            android:textSize="@dimen/menu_title_size"
-                            customfontdemo:fontName="@string/font_normal" />
-
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-
-
-
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:padding="7.5dp"
+        android:text="Sofware Designed &amp; Developed by NIC"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/_14sdp"
+        customfontdemo:fontName="@string/font_demi_bold" />
+</RelativeLayout>

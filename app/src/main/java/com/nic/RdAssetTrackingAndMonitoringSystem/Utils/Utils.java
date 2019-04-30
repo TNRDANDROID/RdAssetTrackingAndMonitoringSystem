@@ -13,9 +13,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Application.NICApplication;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -252,6 +256,11 @@ public class Utils {
             throw new RuntimeException(ex);
         }
     }
-
+    public static JSONObject roadListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_LIST);
+        Log.d("serviceList", "" + dataSet);
+        return dataSet;
+    }
 
 }
