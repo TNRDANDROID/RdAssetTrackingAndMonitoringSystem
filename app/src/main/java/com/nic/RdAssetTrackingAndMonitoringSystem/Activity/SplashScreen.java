@@ -30,7 +30,6 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
             checkAppVersion();
         }else{
             showSignInScreen();
-
         }
 }
 

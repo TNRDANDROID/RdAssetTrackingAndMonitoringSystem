@@ -7,18 +7,14 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Utils;
 public class UrlGenerator {
 
     public static String getLoginUrl() {
-        return "https://www.tnrd.gov.in/project/webservices_forms/road_asset/road_asset_services.php";
+        return "https://tnrd.gov.in/project/webservices_forms/login_service/login_services.php";
     }
 
     public static String getRoadListUrl() {
-        return "https://www.tnrd.gov.in/project/webservices_forms/road_asset/road_asset_services.php";
-    }
-
-    public static String getInspectionServicesListUrl() {
-        return "https://www.tnrd.gov.in/project/webservices_forms/inspection/inspection_services.php";
+        return "https://tnrd.gov.in/project/webservices_forms/road_asset/road_asset_services.php";
     }
 
     public static String getTnrdHostName() {
-        return "www.tnrd.gov.in";
+        return "tnrd.gov.in";
     }
 }

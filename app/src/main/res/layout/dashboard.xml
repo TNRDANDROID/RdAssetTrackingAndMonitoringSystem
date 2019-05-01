@@ -12,7 +12,7 @@
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorAccent">
+        android:background="@color/colorPrimary">
 
         <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             customfontdemo:fontName="@string/font_demi_bold" />
 
         <ImageView
-            android:id="@+id/tv_logout"
+            android:id="@+id/logout_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

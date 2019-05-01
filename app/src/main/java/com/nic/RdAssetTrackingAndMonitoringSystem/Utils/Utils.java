@@ -256,9 +256,12 @@ public class Utils {
             throw new RuntimeException(ex);
         }
     }
-    public static JSONObject roadListJsonParams() throws JSONException {
+    public static JSONObject roadListJsonParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_LIST);
+        dataSet.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE,prefManager.getBlockCode());
         Log.d("serviceList", "" + dataSet);
         return dataSet;
     }

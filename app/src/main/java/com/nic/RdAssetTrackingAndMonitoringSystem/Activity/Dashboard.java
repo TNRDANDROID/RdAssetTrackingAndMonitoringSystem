@@ -1,7 +1,6 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +11,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
@@ -20,6 +20,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Dialog.MyDialog;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
@@ -30,11 +31,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, MyDialog.myOnClickListener, Api.ServerResponseListener {
 
     private MyCustomTextView on_road_tv, district_tv, block_tv;
     private LinearLayout district_user_layout, block_user_layout;
+    private ImageView logout_tv;
     Handler myHandler = new Handler();
+    private List<RoadListValue> roadListValue = new ArrayList<>();
     private PrefManager prefManager;
 
     @Override
@@ -52,7 +58,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         on_road_tv = (MyCustomTextView) findViewById(R.id.on_road_tv);
-
+        logout_tv = (ImageView) findViewById(R.id.logout_tv);
 
         on_road_tv.setAlpha(0);
         final Runnable onroad = new Runnable() {
@@ -88,14 +94,22 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
+        logout_tv.setOnClickListener(this);
         getRoadList();
     }
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.logout_tv:
+                closeApplication();
+                break;
+        }
     }
 
+    private void closeApplication() {
+        new MyDialog(Dashboard.this).exitDialog(Dashboard.this, "Are you sure you want to Logout?", "Logout");
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -133,7 +147,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     }
 
     public JSONObject roadListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roadListJsonParams().toString());
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roadListJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
