@@ -315,10 +315,10 @@
             android:layout_centerInParent="true"
             android:text="@string/app_Name"
             android:textAlignment="center"
-            android:textColor="#FFDC071F"
+            android:textColor="#FF0000"
             android:textSize="15sp"
             android:textStyle="normal"
-            customfontdemo:fontName="@string/font_demi_bold" />
+            customfontdemo:fontName="@string/font_medium" />
 
     </RelativeLayout>
 
@@ -327,7 +327,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:padding="7.5dp"
+        android:padding="8dp"
         android:text="Sofware Designed &amp; Developed by NIC"
         android:textAlignment="center"
         android:textColor="@android:color/black"
