@@ -115,6 +115,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         block_tv.setText(prefManager.getBlockName());
         logout_tv.setOnClickListener(this);
         getRoadList();
+        getAssetList();
     }
 
     @Override
@@ -124,10 +125,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 closeApplication();
                 break;
             case R.id.VPR_Layout:
-                roadlistScreen("1");
+                roadlistScreen("2");
                 break;
             case R.id.PUR_Layout:
-                roadlistScreen("2");
+                roadlistScreen("1");
                 break;
             case R.id.VPR_PUR_Layout:
                 roadlistScreen("4");
@@ -182,12 +183,29 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public void getAssetList(){
+        try {
+            new ApiService(this).makeJSONObjectRequest("AssetList", Api.Method.POST, UrlGenerator.getRoadListUrl(), assetListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONObject roadListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roadListJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("roadlist", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject assetListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.assetListJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("assetlist", "" + authKey);
         return dataSet;
     }
 
@@ -210,8 +228,17 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                        new InsertRoadListTask().execute(jsonObject);
                     }
-                    Log.d("RoadList", "" + responseDecryptedBlockKey);
+                    Log.d("response_RoadList", "" + responseDecryptedBlockKey);
                 }
+            if ("AssetList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                  //  new InsertAssetListTask().execute(jsonObject);
+                }
+                Log.d("response_AssetList", "" + responseDecryptedBlockKey);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -250,6 +277,42 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
             }
                 return null;
+        }
+    }
+
+    public class InsertAssetListTask extends AsyncTask<JSONObject ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<RoadListValue> roadlist_count = dbData.getAll("0");
+            if (roadlist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        RoadListValue roadListValue = new RoadListValue();
+                        try {
+                            roadListValue.setRoadID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_ID));
+                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CODE));
+                            roadListValue.setRoadCategoryCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CATEGORY_CODE));
+                            roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
+                            roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
+                            roadListValue.setRoadVillage(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_VILLAGE_NAME));
+                            dbData.create(roadListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
         }
     }
 

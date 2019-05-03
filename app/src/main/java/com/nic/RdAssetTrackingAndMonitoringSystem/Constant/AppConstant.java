@@ -43,6 +43,10 @@ public class AppConstant {
      public static String KEY_ROAD_NAME = "road_name";
      public static String KEY_ROAD_VILLAGE_NAME = "pvname";
 
+     /* ASSET LIST TABLE **/
+
+    public static String KEY_ASSET_LIST = "road_asset";
+
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

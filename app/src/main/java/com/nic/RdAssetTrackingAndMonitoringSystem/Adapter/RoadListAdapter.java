@@ -39,7 +39,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RoadListAdapter.MyView
             super(itemView);
             road_code = (MyCustomTextView) itemView.findViewById(R.id.road_code);
             road_name = (MyCustomTextView) itemView.findViewById(R.id.road_name);
-            road_village_name = (MyCustomTextView) itemView.findViewById(R.id.village_name);
+            road_village_name = (MyCustomTextView) itemView.findViewById(R.id.road_village_name);
         }
 
 
@@ -55,10 +55,20 @@ public class RoadListAdapter extends RecyclerView.Adapter<RoadListAdapter.MyView
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         String string = String.valueOf(roadListValues.get(position).getRoadCategory());
+        String code = String.valueOf(roadListValues.get(position).getRoadCode());
+        String village_code = String.valueOf(roadListValues.get(position).getRoadCategoryCode());
 
-      //  holder.road_code.setText(roadListValues.get(position).getRoadCode());
+        holder.road_code.setText("R"+code);
         holder.road_name.setText(roadListValues.get(position).getRoadName());
-        holder.road_village_name.setText(roadListValues.get(position).getRoadVillage());
+
+        if(village_code.equalsIgnoreCase("2")) {
+            holder.road_village_name.setVisibility(View.VISIBLE);
+            holder.road_village_name.setText(roadListValues.get(position).getRoadVillage());
+        }
+        else {
+            holder.road_village_name.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
