@@ -7,11 +7,6 @@ public class AppConstant {
     public static final String PREF_NAME = "NIC";
     public static String KEY_SERVICE_ID = "service_id";
     public static String KEY_APP_CODE = "appcode";
-    public static String KEY_ROAD_LIST = "road_list";
-    public static String KEY_ROAD_CATEGORY_CODE = "road_category_code";
-    public static String KEY_ROAD_CATEGORY = "road_category";
-    public static String KEY_ROAD_ID = "road_id";
-    public static String KEY_ROAD_NAME = "road_name";
 
     public static String USER_LOGIN_KEY = "user_login_key";
     public static String KEY_USER_NAME = "user_name";
@@ -38,17 +33,15 @@ public class AppConstant {
     public static String JSON_DATA = "JSON_DATA";
 
 
+    /* ROAD LIST TABLE */
 
-
-    //CAPTURED PHOTO
-    public static String DESCRIPTION = "description";
-    public static String IMAGE = "image";
-    public static String LATITUDE = "latitude";
-    public static String LONGITUDE = "longitude";
-    public static String INSPECTION_ID = "inspection_id";
-    public static String IMAGE_ID = "id";
-
-
+    public static String KEY_ROAD_LIST = "road_list";
+     public static String KEY_ROAD_CATEGORY_CODE = "road_category_code";
+     public static String KEY_ROAD_CATEGORY = "road_category";
+     public static String KEY_ROAD_ID = "road_id";
+     public static String KEY_ROAD_CODE = "road_code";
+     public static String KEY_ROAD_NAME = "road_name";
+     public static String KEY_ROAD_VILLAGE_NAME = "pvname";
 
 
     public static String KEY_VERSION_CHECK= "version_check";

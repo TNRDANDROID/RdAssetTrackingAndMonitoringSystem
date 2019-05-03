@@ -7,16 +7,34 @@ import android.graphics.Bitmap;
  */
 
 public class RoadListValue {
-public String roadCategoryCode;
+public Integer roadCategoryCode;
 public String roadCategory;
-public String roadID;
+public Integer roadID;
+public Integer roadCode;
 public String roadName;
+public String roadVillage;
 
-    public String getRoadCategoryCode() {
+    public Integer getRoadCode() {
+        return roadCode;
+    }
+
+    public void setRoadCode(Integer roadCode) {
+        this.roadCode = roadCode;
+    }
+
+    public String getRoadVillage() {
+        return roadVillage;
+    }
+
+    public void setRoadVillage(String roadVillage) {
+        this.roadVillage = roadVillage;
+    }
+
+    public Integer getRoadCategoryCode() {
         return roadCategoryCode;
     }
 
-    public void setRoadCategoryCode(String roadCategoryCode) {
+    public void setRoadCategoryCode(Integer roadCategoryCode) {
         this.roadCategoryCode = roadCategoryCode;
     }
 
@@ -28,11 +46,11 @@ public String roadName;
         this.roadCategory = roadCategory;
     }
 
-    public String getRoadID() {
+    public Integer getRoadID() {
         return roadID;
     }
 
-    public void setRoadID(String roadID) {
+    public void setRoadID(Integer roadID) {
         this.roadID = roadID;
     }
 

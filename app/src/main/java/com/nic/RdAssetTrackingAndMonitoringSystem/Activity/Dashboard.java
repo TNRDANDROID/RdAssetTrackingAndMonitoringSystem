@@ -1,24 +1,31 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.android.volley.VolleyError;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
+import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
+import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Dialog.MyDialog;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -40,8 +47,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     private LinearLayout district_user_layout, block_user_layout;
     private ImageView logout_tv;
     Handler myHandler = new Handler();
-    private List<RoadListValue> roadListValue = new ArrayList<>();
     private PrefManager prefManager;
+    public dbData dbData = new dbData(this);
+    RelativeLayout vpr_layout,pur_layout,vpr_pur_layout,highway_layout;
+    RoadListAdapter roadListAdapter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +69,15 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         on_road_tv = (MyCustomTextView) findViewById(R.id.on_road_tv);
         logout_tv = (ImageView) findViewById(R.id.logout_tv);
+        vpr_layout = (RelativeLayout) findViewById(R.id.VPR_Layout);
+        pur_layout= (RelativeLayout) findViewById(R.id.PUR_Layout);
+        vpr_pur_layout= (RelativeLayout) findViewById(R.id.VPR_PUR_Layout);
+        highway_layout= (RelativeLayout) findViewById(R.id.Highway_Road_layout);
+
+        vpr_layout.setOnClickListener(this);
+        pur_layout.setOnClickListener(this);
+        vpr_pur_layout.setOnClickListener(this);
+        highway_layout.setOnClickListener(this);
 
         on_road_tv.setAlpha(0);
         final Runnable onroad = new Runnable() {
@@ -104,9 +123,26 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             case R.id.logout_tv:
                 closeApplication();
                 break;
+            case R.id.VPR_Layout:
+                roadlistScreen("1");
+                break;
+            case R.id.PUR_Layout:
+                roadlistScreen("2");
+                break;
+            case R.id.VPR_PUR_Layout:
+                roadlistScreen("4");
+                break;
+            case R.id.Highway_Road_layout:
+                roadlistScreen("3");
+                break;
         }
     }
 
+    public void roadlistScreen(String code) {
+        Intent intent = new Intent(this,RoadListScreen.class);
+        intent.putExtra(AppConstant.KEY_ROAD_CATEGORY_CODE,code);
+        startActivity(intent);
+    }
     private void closeApplication() {
         new MyDialog(Dashboard.this).exitDialog(Dashboard.this, "Are you sure you want to Logout?", "Logout");
     }
@@ -172,20 +208,49 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                     JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                     if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-//                        loadBlockList(jsonObject.getJSONArray(AppConstant.JSON_DATA));
+                       new InsertRoadListTask().execute(jsonObject);
                     }
                     Log.d("RoadList", "" + responseDecryptedBlockKey);
                 }
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadBlockList(JSONArray jsonArray) {
+    public class InsertRoadListTask extends AsyncTask<JSONObject ,Void ,Void> {
 
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<RoadListValue> roadlist_count = dbData.getAll("0");
+            if (roadlist_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        RoadListValue roadListValue = new RoadListValue();
+                        try {
+                            roadListValue.setRoadID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_ID));
+                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CODE));
+                            roadListValue.setRoadCategoryCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CATEGORY_CODE));
+                            roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
+                            roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
+                            roadListValue.setRoadVillage(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_VILLAGE_NAME));
+                            dbData.create(roadListValue);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
+                    }
+                }
+
+            }
+                return null;
+        }
     }
 
     @Override
