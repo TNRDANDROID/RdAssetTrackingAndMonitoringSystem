@@ -45,9 +45,9 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
             public void run() {
 
                 Intent i = new Intent(SplashScreen.this, LoginScreen.class);
-
                 startActivity(i);
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         }, SPLASH_TIME_OUT);
     }
