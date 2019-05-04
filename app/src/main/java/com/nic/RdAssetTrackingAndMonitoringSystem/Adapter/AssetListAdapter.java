@@ -17,13 +17,13 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
 
     private final dbData dbData;
     private Context context;
- //   private List<RoadListValue> assetListValues;
-    private List<String> ListValues;
+      private List<RoadListValue> assetListValues;
+  //  private List<String> ListValues;
   //  private PrefManager prefManager;
 
-    public AssetListAdapter(Context context, List<String> assetListValues, dbData dbData) {
+    public AssetListAdapter(Context context, List<RoadListValue> assetListValues, dbData dbData) {
         this.context = context;
-        this.ListValues = assetListValues;
+        this.assetListValues = assetListValues;
         this.dbData = dbData;
   //      prefManager = new PrefManager(context);
     }
@@ -54,12 +54,12 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        holder.asset_groupName.setText(ListValues.get(position));
+        holder.asset_groupName.setText(assetListValues.get(position).getGroupName());
     }
 
     @Override
     public int getItemCount() {
-        return ListValues.size();
+        return assetListValues.size();
     }
 
 }

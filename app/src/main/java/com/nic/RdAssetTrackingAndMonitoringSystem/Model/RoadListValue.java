@@ -15,6 +15,43 @@ public String roadName;
 public String roadVillage;
 private ItemType type;
 
+public  Integer locGroup;
+public  Integer locID;
+public  String groupName;
+public  String subgroupName;
+
+    public Integer getLocGroup() {
+        return locGroup;
+    }
+
+    public void setLocGroup(Integer locGroup) {
+        this.locGroup = locGroup;
+    }
+
+    public Integer getLocID() {
+        return locID;
+    }
+
+    public void setLocID(Integer locID) {
+        this.locID = locID;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getSubgroupName() {
+        return subgroupName;
+    }
+
+    public void setSubgroupName(String subgroupName) {
+        this.subgroupName = subgroupName;
+    }
+
     public enum ItemType {
         ONE_ITEM, TWO_ITEM;
     }

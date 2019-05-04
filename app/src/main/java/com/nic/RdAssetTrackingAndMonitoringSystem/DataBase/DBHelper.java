@@ -9,6 +9,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "RdAssetTracking";
     private static final int DATABASE_VERSION = 1;
     public static final String ROAD_LIST_TABLE = "RoadList";
+    public static final String ASSET_LIST_TABLE = "AssetList";
 
 
     private Context context;
@@ -29,6 +30,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "road_category TEXT," +
                 "pvname TEXT," +
                 "road_name TEXT)");
+
+        db.execSQL("CREATE TABLE " + ASSET_LIST_TABLE + " ("
+                + "road_id INTEGER," +
+                "loc_grp INTEGER," +
+                "loc INTEGER," +
+                "group_name TEXT," +
+                "location_sub_group_name TEXT," +
+                "location_details TEXT)");
 
     }
 

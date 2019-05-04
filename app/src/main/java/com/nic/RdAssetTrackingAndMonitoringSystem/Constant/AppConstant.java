@@ -46,6 +46,10 @@ public class AppConstant {
      /* ASSET LIST TABLE **/
 
     public static String KEY_ASSET_LIST = "road_asset";
+    public static String KEY_LOCATION_GROUP = "loc_grp";
+    public static String KEY_LOCATION_ID = "loc";
+    public static String KEY_GROUP_NAME = "group_name";
+    public static String KEY_SUB_GROUP_NAME = "location_sub_group_name";
 
 
     public static String KEY_VERSION_CHECK= "version_check";

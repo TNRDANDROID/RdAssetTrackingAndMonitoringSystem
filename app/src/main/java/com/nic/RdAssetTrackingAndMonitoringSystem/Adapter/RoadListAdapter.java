@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -160,8 +161,12 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void openAssetList(int pos) {
+        Integer road_code =  roadListValues.get(pos).getRoadCode();
+        String road_name = roadListValues.get(pos).getRoadName();
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, AssetListScreen.class);
+        intent.putExtra(AppConstant.KEY_ROAD_CODE,road_code);
+        intent.putExtra(AppConstant.KEY_ROAD_NAME,road_name);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
