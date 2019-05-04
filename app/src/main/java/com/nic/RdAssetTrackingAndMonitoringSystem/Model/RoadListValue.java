@@ -13,7 +13,18 @@ public Integer roadID;
 public Integer roadCode;
 public String roadName;
 public String roadVillage;
+private ItemType type;
 
+    public enum ItemType {
+        ONE_ITEM, TWO_ITEM;
+    }
+    public ItemType getType() {
+        return type;
+    }
+
+    public void setType(ItemType type) {
+        this.type = type;
+    }
     public Integer getRoadCode() {
         return roadCode;
     }

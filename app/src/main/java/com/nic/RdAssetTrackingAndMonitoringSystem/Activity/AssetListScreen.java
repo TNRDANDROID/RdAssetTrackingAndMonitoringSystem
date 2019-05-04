@@ -2,19 +2,13 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
@@ -22,17 +16,15 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 
-
 import java.util.ArrayList;
 
 
-
-public class RoadListScreen extends AppCompatActivity implements View.OnClickListener {
+public class AssetListScreen extends AppCompatActivity implements View.OnClickListener {
 
     private RecyclerView recyclerView;
     public dbData dbData = new dbData(this);
-    private RoadListAdapter roadListAdapter;
-    private ArrayList<RoadListValue> roadLists = new ArrayList<>();
+    private RoadListAdapter assetListAdapter;
+    private ArrayList<RoadListValue> assetLists = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,48 +46,39 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
 
-        loadVPR();
+        loadAssets();
     }
 
-    public void loadVPR() {
+    public void loadAssets() {
         String code = getIntent().getExtras().getString(AppConstant.KEY_ROAD_CATEGORY_CODE);
-        new fetchRoadtask().execute(code);
+        new fetchAssettask().execute(code);
     }
 
-    public class fetchRoadtask extends AsyncTask<String, Void,
+    public class fetchAssettask extends AsyncTask<String, Void,
             ArrayList<RoadListValue>> {
         @Override
         protected ArrayList<RoadListValue> doInBackground(String... params) {
             dbData.open();
-            roadLists = dbData.getAll_Road(params[0]);
-            ArrayList<RoadListValue> screenArrayList = new ArrayList<>();
-
-            if (roadLists.size() > 0) {
-                for (int i = 0; i < roadLists.size(); i++) {
-                    RoadListValue card = new RoadListValue();
-                    card.setRoadName(roadLists.get(i).getRoadName());
-                    card.setRoadID(roadLists.get(i).getRoadID());
-                    card.setRoadCode(roadLists.get(i).getRoadCode());
-                    card.setRoadVillage(roadLists.get(i).getRoadVillage());
-                    card.setRoadCategory(roadLists.get(i).getRoadCategory());
-                    card.setRoadCategoryCode(roadLists.get(i).getRoadCategoryCode());
-                    if (i%2 == 0) {
-                       card.setType(RoadListValue.ItemType.ONE_ITEM);
-                    } else {
-                       card.setType(RoadListValue.ItemType.TWO_ITEM);
-                    }
-                    screenArrayList.add(card);
-                }
-            }
-            return screenArrayList;
+            assetLists = dbData.getAll_Road(params[0]);
+//            if (roadLists.size() > 0) {
+//                for (int i = 0; i < roadLists.size(); i++) {
+//                    RoadListValue card = new RoadListValue();
+//                    card.setRoadName(roadLists.get(i).getRoadName());
+//                    card.setRoadID(roadLists.get(i).getRoadID());
+//                    card.setRoadCode(roadLists.get(i).getRoadCode());
+//                    card.setRoadVillage(roadLists.get(i).getRoadVillage());
+//                    roadListValues.add(card);
+//                }
+//            }
+            return assetLists;
         }
 
         @Override
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
-            roadListAdapter = new RoadListAdapter(RoadListScreen.this,
+            assetListAdapter = new RoadListAdapter(AssetListScreen.this,
                     roadList, dbData);
-            recyclerView.setAdapter(roadListAdapter);
+            recyclerView.setAdapter(assetListAdapter);
         }
     }
 

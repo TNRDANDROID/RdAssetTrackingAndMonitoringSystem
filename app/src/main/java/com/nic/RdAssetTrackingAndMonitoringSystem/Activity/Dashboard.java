@@ -249,7 +249,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
-            ArrayList<RoadListValue> roadlist_count = dbData.getAll("0");
+            ArrayList<RoadListValue> roadlist_count = dbData.getAll_Road("0");
             if (roadlist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
@@ -267,7 +267,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
                             roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
                             roadListValue.setRoadVillage(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_VILLAGE_NAME));
-                            dbData.create(roadListValue);
+                            dbData.create_newRoad(roadListValue);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -285,8 +285,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         @Override
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
-            ArrayList<RoadListValue> roadlist_count = dbData.getAll("0");
-            if (roadlist_count.size() <= 0) {
+            ArrayList<RoadListValue> assetlist_count = dbData.getAll_Asset("0");
+            if (assetlist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
                     try {
@@ -303,7 +303,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
                             roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
                             roadListValue.setRoadVillage(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_VILLAGE_NAME));
-                            dbData.create(roadListValue);
+                            dbData.create_newAsset(roadListValue);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
