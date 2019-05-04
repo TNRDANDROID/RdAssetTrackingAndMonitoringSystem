@@ -4,9 +4,9 @@
     <string name="hint_username" translatable="false">UserName</string>
     <string name="btn_login" translatable="false">Login</string>
     <string name="font_normal" translatable="false">Avenir-Roman.ttf</string>
-    <string name="font_bold" translatable="false">Avenir-Black.ttf</string>
-    <string name="font_heavy" translatable="false">Avenir_heavy.ttf</string>
-    <string name="font_medium" translatable="false">Avenir-MediumOblique-webfont.ttf</string>
+    <string name="font_bold" translatable="false">Avenir-Blaavy.ttf</string>
+    <string name="font_medium" translatable="false">Avenir-ck.ttf</string>
+    <string name="font_heavy" translatable="false">Avenir_heMediumOblique-webfont.ttf</string>
     <string name="font_demi_bold" translatable="false">Avenir_Next_Demi_Bold.ttf</string>
     <string name="font_avenir_medium" translatable="false">Avenir_Next_Medium.ttf</string>
     <string name="font_italic" translatable="false">AvenirNextMediumItalic.ttf</string>

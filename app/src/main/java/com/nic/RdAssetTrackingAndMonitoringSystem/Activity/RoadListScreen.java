@@ -2,26 +2,25 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
-
+import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import java.util.ArrayList;
 
@@ -33,6 +32,11 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     public dbData dbData = new dbData(this);
     private RoadListAdapter roadListAdapter;
     private ArrayList<RoadListValue> roadLists = new ArrayList<>();
+    private ImageView back_img;
+    private LinearLayout district_user_layout, block_user_layout;
+    private MyCustomTextView district_tv, block_tv;
+    Handler myHandler = new Handler();
+    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +47,13 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
 
 
     public void intializeUI() {
-     //   prefManager = new PrefManager(this);
+        prefManager = new PrefManager(this);
+        district_user_layout = (LinearLayout) findViewById(R.id.district_user_layout);
+        block_user_layout = (LinearLayout) findViewById(R.id.block_user_layout);
+        district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
+        block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         recyclerView = (RecyclerView) findViewById(R.id.road_list);
-
+        back_img = (ImageView) findViewById(R.id.back_img);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -53,7 +61,31 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
+        back_img.setOnClickListener(this);
+        block_user_layout.setAlpha(0);
+        final Runnable block = new Runnable() {
+            @Override
+            public void run() {
+                block_user_layout.setAlpha(1);
+                block_user_layout.startAnimation(AnimationUtils.loadAnimation(RoadListScreen.this, R.anim.text_view_move));
 
+            }
+        };
+        myHandler.postDelayed(block, 800);
+        district_user_layout.setAlpha(0);
+        final Runnable district = new Runnable() {
+            @Override
+            public void run() {
+                district_user_layout.setAlpha(1);
+                district_user_layout.startAnimation(AnimationUtils.loadAnimation(RoadListScreen.this, R.anim.text_view_move));
+
+            }
+        };
+        myHandler.postDelayed(district, 1000);
+
+
+        district_tv.setText(prefManager.getDistrictName());
+        block_tv.setText(prefManager.getBlockName());
         loadVPR();
     }
 
@@ -102,6 +134,10 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back_img:
+                onBackPress();
+                break;
+
         }
     }
     public void dashboard() {
@@ -116,7 +152,6 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
