@@ -1,11 +1,15 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -71,7 +75,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void initLayoutOne(ViewHolderOne holder, int position) {
+    private void initLayoutOne(ViewHolderOne holder, final int position) {
 
         String string = String.valueOf(roadListValues.get(position).getRoadCategory());
         String code = String.valueOf(roadListValues.get(position).getRoadCode());
@@ -87,9 +91,16 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else {
             holder.road_village_name.setVisibility(View.GONE);
         }
+
+        holder.road_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAssetList(position);
+            }
+        });
     }
 
-    private void initLayoutTwo(ViewHolderTwo holder, int position) {
+    private void initLayoutTwo(ViewHolderTwo holder, final int position) {
 
         String string = String.valueOf(roadListValues.get(position).getRoadCategory());
         String code = String.valueOf(roadListValues.get(position).getRoadCode());
@@ -105,29 +116,40 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         else {
             holder.road_village_name.setVisibility(View.GONE);
         }
+
+        holder.road_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAssetList(position);
+            }
+        });
     }
 
     // Static inner class to initialize the views of rows
     static class ViewHolderOne extends RecyclerView.ViewHolder {
 
         public MyCustomTextView road_code, road_name, road_village_name;
+        RelativeLayout road_layout;
 
         public ViewHolderOne(View itemView) {
             super(itemView);
             road_code = (MyCustomTextView) itemView.findViewById(R.id.road_code);
             road_name = (MyCustomTextView) itemView.findViewById(R.id.road_name);
             road_village_name = (MyCustomTextView) itemView.findViewById(R.id.road_village_name);
+            road_layout = (RelativeLayout) itemView.findViewById(R.id.road_layout);
         }
     }
 
     static class ViewHolderTwo extends RecyclerView.ViewHolder {
         public MyCustomTextView road_code, road_name, road_village_name;
+        RelativeLayout road_layout;
 
         public ViewHolderTwo(View itemView) {
             super(itemView);
             road_code = (MyCustomTextView) itemView.findViewById(R.id.road_code);
             road_name = (MyCustomTextView) itemView.findViewById(R.id.road_name);
             road_village_name = (MyCustomTextView) itemView.findViewById(R.id.road_village_name);
+            road_layout = (RelativeLayout) itemView.findViewById(R.id.road_layout);
         }
     }
 
@@ -135,6 +157,14 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
        // return roadListValues.size();
         return roadListValues == null ? 0 : roadListValues.size();
+    }
+
+    public void openAssetList(int pos) {
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, AssetListScreen.class);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
     }
 
 

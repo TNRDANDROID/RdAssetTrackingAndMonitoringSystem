@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.AssetListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
@@ -23,14 +24,25 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
 
     private RecyclerView recyclerView;
     public dbData dbData = new dbData(this);
-    private RoadListAdapter assetListAdapter;
+    private AssetListAdapter assetListAdapter;
     private ArrayList<RoadListValue> assetLists = new ArrayList<>();
+    private ArrayList<String> dummyLists = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.road_list_activity);
+        setContentView(R.layout.asset_layout);
+        setdummydata();
         intializeUI();
+    }
+
+    public void setdummydata() {
+        dummyLists.add("Transport and Communication Infrastructure");
+        dummyLists.add("Market Facility");
+        dummyLists.add("Medical Facility");
+        dummyLists.add("Educational Facility");
+        dummyLists.add("CD Works");
+        dummyLists.add("Bridges");
     }
 
 
@@ -45,8 +57,10 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
+        assetListAdapter = new AssetListAdapter(AssetListScreen.this, dummyLists, dbData);
+        recyclerView.setAdapter(assetListAdapter);
 
-        loadAssets();
+      //  loadAssets();
     }
 
     public void loadAssets() {
@@ -76,8 +90,8 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
-            assetListAdapter = new RoadListAdapter(AssetListScreen.this,
-                    roadList, dbData);
+//            assetListAdapter = new AssetListAdapter(AssetListScreen.this,
+ //                   roadList, dbData);
             recyclerView.setAdapter(assetListAdapter);
         }
     }

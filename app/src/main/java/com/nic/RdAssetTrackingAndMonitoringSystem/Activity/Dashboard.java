@@ -143,6 +143,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         Intent intent = new Intent(this,RoadListScreen.class);
         intent.putExtra(AppConstant.KEY_ROAD_CATEGORY_CODE,code);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
     private void closeApplication() {
         new MyDialog(Dashboard.this).exitDialog(Dashboard.this, "Are you sure you want to Logout?", "Logout");

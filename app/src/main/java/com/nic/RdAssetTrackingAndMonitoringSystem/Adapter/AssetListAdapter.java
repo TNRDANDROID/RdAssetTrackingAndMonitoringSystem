@@ -17,30 +17,29 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
 
     private final dbData dbData;
     private Context context;
-    private List<RoadListValue> roadListValues;
+ //   private List<RoadListValue> assetListValues;
+    private List<String> ListValues;
   //  private PrefManager prefManager;
 
-    public AssetListAdapter(Context context, List<RoadListValue> roadListValues, dbData dbData) {
+    public AssetListAdapter(Context context, List<String> assetListValues, dbData dbData) {
         this.context = context;
-        this.roadListValues = roadListValues;
+        this.ListValues = assetListValues;
         this.dbData = dbData;
   //      prefManager = new PrefManager(context);
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.vpr_screen, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.inner_asset_layout, parent, false);
         return new MyViewHolder(itemView);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView road_code, road_name, road_village_name;
+        private MyCustomTextView asset_groupName;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            road_code = (MyCustomTextView) itemView.findViewById(R.id.road_code);
-            road_name = (MyCustomTextView) itemView.findViewById(R.id.road_name);
-            road_village_name = (MyCustomTextView) itemView.findViewById(R.id.road_village_name);
+            asset_groupName = (MyCustomTextView) itemView.findViewById(R.id.asset_groupName);
         }
 
 
@@ -55,26 +54,12 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        String string = String.valueOf(roadListValues.get(position).getRoadCategory());
-        String code = String.valueOf(roadListValues.get(position).getRoadCode());
-        String village_code = String.valueOf(roadListValues.get(position).getRoadCategoryCode());
-
-        holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValues.get(position).getRoadName());
-
-        if(village_code.equalsIgnoreCase("2")) {
-            holder.road_village_name.setVisibility(View.VISIBLE);
-            holder.road_village_name.setText(roadListValues.get(position).getRoadVillage());
-        }
-        else {
-            holder.road_village_name.setVisibility(View.GONE);
-        }
-
+        holder.asset_groupName.setText(ListValues.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return roadListValues.size();
+        return ListValues.size();
     }
 
 }
