@@ -153,7 +153,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:layout_alignParentStart="true"
                                                 android:padding="10dp"
-                                                android:text="Stage"
+                                                android:text="Neelamangalam Village Road"
                                                 android:textAlignment="textStart"
                                                 android:textColor="#000"
                                                 android:textSize="18sp" />
@@ -256,22 +256,38 @@
                                             android:textColor="@android:color/white"
                                             android:textStyle="bold" />
 
-
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentStart="true"
+                                            android:layout_toRightOf="@+id/start_lat_long_click_view"
+                                            android:gravity="center_horizontal">
                                         <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                                             android:id="@+id/stop_lat_long_click_view"
-
-                                            android:layout_width="80dp"
-                                            android:layout_height="30dp"
-
-                                            android:layout_centerInParent="true"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
                                             android:background="@drawable/add_button"
                                             android:gravity="center"
-
-                                            android:text="Stop"
+                                            android:padding="5dp"
+                                            android:text="Middle"
                                             android:textAlignment="center"
                                             android:textColor="@android:color/white"
                                             android:textStyle="bold" />
 
+
+                                            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content"
+                                                android:layout_marginLeft="@dimen/_15sdp"
+                                                android:layout_toRightOf="@+id/start_lat_long_click_view"
+                                                android:background="@drawable/add_button"
+                                                android:gravity="center"
+                                                android:padding="5dp"
+                                                android:text="Stop"
+                                                android:textAlignment="center"
+                                                android:textColor="@android:color/white"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
                                         <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                                             android:id="@+id/end_lat_long_click_view"
                                             android:layout_width="80dp"
@@ -304,7 +320,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/chainage"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
 
@@ -340,7 +357,7 @@
                                     android:layout_weight="0.48"
                                     android:gravity="center"
                                     android:padding="10sp"
-                                    android:text=""
+                                    android:text="Lat:38.42 Long:38.41"
                                     android:textColor="@android:color/black"
                                     android:textSize="18sp"
                                     customfontdemo:fontName="@string/font_circular_bold" />
@@ -358,7 +375,7 @@
                                     android:layout_weight="0.48"
                                     android:gravity="center"
                                     android:padding="10sp"
-                                    android:text=""
+                                    android:text="Lat:38.42 Long:38.41"
                                     android:textColor="@android:color/black"
                                     android:textSize="18sp"
                                     customfontdemo:fontName="@string/font_circular_bold" />
@@ -375,7 +392,7 @@
                                     android:layout_weight="0.48"
                                     android:gravity="center"
                                     android:padding="10sp"
-                                    android:text=""
+                                    android:text="Lat:38.42 Long:38.41"
                                     android:textColor="@android:color/black"
                                     android:textSize="18sp"
                                     customfontdemo:fontName="@string/font_circular_bold" />

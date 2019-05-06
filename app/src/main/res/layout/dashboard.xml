@@ -317,8 +317,7 @@
             android:textAlignment="center"
             android:textColor="#FF0000"
             android:textSize="15sp"
-            android:textStyle="normal"
-            customfontdemo:fontName="@string/font_medium" />
+            customfontdemo:fontName="@string/font_bold" />
 
     </RelativeLayout>
 
