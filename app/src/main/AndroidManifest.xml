@@ -76,6 +76,12 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <activity
+            android:name="com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
     </application>
 
 </manifest>

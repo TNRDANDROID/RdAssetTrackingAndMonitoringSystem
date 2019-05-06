@@ -183,7 +183,7 @@ public class dbData {
 //        }
 
         try {
-            cursor = db.rawQuery("select distinct road_id,group_name from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
+            cursor = db.rawQuery("select distinct road_id,group_name,loc_grp from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {
@@ -193,18 +193,14 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
                     card.setLocGroup(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
-                    card.setLocID(cursor.getInt(cursor
-                            .getColumnIndex(AppConstant.KEY_LOCATION_ID)));
                     card.setGroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
-                    card.setSubgroupName(cursor.getString(cursor
-                            .getColumnIndexOrThrow(AppConstant.KEY_SUB_GROUP_NAME)));
 
                     cards.add(card);
                 }
             }
         } catch (Exception e){
-            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+              Log.d( "Exception", String.valueOf(e));
         } finally{
             if (cursor != null) {
                 cursor.close();
