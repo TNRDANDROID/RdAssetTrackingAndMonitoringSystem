@@ -157,24 +157,42 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<RoadListValue> select_Asset(JSONObject code1, String type) {
+    public ArrayList<RoadListValue> select_Asset(JSONObject code, String type) {
 
         ArrayList<RoadListValue> assets = new ArrayList<>();
         Cursor cursor = null;
         String condition = "";
-        JSONObject code = code1;
-        String code2 ="";
+        String road_id ="";
+        String loc_grp ="";
+
+        String[] columns = new String[0];
+        String selection = null;
+        String[] selectionArgs = new String[0];
+
+
+
 
         if (type.equalsIgnoreCase("firstLevel"))
         {
             try {
-                code2 = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                road_id = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                columns = new String[]{"distinct road_id,loc_grp,group_name"};
+                selection = "road_id = ?";
+                selectionArgs = new String[]{road_id};
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         else if(type.equalsIgnoreCase("secondLevel")) {
-
+            try {
+                road_id = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                loc_grp = String.valueOf(code.get(AppConstant.KEY_LOCATION_GROUP));
+                columns = new String[]{"*"};
+                selection = "road_id = ? and loc_grp = ?";
+                selectionArgs = new String[]{road_id,loc_grp};
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -190,9 +208,8 @@ public class dbData {
 //        }
 
         try {
-            //cursor = db.rawQuery("select * from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
              cursor = db.query(DBHelper.ASSET_LIST_TABLE,
-                     new String[]{"distinct road_id,loc_grp,group_name"}, " road_id = ? ", new String[]{code2}, null, null, null);
+                     columns, selection, selectionArgs, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     RoadListValue asset = new RoadListValue();
@@ -202,7 +219,12 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
                     asset.setGroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
+                    asset.setLevelType(type);
 
+                    if (type.equalsIgnoreCase("secondLevel")) {
+                        asset.setSubgroupName(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_SUB_GROUP_NAME)));
+                    }
                     assets.add(asset);
                 }
             }

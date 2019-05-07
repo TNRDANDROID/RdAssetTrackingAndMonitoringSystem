@@ -21,6 +21,15 @@ public  String groupName;
 public  String subgroupName;
 public String colLabel;
 public String locationDetails;
+public String levelType;
+
+    public String getLevelType() {
+        return levelType;
+    }
+
+    public void setLevelType(String levelType) {
+        this.levelType = levelType;
+    }
 
     public String getLocationDetails() {
         return locationDetails;

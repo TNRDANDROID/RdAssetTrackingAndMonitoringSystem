@@ -165,7 +165,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
 
     private void buildTree(ArrayList<RoadListValue> listValues) {
         for (int i = 0; i < listValues.size(); i++) {
-            String grpname = listValues.get(i).getGroupName();
+            String grpname = listValues.get(i).getSubgroupName();
             TreeNode treeNode = new TreeNode(new String(grpname));
             treeNode.setLevel(0);
             for (int j = 0; j < 10; j++) {
