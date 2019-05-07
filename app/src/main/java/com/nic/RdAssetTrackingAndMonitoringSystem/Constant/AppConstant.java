@@ -50,6 +50,8 @@ public class AppConstant {
     public static String KEY_LOCATION_ID = "loc";
     public static String KEY_GROUP_NAME = "group_name";
     public static String KEY_SUB_GROUP_NAME = "location_sub_group_name";
+    public static String KEY_COLUMN_LABEL = "col_label";
+    public static String KEY_LOCATION_DETAILS = "location_details";
 
 
     public static String KEY_VERSION_CHECK= "version_check";

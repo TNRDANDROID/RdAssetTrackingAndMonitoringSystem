@@ -19,6 +19,15 @@ public  Integer locGroup;
 public  Integer locID;
 public  String groupName;
 public  String subgroupName;
+public String colLabel;
+
+    public String getColLabel() {
+        return colLabel;
+    }
+
+    public void setColLabel(String colLabel) {
+        this.colLabel = colLabel;
+    }
 
     public Integer getLocGroup() {
         return locGroup;

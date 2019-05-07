@@ -238,7 +238,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                    new InsertAssetListTask().execute(jsonObject);
                 }
-                Log.d("response_AssetList", "" + responseDecryptedBlockKey);
+               // Log.d("response_AssetList", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -251,7 +251,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
             ArrayList<RoadListValue> roadlist_count = dbData.getAll_Road("0");
-            if (roadlist_count.size() <= 0) {
+          //  if (roadlist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
                     try {
@@ -276,7 +276,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-            }
+          //  }
                 return null;
         }
     }
@@ -303,6 +303,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             assetListValue.setLocID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_LOCATION_ID));
                             assetListValue.setGroupName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_GROUP_NAME));
                             assetListValue.setSubgroupName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_SUB_GROUP_NAME));
+                            assetListValue.setColLabel(jsonArray.getJSONObject(i).getString(AppConstant.KEY_COLUMN_LABEL).toString());
                             dbData.create_newAsset(assetListValue);
                         } catch (JSONException e) {
                             e.printStackTrace();

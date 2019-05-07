@@ -109,6 +109,7 @@ public class dbData {
         values.put(AppConstant.KEY_LOCATION_ID,assetListValue.getLocID());
         values.put(AppConstant.KEY_GROUP_NAME,assetListValue.getGroupName());
         values.put(AppConstant.KEY_SUB_GROUP_NAME,assetListValue.getSubgroupName());
+        values.put(AppConstant.KEY_COLUMN_LABEL,assetListValue.getColLabel());
 
         long id = db.insert(DBHelper.ASSET_LIST_TABLE,null,values);
         Log.d("Inserted_id_Asset",String.valueOf(id));
@@ -119,22 +120,9 @@ public class dbData {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
         Cursor cursor = null;
-        String condition = "";
-      //  String code = code1;
-
-//        if(code.equalsIgnoreCase("0")){
-//
-//        }else
-//        if (code.equalsIgnoreCase("4")) {
-//            condition = " where road_category_code != 3 ";
-//        }
-//        else
-//        {
-//            condition = " where road_category_code="+code;
-//        }
 
         try {
-            cursor = db.rawQuery("select * from "+DBHelper.ASSET_LIST_TABLE + condition,null);
+            cursor = db.rawQuery("select * from "+DBHelper.ASSET_LIST_TABLE,null);
             // cursor = db.query(CardsDBHelper.TABLE_CARDS,
             //       COLUMNS, null, null, null, null, null);
             if (cursor.getCount() > 0) {
@@ -166,7 +154,7 @@ public class dbData {
 
     public ArrayList<RoadListValue> select_Asset(int code1) {
 
-        ArrayList<RoadListValue> cards = new ArrayList<>();
+        ArrayList<RoadListValue> assets = new ArrayList<>();
         Cursor cursor = null;
         String condition = "";
         int code = code1;
@@ -183,20 +171,20 @@ public class dbData {
 //        }
 
         try {
-            cursor = db.rawQuery("select distinct road_id,group_name,loc_grp from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
-            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
-            //       COLUMNS, null, null, null, null, null);
+            //cursor = db.rawQuery("select * from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
+             cursor = db.query(DBHelper.ASSET_LIST_TABLE,
+                     new String[]{"distinct road_id,loc_grp,group_name"}, " road_id = ? ", new String[]{String.valueOf(code)}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
-                    RoadListValue card = new RoadListValue();
-                    card.setRoadID(cursor.getInt(cursor
+                    RoadListValue asset = new RoadListValue();
+                    asset.setRoadID(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
-                    card.setLocGroup(cursor.getInt(cursor
+                    asset.setLocGroup(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
-                    card.setGroupName(cursor.getString(cursor
+                    asset.setGroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
 
-                    cards.add(card);
+                    assets.add(asset);
                 }
             }
         } catch (Exception e){
@@ -206,7 +194,7 @@ public class dbData {
                 cursor.close();
             }
         }
-        return cards;
+        return assets;
     }
 
 

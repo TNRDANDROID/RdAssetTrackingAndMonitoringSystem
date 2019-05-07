@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "loc INTEGER," +
                 "group_name TEXT," +
                 "location_sub_group_name TEXT," +
+                "col_label TEXT," +
                 "location_details TEXT)");
 
     }

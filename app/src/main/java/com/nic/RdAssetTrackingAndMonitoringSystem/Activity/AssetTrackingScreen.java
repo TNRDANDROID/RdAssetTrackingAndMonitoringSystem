@@ -54,7 +54,6 @@ private PrefManager prefManager;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private AssetListAdapter assetListAdapter;
     private ArrayList<RoadListValue> assetLists = new ArrayList<>();
-    private ArrayList<String> dummyLists = new ArrayList<>();
     public dbData dbData = new dbData(this);
     Double offlatTextValue, offlanTextValue;
     double latitude = 0.0d;
@@ -94,7 +93,7 @@ private PrefManager prefManager;
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setFocusable(false);
-        assetListAdapter = new AssetListAdapter(this, dummyLists, dbData);
+        assetListAdapter = new AssetListAdapter(this, assetLists, dbData);
         recyclerView.setAdapter(assetListAdapter);
         back_img.setOnClickListener(this);
         start_lat_long_click_view.setOnClickListener(this);
@@ -124,7 +123,7 @@ private PrefManager prefManager;
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
-        setdummydata();
+        loadAssets();
 
     }
 
@@ -192,18 +191,10 @@ private PrefManager prefManager;
         }
     }
 
-    public void setdummydata() {
-        dummyLists.add("Transport and Communication Infrastructure");
-        dummyLists.add("Market Facility");
-        dummyLists.add("Medical Facility");
-        dummyLists.add("Educational Facility");
-        dummyLists.add("CD Works");
-        dummyLists.add("Bridges");
-    }
 
     public void loadAssets() {
-        Integer road_code = getIntent().getExtras().getInt(AppConstant.KEY_ROAD_CODE);
-        new fetchAssettask().execute(road_code);
+        String road_code = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
+        new fetchAssettask().execute(Integer.valueOf(road_code));
     }
 
     public class fetchAssettask extends AsyncTask<Integer, Void,
@@ -211,6 +202,7 @@ private PrefManager prefManager;
         @Override
         protected ArrayList<RoadListValue> doInBackground(Integer... params) {
             dbData.open();
+            assetLists = new ArrayList<>();
             assetLists = dbData.select_Asset(params[0]);
             return assetLists;
         }
@@ -218,8 +210,8 @@ private PrefManager prefManager;
         @Override
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
-//            assetListAdapter = new AssetListAdapter(AssetListScreen.this,
-            //                   roadList, dbData);
+            assetListAdapter = new AssetListAdapter(AssetTrackingScreen.this,
+                               roadList, dbData);
             recyclerView.setAdapter(assetListAdapter);
         }
     }
