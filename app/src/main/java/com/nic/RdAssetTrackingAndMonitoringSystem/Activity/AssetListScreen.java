@@ -32,6 +32,10 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +61,8 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         intializeUI();
 
         root = TreeNode.root();
-      //  buildTree();
-        loadAssets();
+      // buildTree();
+       loadAssets();
     }
 
     private void intializeUI() {
@@ -129,17 +133,26 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
 
 
     public void loadAssets() {
-        String road_code = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
-        new fetchAssettask().execute(Integer.valueOf(road_code));
+        String road_id = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
+        String loc_grp = getIntent().getStringExtra(AppConstant.KEY_LOCATION_GROUP);
+        JSONObject param = new JSONObject();
+        try {
+            param.put(AppConstant.KEY_ROAD_ID,road_id);
+            param.put(AppConstant.KEY_LOCATION_GROUP,loc_grp);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new fetchAssettask().execute(param);
     }
 
-    public class fetchAssettask extends AsyncTask<Integer, Void,
+    public class fetchAssettask extends AsyncTask<JSONObject, Void,
             ArrayList<RoadListValue>> {
         @Override
-        protected ArrayList<RoadListValue> doInBackground(Integer... params) {
+        protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
             dbData.open();
             ListValues = new ArrayList<>();
-            ListValues = dbData.select_Asset(params[0]);
+            ListValues = dbData.select_Asset(params[0],"secondLevel");
             return ListValues;
         }
 

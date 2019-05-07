@@ -20,6 +20,15 @@ public  Integer locID;
 public  String groupName;
 public  String subgroupName;
 public String colLabel;
+public String locationDetails;
+
+    public String getLocationDetails() {
+        return locationDetails;
+    }
+
+    public void setLocationDetails(String locationDetails) {
+        this.locationDetails = locationDetails;
+    }
 
     public String getColLabel() {
         return colLabel;

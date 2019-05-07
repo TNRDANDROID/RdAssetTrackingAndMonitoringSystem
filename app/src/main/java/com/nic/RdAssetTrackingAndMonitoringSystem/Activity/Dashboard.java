@@ -303,7 +303,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             assetListValue.setLocID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_LOCATION_ID));
                             assetListValue.setGroupName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_GROUP_NAME));
                             assetListValue.setSubgroupName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_SUB_GROUP_NAME));
-                            assetListValue.setColLabel(jsonArray.getJSONObject(i).getString(AppConstant.KEY_COLUMN_LABEL).toString());
+                            assetListValue.setColLabel(jsonArray.getJSONObject(i).getString(AppConstant.KEY_COLUMN_LABEL));
+                            assetListValue.setLocationDetails(jsonArray.getJSONObject(i).getString(AppConstant.KEY_LOCATION_DETAILS));
                             dbData.create_newAsset(assetListValue);
                         } catch (JSONException e) {
                             e.printStackTrace();

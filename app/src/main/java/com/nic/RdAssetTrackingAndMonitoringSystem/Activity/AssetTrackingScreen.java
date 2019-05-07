@@ -35,6 +35,10 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.CameraUtils;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -194,16 +198,22 @@ private PrefManager prefManager;
 
     public void loadAssets() {
         String road_code = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
-        new fetchAssettask().execute(Integer.valueOf(road_code));
+        JSONObject jsonArray = new JSONObject();
+        try {
+            jsonArray.put(AppConstant.KEY_ROAD_ID,road_code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        new fetchAssettask().execute(jsonArray);
     }
 
-    public class fetchAssettask extends AsyncTask<Integer, Void,
+    public class fetchAssettask extends AsyncTask<JSONObject, Void,
             ArrayList<RoadListValue>> {
         @Override
-        protected ArrayList<RoadListValue> doInBackground(Integer... params) {
+        protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
             dbData.open();
             assetLists = new ArrayList<>();
-            assetLists = dbData.select_Asset(params[0]);
+            assetLists = dbData.select_Asset(params[0],"firstLevel");
             return assetLists;
         }
 

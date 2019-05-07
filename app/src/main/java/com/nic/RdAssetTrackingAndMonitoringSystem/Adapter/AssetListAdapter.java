@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -65,11 +66,21 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
         holder.grpName_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Activity activity = (Activity) context;
-                Intent intent = new Intent(context,AssetListScreen.class);
-                activity.startActivity(intent);
+                opensubGroup(position);
             }
         });
+    }
+
+    public void opensubGroup(int pos) {
+        Integer road_id =  assetListValues.get(pos).getRoadID();
+        Integer loc_grp = assetListValues.get(pos).getLocGroup();
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, AssetListScreen.class);
+        intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
+        intent.putExtra(AppConstant.KEY_LOCATION_GROUP,String.valueOf(loc_grp));
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+
     }
 
     @Override

@@ -10,6 +10,10 @@ import android.util.Log;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class dbData {
@@ -110,6 +114,7 @@ public class dbData {
         values.put(AppConstant.KEY_GROUP_NAME,assetListValue.getGroupName());
         values.put(AppConstant.KEY_SUB_GROUP_NAME,assetListValue.getSubgroupName());
         values.put(AppConstant.KEY_COLUMN_LABEL,assetListValue.getColLabel());
+        values.put(AppConstant.KEY_LOCATION_DETAILS,assetListValue.getLocationDetails());
 
         long id = db.insert(DBHelper.ASSET_LIST_TABLE,null,values);
         Log.d("Inserted_id_Asset",String.valueOf(id));
@@ -152,12 +157,26 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<RoadListValue> select_Asset(int code1) {
+    public ArrayList<RoadListValue> select_Asset(JSONObject code1, String type) {
 
         ArrayList<RoadListValue> assets = new ArrayList<>();
         Cursor cursor = null;
         String condition = "";
-        int code = code1;
+        JSONObject code = code1;
+        String code2 ="";
+
+        if (type.equalsIgnoreCase("firstLevel"))
+        {
+            try {
+                code2 = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(type.equalsIgnoreCase("secondLevel")) {
+
+        }
+
 
 //        if(code.equalsIgnoreCase("0")){
 //
@@ -173,7 +192,7 @@ public class dbData {
         try {
             //cursor = db.rawQuery("select * from "+DBHelper.ASSET_LIST_TABLE +" where road_id="+code,null);
              cursor = db.query(DBHelper.ASSET_LIST_TABLE,
-                     new String[]{"distinct road_id,loc_grp,group_name"}, " road_id = ? ", new String[]{String.valueOf(code)}, null, null, null);
+                     new String[]{"distinct road_id,loc_grp,group_name"}, " road_id = ? ", new String[]{code2}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     RoadListValue asset = new RoadListValue();
