@@ -2,14 +2,12 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import me.texy.treeview.TreeNode;
 import me.texy.treeview.base.BaseNodeViewBinder;
-import me.texy.treeview.base.CheckableNodeViewBinder;
 
 
 /**
@@ -36,15 +34,15 @@ public class SecondLevelNodeViewBinder extends BaseNodeViewBinder {
     @Override
     public void bindView(final TreeNode treeNode) {
         second_level_tv.setText(treeNode.getValue().toString());
-        second_level_tv.setRotation(treeNode.isExpanded() ? 90 : 0);
+        imageView.setRotation(treeNode.isExpanded() ? 90 : 0);
     }
 
     @Override
     public void onNodeToggled(TreeNode treeNode, boolean expand) {
         if (expand) {
-            second_level_tv.animate().rotation(90).setDuration(200).start();
+            imageView.animate().rotation(90).setDuration(200).start();
         } else {
-            second_level_tv.animate().rotation(0).setDuration(200).start();
+            imageView.animate().rotation(0).setDuration(200).start();
         }
     }
 }
