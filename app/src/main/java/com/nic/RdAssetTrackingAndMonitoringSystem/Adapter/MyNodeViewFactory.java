@@ -16,7 +16,7 @@ public class MyNodeViewFactory extends BaseNodeViewFactory {
     public BaseNodeViewBinder getNodeViewBinder(View view, int level) {
         switch (level) {
             case 0:
-                return new FirstLevelNodeViewBinder(view);
+//                return new FirstLevelNodeViewBinder(view);
             case 1:
                 return new SecondLevelNodeViewBinder(view);
             case 2:

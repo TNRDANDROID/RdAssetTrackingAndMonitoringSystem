@@ -5,8 +5,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import me.texy.treeview.TreeNode;
+import me.texy.treeview.base.BaseNodeViewBinder;
 import me.texy.treeview.base.CheckableNodeViewBinder;
 
 
@@ -14,38 +16,35 @@ import me.texy.treeview.base.CheckableNodeViewBinder;
  * Created by zxy on 17/4/23.
  */
 
-public class SecondLevelNodeViewBinder extends CheckableNodeViewBinder {
+public class SecondLevelNodeViewBinder extends BaseNodeViewBinder {
 
-    TextView textView;
+    MyCustomTextView second_level_tv;
     ImageView imageView;
     public SecondLevelNodeViewBinder(View itemView) {
         super(itemView);
-        textView = (TextView) itemView.findViewById(R.id.node_name_view);
+        second_level_tv = (MyCustomTextView) itemView.findViewById(R.id.second_level_tv);
         imageView = (ImageView) itemView.findViewById(R.id.arrow_img);
     }
 
-    @Override
-    public int getCheckableViewId() {
-        return R.id.checkBox;
-    }
+
 
     @Override
     public int getLayoutId() {
-        return R.layout.item_second_level;
+        return R.layout.second_level;
     }
 
     @Override
     public void bindView(final TreeNode treeNode) {
-        textView.setText(treeNode.getValue().toString());
-        imageView.setRotation(treeNode.isExpanded() ? 90 : 0);
+        second_level_tv.setText(treeNode.getValue().toString());
+        second_level_tv.setRotation(treeNode.isExpanded() ? 90 : 0);
     }
 
     @Override
     public void onNodeToggled(TreeNode treeNode, boolean expand) {
         if (expand) {
-            imageView.animate().rotation(90).setDuration(200).start();
+            second_level_tv.animate().rotation(90).setDuration(200).start();
         } else {
-            imageView.animate().rotation(0).setDuration(200).start();
+            second_level_tv.animate().rotation(0).setDuration(200).start();
         }
     }
 }
