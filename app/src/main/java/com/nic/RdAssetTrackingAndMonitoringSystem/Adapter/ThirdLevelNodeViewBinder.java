@@ -4,8 +4,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import me.texy.treeview.TreeNode;
+import me.texy.treeview.base.BaseNodeViewBinder;
 import me.texy.treeview.base.CheckableNodeViewBinder;
 
 
@@ -13,25 +15,21 @@ import me.texy.treeview.base.CheckableNodeViewBinder;
  * Created by zxy on 17/4/23.
  */
 
-public class ThirdLevelNodeViewBinder extends CheckableNodeViewBinder {
-    TextView textView;
+public class ThirdLevelNodeViewBinder extends BaseNodeViewBinder {
+    MyCustomTextView third_level_tv;
     public ThirdLevelNodeViewBinder(View itemView) {
         super(itemView);
-        textView = (TextView) itemView.findViewById(R.id.node_name_view);
+        third_level_tv = (MyCustomTextView) itemView.findViewById(R.id.third_level_tv);
     }
 
-    @Override
-    public int getCheckableViewId() {
-        return R.id.checkBox;
-    }
 
     @Override
     public int getLayoutId() {
-        return R.layout.item_third_level;
+        return R.layout.third_level;
     }
 
     @Override
     public void bindView(TreeNode treeNode) {
-        textView.setText(treeNode.getValue().toString());
+        third_level_tv.setText(treeNode.getValue().toString());
     }
 }

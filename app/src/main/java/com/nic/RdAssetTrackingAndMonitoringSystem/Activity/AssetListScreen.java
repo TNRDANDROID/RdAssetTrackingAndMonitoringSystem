@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +38,10 @@ import java.util.List;
 import me.texy.treeview.TreeNode;
 import me.texy.treeview.TreeView;
 
-public class AssetListScreen extends AppCompatActivity  {
+public class AssetListScreen extends AppCompatActivity implements View.OnClickListener {
 
-    protected Toolbar toolbar;
+
+
     private ViewGroup viewGroup;
     private TreeNode root;
     private TreeView treeView;
@@ -48,12 +54,30 @@ public class AssetListScreen extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
-        initView();
+        intializeUI();
 
         root = TreeNode.root();
       //  buildTree();
         loadAssets();
     }
+
+    private void intializeUI() {
+        viewGroup = (RelativeLayout) findViewById(R.id.container);
+//        setLightStatusBar(viewGroup);
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_img:
+                onBackPress();
+                break;
+
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,17 +178,23 @@ public class AssetListScreen extends AppCompatActivity  {
     private void setLightStatusBar(@NonNull View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int flags = view.getSystemUiVisibility();
-            getWindow().setStatusBarColor(Color.WHITE);
+            getWindow().setStatusBarColor(Color.parseColor("#EDE2E0"));
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             view.setSystemUiVisibility(flags);
         }
     }
 
-    private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        viewGroup = (RelativeLayout) findViewById(R.id.container);
-        setSupportActionBar(toolbar);
-        setLightStatusBar(viewGroup);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
+
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
 
 }
