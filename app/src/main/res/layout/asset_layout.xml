@@ -221,16 +221,38 @@
                                     android:layout_weight="0.9"
                                     android:orientation="vertical">
 
-                                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                                        style="@style/font_circular_bold"
+                                    <RelativeLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:background="#ECECEC"
-                                        android:padding="10dp"
-                                        android:text="Chainage:"
-                                        android:textAlignment="gravity"
-                                        android:textColor="#000080"
-                                        android:textSize="18sp" />
+                                        android:background="#ECECEC">
+
+                                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                            style="@style/font_circular_bold"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_alignParentStart="true"
+                                            android:layout_centerInParent="true"
+                                            android:padding="10dp"
+                                            android:text="Chainage:"
+                                            android:textAlignment="gravity"
+                                            android:textColor="#000080"
+                                            android:textSize="18sp" />
+
+                                        <Button
+                                            android:id="@+id/save_btn"
+                                            android:layout_width="70dp"
+                                            android:layout_height="30dp"
+                                            android:layout_alignParentEnd="true"
+                                            android:layout_centerInParent="true"
+                                            android:layout_marginRight="@dimen/_4sdp"
+                                            android:background="@drawable/button_highlight"
+                                            android:gravity="center"
+                                            android:clickable="true"
+                                            android:text="Save"
+                                            android:textAlignment="center"
+                                            android:textColor="@android:color/white"
+                                            android:textStyle="bold" />
+                                    </RelativeLayout>
 
 
                                     <RelativeLayout
@@ -241,7 +263,7 @@
                                         android:orientation="horizontal"
                                         android:padding="10dp">
 
-                                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                        <Button
                                             android:id="@+id/start_lat_long_click_view"
                                             android:layout_width="80dp"
                                             android:layout_height="30dp"
@@ -249,19 +271,20 @@
                                             android:layout_centerInParent="true"
                                             android:background="@drawable/start_button"
                                             android:gravity="center"
-
+android:clickable="true"
                                             android:text="Start"
                                             android:textAlignment="center"
                                             android:textColor="@android:color/white"
                                             android:textStyle="bold" />
 
 
-                                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                        <Button
                                             android:id="@+id/stop_lat_long_click_view"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
+                                            android:layout_width="80dp"
+                                            android:layout_height="30dp"
                                             android:background="@drawable/add_button"
                                             android:layout_centerInParent="true"
+                                            android:clickable="true"
                                             android:gravity="center"
                                             android:padding="5dp"
                                             android:text="Middle"
@@ -269,7 +292,7 @@
                                             android:textColor="@android:color/white"
                                             android:textStyle="bold" />
 
-                                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                        <Button
                                             android:id="@+id/end_lat_long_click_view"
                                             android:layout_width="80dp"
                                             android:layout_height="30dp"
@@ -277,6 +300,8 @@
                                             android:layout_centerInParent="true"
                                             android:background="@drawable/end_button"
                                             android:gravity="center"
+                                            android:clickable="true"
+                                            android:foreground="?android:attr/selectableItemBackground"
                                             android:text="End"
                                             android:textAlignment="center"
                                             android:textColor="@android:color/white"

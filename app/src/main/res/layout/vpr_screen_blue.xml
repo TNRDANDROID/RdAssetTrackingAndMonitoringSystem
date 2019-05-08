@@ -83,12 +83,12 @@
 
                 <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                     android:id="@+id/road_village_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/_170sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_17sdp"
                     android:background="@drawable/corner_bg_white"
                     android:padding="10dp"
-                    android:text="01cxcfxfffsfsfsfsfsfs"
+                    android:text="1234567891011121314"
                     android:textAlignment="textStart"
                     android:textColor="#74706f"
                     android:textSize="18sp"

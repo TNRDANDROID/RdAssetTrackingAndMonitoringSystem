@@ -164,10 +164,12 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void openAssetList(int pos) {
         Integer road_id =  roadListValues.get(pos).getRoadID();
         String road_name = roadListValues.get(pos).getRoadName();
+        String road_category = roadListValues.get(pos).getRoadCategory();
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, AssetTrackingScreen.class);
         intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
         intent.putExtra(AppConstant.KEY_ROAD_NAME,road_name);
+        intent.putExtra(AppConstant.KEY_ROAD_CATEGORY,road_category);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 

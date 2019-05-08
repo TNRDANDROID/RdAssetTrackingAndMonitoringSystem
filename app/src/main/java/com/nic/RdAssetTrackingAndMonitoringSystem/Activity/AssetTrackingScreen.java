@@ -18,13 +18,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.AssetListAdapter;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
@@ -32,7 +38,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.CameraUtils;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import org.json.JSONArray;
@@ -40,17 +46,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
-import static com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener.longitude;
 
-public class AssetTrackingScreen extends AppCompatActivity implements LocationListener,View.OnClickListener {
+public class AssetTrackingScreen extends AppCompatActivity implements LocationListener, View.OnClickListener, Api.ServerResponseListener {
 private PrefManager prefManager;
     private ImageView back_img;
     private LinearLayout district_user_layout, block_user_layout;
-    private MyCustomTextView district_tv, block_tv,start_lat_long_click_view,stop_lat_long_click_view,end_lat_long_click_view,start_lat_long_tv,midd_lat_long_tv,end_lat_long_tv,road_name;
+    private MyCustomTextView district_tv, block_tv, start_lat_long_tv, midd_lat_long_tv, end_lat_long_tv, road_name;
+    private Button start_lat_long_click_view, stop_lat_long_click_view, end_lat_long_click_view, save_btn;
     private RecyclerView recyclerView;
     Handler myHandler = new Handler();
     LocationManager mlocManager = null;
@@ -58,11 +66,17 @@ private PrefManager prefManager;
     private static final int PERMISSION_REQUEST_CODE = 200;
     private AssetListAdapter assetListAdapter;
     private ArrayList<RoadListValue> assetLists = new ArrayList<>();
+    private ArrayList<RoadListValue> saveLatLongLists = new ArrayList<>();
     public dbData dbData = new dbData(this);
-    Double offlatTextValue, offlanTextValue;
+    Double offlatTextValue, offlongTextValue;
     double latitude = 0.0d;
     double longitude = 0.0d;
     private static DecimalFormat df2 = new DecimalFormat("##.##");
+    private String pointType;
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    private JSONObject saveLatLongData;
+    private JSONObject latLongData;
+    private JSONArray saveLatLongArray;
 
 
     @Override
@@ -78,13 +92,15 @@ private PrefManager prefManager;
         block_user_layout = (LinearLayout) findViewById(R.id.block_user_layout);
         district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
-        start_lat_long_click_view = (MyCustomTextView) findViewById(R.id.start_lat_long_click_view);
-        stop_lat_long_click_view = (MyCustomTextView) findViewById(R.id.stop_lat_long_click_view);
-        end_lat_long_click_view = (MyCustomTextView) findViewById(R.id.end_lat_long_click_view);
+        start_lat_long_click_view = (Button) findViewById(R.id.start_lat_long_click_view);
+        stop_lat_long_click_view = (Button) findViewById(R.id.stop_lat_long_click_view);
+        end_lat_long_click_view = (Button) findViewById(R.id.end_lat_long_click_view);
+        save_btn = (Button) findViewById(R.id.save_btn);
         start_lat_long_tv = (MyCustomTextView) findViewById(R.id.start_lat_long_tv);
         midd_lat_long_tv = (MyCustomTextView) findViewById(R.id.midd_lat_long_tv);
         end_lat_long_tv = (MyCustomTextView) findViewById(R.id.end_lat_long_tv);
         road_name = (MyCustomTextView)findViewById(R.id.road_name);
+
         road_name.setText(getIntent().getStringExtra(AppConstant.KEY_ROAD_NAME));
         recyclerView = (RecyclerView) findViewById(R.id.road_list);
         back_img = (ImageView) findViewById(R.id.back_img);
@@ -103,6 +119,7 @@ private PrefManager prefManager;
         start_lat_long_click_view.setOnClickListener(this);
         stop_lat_long_click_view.setOnClickListener(this);
         end_lat_long_click_view.setOnClickListener(this);
+        save_btn.setOnClickListener(this);
         block_user_layout.setAlpha(0);
         final Runnable block = new Runnable() {
             @Override
@@ -138,19 +155,25 @@ private PrefManager prefManager;
                 onBackPress();
                 break;
             case R.id.start_lat_long_click_view:
-                getLatLong();
+                pointType = "1";
+                getLocationPermissionWithLatLong();
                 break;
             case R.id.stop_lat_long_click_view:
-                myHandler.postDelayed(runLocation, 1000);
+                pointType = "2";
+                getLocationPermissionWithLatLong();
                 break;
             case R.id.end_lat_long_click_view:
-               endLatlong();
+                pointType = "3";
+                getLocationPermissionWithLatLong();
+                break;
+            case R.id.save_btn:
+                saveLatLongData();
                 break;
 
         }
     }
 
-    private void getLatLong() {
+    private void getLocationPermissionWithLatLong() {
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
 
@@ -180,8 +203,8 @@ private PrefManager prefManager;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (MyLocationListener.latitude > 0) {
                         offlatTextValue = MyLocationListener.latitude;
-                        offlanTextValue =  MyLocationListener.longitude;
-                        start_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
+                        offlongTextValue = MyLocationListener.longitude;
+//                        start_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
                     }
 //                            checkPermissionForCamera();
                 } else {
@@ -192,6 +215,31 @@ private PrefManager prefManager;
             }
         } else {
             Utils.showAlert(AssetTrackingScreen.this, "GPS is not turned on...");
+        }
+
+        if (!pointType.equalsIgnoreCase("") && offlatTextValue != null) {
+
+            RoadListValue roadListValue = new RoadListValue();
+            String date_of_inspection = sdf.format(new Date());
+            String road_Category = getIntent().getStringExtra(AppConstant.KEY_ROAD_CATEGORY);
+
+            String roadId = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
+            roadListValue.setRoadCategory(road_Category);
+            roadListValue.setRoadID(Integer.parseInt(roadId));
+
+            if (pointType.equalsIgnoreCase("1")) {
+                roadListValue.setPointType(pointType);
+            } else if (pointType.equalsIgnoreCase("2")) {
+                roadListValue.setPointType(pointType);
+            } else {
+                roadListValue.setPointType(pointType);
+            }
+
+            roadListValue.setRoadLat(offlatTextValue.toString());
+            roadListValue.setRoadLong(offlongTextValue.toString());
+            roadListValue.setCreatedDate(date_of_inspection);
+
+            dbData.saveLatLong(roadListValue);
         }
     }
 
@@ -258,28 +306,100 @@ private PrefManager prefManager;
 //            }
 //        }
     }
-    public void endLatlong(){
-        if (MyLocationListener.latitude > 0) {
 
-            offlatTextValue = MyLocationListener.latitude;
-            offlanTextValue =  MyLocationListener.longitude;
-            end_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
+
+//    public void Latlong(){
+//        if (MyLocationListener.latitude > 0) {
+//
+//            offlatTextValue = MyLocationListener.latitude;
+//            offlanTextValue =  MyLocationListener.longitude;
+////            end_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
+//        }
+//    }
+
+    public void saveLatLongData() {
+        new fetchDBData().execute();
+    }
+
+    public class fetchDBData extends AsyncTask<Void, Void,
+            Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                dbData.open();
+                saveLatLongLists = dbData.sendPostLatLong();
+                saveLatLongArray = new JSONArray();
+                latLongData = new JSONObject();
+                if (saveLatLongLists.size() > 0) {
+                    for (int i = 0; i < saveLatLongLists.size(); i++) {
+                        latLongData.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongLists.get(i).getRoadCategory());
+                        latLongData.put(AppConstant.KEY_ROAD_ID, saveLatLongLists.get(i).getRoadID());
+                        latLongData.put(AppConstant.KEY_POINT_TYPE, saveLatLongLists.get(i).getPointType());
+                        latLongData.put(AppConstant.KEY_ROAD_LAT, saveLatLongLists.get(i).getRoadLat());
+                        latLongData.put(AppConstant.KEY_ROAD_LONG, saveLatLongLists.get(i).getRoadLong());
+                        latLongData.put(AppConstant.KEY_CREATED_DATE, saveLatLongLists.get(i).getCreatedDate());
+                    }
+                }
+                saveLatLongArray.put(latLongData);
+
+                if (Utils.isOnline()) {
+                    saveLatLongData = new JSONObject();
+                    try {
+                        saveLatLongData.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_TRACK_SAVE);
+                        saveLatLongData.put(AppConstant.KEY_TRACK_DATA, saveLatLongArray);
+                        String authKey = saveLatLongData.toString();
+                        int maxLogSize = 2000;
+                        for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
+                            int start = i * maxLogSize;
+                            int end = (i + 1) * maxLogSize;
+                            end = end > authKey.length() ? authKey.length() : end;
+                            Log.v("to_send+_plain", authKey.substring(start, end));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    saveLatLongList();
+                } else {
+                    Utils.showAlert(AssetTrackingScreen.this, getResources().getString(R.string.no_internet));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 
-    Runnable runLocation = new Runnable(){
-        @Override
-        public void run() {
-            if (MyLocationListener.latitude > 0) {
 
-                 offlatTextValue = MyLocationListener.latitude;
-                offlanTextValue =  MyLocationListener.longitude;
-                midd_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
-            }
-
-            AssetTrackingScreen.this.myHandler.postDelayed(AssetTrackingScreen.this.runLocation, 2000);
+    public void saveLatLongList() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("saveLatLongList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveLatLongListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-    };
+    }
+
+    public JSONObject saveLatLongListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("saveLatLongList", "" + authKey);
+        return dataSet;
+    }
+//    Runnable runLocation = new Runnable(){
+//        @Override
+//        public void run() {
+//            if (MyLocationListener.latitude > 0) {
+//
+//                 offlatTextValue = MyLocationListener.latitude;
+//                offlanTextValue =  MyLocationListener.longitude;
+//                midd_lat_long_tv.setText("Lat:"+df2.format(offlatTextValue)+","+"\n"+"Long:"+df2.format(offlanTextValue));
+//            }
+//
+//            AssetTrackingScreen.this.myHandler.postDelayed(AssetTrackingScreen.this.runLocation, 2000);
+//        }
+//    };
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -306,5 +426,31 @@ private PrefManager prefManager;
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    @Override
+    public void OnMyResponse(ServerResponse serverResponse) {
+        try {
+            String urlType = serverResponse.getApi();
+            JSONObject responseObj = serverResponse.getJsonResponse();
+            if ("saveLatLongList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Saved");
+                }
+                Log.d("saved_response", "" + responseDecryptedBlockKey);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void OnError(VolleyError volleyError) {
+
     }
 }

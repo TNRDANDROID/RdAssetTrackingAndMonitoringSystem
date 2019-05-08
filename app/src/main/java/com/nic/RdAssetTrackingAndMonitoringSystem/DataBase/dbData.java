@@ -6,15 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 public class dbData {
     private SQLiteDatabase db;
@@ -169,9 +171,6 @@ public class dbData {
         String selection = null;
         String[] selectionArgs = new String[0];
 
-
-
-
         if (type.equalsIgnoreCase("firstLevel"))
         {
             try {
@@ -195,18 +194,6 @@ public class dbData {
             }
         }
 
-
-//        if(code.equalsIgnoreCase("0")){
-//
-//        }else
-//        if (code.equalsIgnoreCase("4")) {
-//            condition = " where road_category_code != 3 ";
-//        }
-//        else
-//        {
-//            condition = " where road_category_code="+code;
-//        }
-
         try {
              cursor = db.query(DBHelper.ASSET_LIST_TABLE,
                      columns, selection, selectionArgs, null, null, null);
@@ -224,6 +211,10 @@ public class dbData {
                     if (type.equalsIgnoreCase("secondLevel")) {
                         asset.setSubgroupName(cursor.getString(cursor
                                 .getColumnIndexOrThrow(AppConstant.KEY_SUB_GROUP_NAME)));
+                        asset.setColLabel(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_COLUMN_LABEL)));
+                        asset.setLocationDetails(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_DETAILS)));
                     }
                     assets.add(asset);
                 }
@@ -238,6 +229,54 @@ public class dbData {
         return assets;
     }
 
+    public RoadListValue saveLatLong(RoadListValue saveLatLongValue) {
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
+        values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
+        values.put(AppConstant.KEY_POINT_TYPE, saveLatLongValue.getPointType());
+        values.put(AppConstant.KEY_DB_ROAD_LAT, saveLatLongValue.getRoadLat());
+        values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
+        values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
+        long id = db.insert(DBHelper.SAVE_LAT_LONG_TABLE, null, values);
+        if(String.valueOf(id).equalsIgnoreCase("1")){
+            Toasty.success(context, "Success!", Toast.LENGTH_LONG, true).show();
+        }
+        Log.d("Inserted_id_saveLatLong", String.valueOf(id));
+
+        return saveLatLongValue;
+    }
+
+    public ArrayList<RoadListValue> sendPostLatLong() {
+
+        ArrayList<RoadListValue> sendPostLatLong = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from " + DBHelper.SAVE_LAT_LONG_TABLE, null);
+
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue postLatLong = new RoadListValue();
+
+                    postLatLong.setRoadCategory(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
+                    postLatLong.setRoadID(cursor.getInt(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    postLatLong.setPointType(cursor.getString(cursor.getColumnIndex(AppConstant.KEY_POINT_TYPE)));
+                    postLatLong.setRoadLat(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_DB_ROAD_LAT)));
+                    postLatLong.setRoadLong(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    postLatLong.setCreatedDate(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_CREATED_DATE)));
+
+                    sendPostLatLong.add(postLatLong);
+                }
+            }
+        } catch (Exception e) {
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return sendPostLatLong;
+    }
 
 
 }

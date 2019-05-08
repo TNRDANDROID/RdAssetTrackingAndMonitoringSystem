@@ -10,6 +10,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     public static final String ROAD_LIST_TABLE = "RoadList";
     public static final String ASSET_LIST_TABLE = "AssetList";
+    public static final String SAVE_LAT_LONG_TABLE = "LatLongTable";
 
 
     private Context context;
@@ -40,6 +41,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 "col_label TEXT," +
                 "location_details TEXT)");
 
+        db.execSQL("CREATE TABLE " + SAVE_LAT_LONG_TABLE + " ("
+                + "road_category TEXT," +
+                "road_id TEXT," +
+                "point_type TEXT," +
+                "road_lat," +
+                "road_long," +
+                "created_date)");
+
     }
 
     @Override
@@ -47,6 +56,8 @@ public class DBHelper extends SQLiteOpenHelper {
         if (oldVersion >= newVersion) {
             //drop table if already exists
             db.execSQL("DROP TABLE IF EXISTS " + ROAD_LIST_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + ASSET_LIST_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_LAT_LONG_TABLE);
             onCreate(db);
         }
     }

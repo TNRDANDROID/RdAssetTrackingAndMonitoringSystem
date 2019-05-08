@@ -44,7 +44,8 @@
                         android:id="@+id/arrow_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_centerVertical="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginLeft="@dimen/_4sdp"
 
                         android:src="@drawable/right_arrow" />
@@ -57,7 +58,7 @@
                         android:layout_centerVertical="true"
                         android:layout_centerInParent="true"
                         android:padding="10dp"
-                        android:text="Transport And Communicication Infrastructure"
+                        android:text="Admin Centres/PUO/VPO"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/_15sdp"
                         android:textStyle="bold" />

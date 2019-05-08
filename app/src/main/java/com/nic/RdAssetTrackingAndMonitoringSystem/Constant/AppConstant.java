@@ -53,6 +53,17 @@ public class AppConstant {
     public static String KEY_COLUMN_LABEL = "col_label";
     public static String KEY_LOCATION_DETAILS = "location_details";
 
+    /* ROAD TRACK SAVE **/
+    public static String KEY_ROAD_TRACK_SAVE = "road_track_save";
+    public static String KEY_TRACK_DATA = "track_data";
+    public static String KEY_POINT_TYPE = "point_type";
+    public static String KEY_ROAD_LAT = "road_late";
+    public static String KEY_ROAD_LONG = "road_long";
+    public static String KEY_CREATED_DATE = "created_date";
+
+    public static String KEY_DB_ROAD_LAT = "road_lat";
+
+
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

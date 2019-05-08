@@ -22,6 +22,43 @@ public  String subgroupName;
 public String colLabel;
 public String locationDetails;
 public String levelType;
+public String pointType;
+public String roadLat;
+public String roadLong;
+
+    public String getPointType() {
+        return pointType;
+    }
+
+    public void setPointType(String pointType) {
+        this.pointType = pointType;
+    }
+
+    public String getRoadLat() {
+        return roadLat;
+    }
+
+    public void setRoadLat(String roadLat) {
+        this.roadLat = roadLat;
+    }
+
+    public String getRoadLong() {
+        return roadLong;
+    }
+
+    public void setRoadLong(String roadLong) {
+        this.roadLong = roadLong;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String createdDate;
 
     public String getLevelType() {
         return levelType;

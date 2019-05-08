@@ -1,42 +1,33 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.AssetListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.MyNodeViewFactory;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import me.texy.treeview.TreeNode;
@@ -51,6 +42,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     private TreeView treeView;
     private ArrayList<RoadListValue> ListValues;
     public dbData dbData = new dbData(this);
+    private ImageView back_img;
     View view;
 
 
@@ -68,6 +60,8 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     private void intializeUI() {
         viewGroup = (RelativeLayout) findViewById(R.id.container);
 //        setLightStatusBar(viewGroup);
+        back_img = (ImageView) findViewById(R.id.back_img);
+        back_img.setOnClickListener(this);
 
     }
 
@@ -164,19 +158,60 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     }
 
     private void buildTree(ArrayList<RoadListValue> listValues) {
+
         for (int i = 0; i < listValues.size(); i++) {
-            String grpname = listValues.get(i).getSubgroupName();
-            TreeNode treeNode = new TreeNode(new String(grpname));
+            String subgrpname = listValues.get(i).getSubgroupName();
+            String col_label = listValues.get(i).getColLabel();
+            String location_details = listValues.get(i).getLocationDetails();
+
+            JSONArray locationJson = null,colJson = null;
+
+            try {
+                locationJson = new JSONArray(location_details);
+                colJson = new JSONArray(col_label);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            TreeNode treeNode = new TreeNode(new String(subgrpname));
             treeNode.setLevel(0);
-            for (int j = 0; j < 10; j++) {
-                TreeNode treeNode1 = new TreeNode(new String("Child " + "No." + j));
-                treeNode1.setLevel(1);
-                for (int k = 0; k < 5; k++) {
-                    TreeNode treeNode2 = new TreeNode(new String("Grand Child " + "No." + k));
-                    treeNode2.setLevel(2);
-                    treeNode1.addChild(treeNode2);
+            for (int j = 0; j < locationJson.length(); j++) {
+                String value1 = null;
+                JSONObject jsonObject =null;
+                try {
+                    jsonObject = locationJson.getJSONObject(j);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+                for (int l = 0; l < jsonObject.length(); l++)
+                {
+                    String value = "";
+                    try {
+                        int label_id = 0;
+                        Iterator keys = jsonObject.keys();
+                        while (keys.hasNext()) {
+                            Object key = keys.next();
+                            String value2 = jsonObject.getString(String.valueOf(key)) ;
+                            Log.d("value",":"+value2+" Label" +colJson.get(label_id));
+                            value = value.concat(colJson.get(label_id)+" : " +value2+"\n" );
+                            label_id++;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    value1 = value;
+                }
+
+                TreeNode treeNode1 = new TreeNode(new String(value1));
+                treeNode1.setLevel(1);
                 treeNode.addChild(treeNode1);
+
+// for (int k = 0; k < 5; k++) {
+// TreeNode treeNode2 = new TreeNode(new String("Grand Child " + "No." + k));
+// treeNode2.setLevel(2);
+// treeNode1.addChild(treeNode2);
+// }
+// treeNode.addChild(treeNode1);
             }
             root.addChild(treeNode);
         }

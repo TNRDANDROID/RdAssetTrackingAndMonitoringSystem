@@ -251,7 +251,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         protected Void doInBackground(JSONObject... params) {
             dbData.open();
             ArrayList<RoadListValue> roadlist_count = dbData.getAll_Road("0");
-          //  if (roadlist_count.size() <= 0) {
+            if (roadlist_count.size() <= 0) {
                 if (params.length > 0) {
                     JSONArray jsonArray = new JSONArray();
                     try {
@@ -276,7 +276,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-          //  }
+            }
                 return null;
         }
     }

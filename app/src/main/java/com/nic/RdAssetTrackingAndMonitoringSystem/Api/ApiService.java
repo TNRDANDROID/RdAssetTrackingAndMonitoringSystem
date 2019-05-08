@@ -37,6 +37,7 @@ public class ApiService {
         try {
             progressHUD = ProgressHUD.show(this.context, "Loading...", true, false, null);
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
