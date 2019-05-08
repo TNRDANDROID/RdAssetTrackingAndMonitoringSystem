@@ -238,7 +238,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                    new InsertAssetListTask().execute(jsonObject);
                 }
-               // Log.d("response_AssetList", "" + responseDecryptedBlockKey);
+                Log.d("response_AssetList", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();
