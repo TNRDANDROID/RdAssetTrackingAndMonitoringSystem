@@ -1,5 +1,6 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,10 +17,12 @@ import me.texy.treeview.base.CheckableNodeViewBinder;
 public class FirstLevelNodeViewBinder extends CheckableNodeViewBinder {
     TextView textView;
     ImageView imageView;
-    public FirstLevelNodeViewBinder(View itemView) {
-        super(itemView);
+    private Context context;
+    public FirstLevelNodeViewBinder(Context context,View itemView) {
+        super(context,itemView);
         textView = (TextView) itemView.findViewById(R.id.node_name_view);
         imageView = (ImageView) itemView.findViewById(R.id.arrow_img);
+        this.context = context;
     }
 
     @Override

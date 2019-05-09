@@ -17,10 +17,12 @@ package me.texy.treeview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
 import me.texy.treeview.base.BaseNodeViewBinder;
 import me.texy.treeview.base.BaseNodeViewFactory;
 import me.texy.treeview.base.CheckableNodeViewBinder;
+import me.texy.treeview.base.ClickableNodeViewBinder;
 import me.texy.treeview.helper.TreeHelper;
 
 /**
@@ -47,6 +50,8 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
     private View EMPTY_PARAMETER;
 
     private TreeView treeView;
+    private OnTreeNodeListener onTreeNodeListener;
+
 
     TreeViewAdapter(Context context, TreeNode root,
                     @NonNull BaseNodeViewFactory baseNodeViewFactory) {
@@ -90,9 +95,9 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int level) {
         View view = LayoutInflater.from(context).inflate(baseNodeViewFactory
-                .getNodeViewBinder(EMPTY_PARAMETER, level).getLayoutId(), parent, false);
+                .getNodeViewBinder(context, EMPTY_PARAMETER, level).getLayoutId(), parent, false);
 
-        BaseNodeViewBinder nodeViewBinder = baseNodeViewFactory.getNodeViewBinder(view, level);
+        BaseNodeViewBinder nodeViewBinder = baseNodeViewFactory.getNodeViewBinder(context, view, level);
         nodeViewBinder.setTreeView(treeView);
         return nodeViewBinder;
     }
@@ -103,6 +108,15 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
         final TreeNode treeNode = expandedNodeList.get(position);
         final BaseNodeViewBinder viewBinder = (BaseNodeViewBinder) holder;
 
+//        nodeView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TreeNode selectedNode = expandedNodeList.get(holder.getLayoutPosition());
+//                Log.d("selectednode",""+selectedNode);
+//                if (onTreeNodeListener != null && onTreeNodeListener.onClick(selectedNode, holder))
+//                    viewBinder.onClickView(treeNode,treeNode.isItemClickEnable());
+//            }
+//        });
         if (viewBinder.getToggleTriggerViewId() != 0) {
             View triggerToggleView = nodeView.findViewById(viewBinder.getToggleTriggerViewId());
 
@@ -129,6 +143,10 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
             setupCheckableItem(nodeView, treeNode, (CheckableNodeViewBinder) viewBinder);
         }
 
+        if (viewBinder instanceof ClickableNodeViewBinder) {
+            setupClickItem(nodeView, treeNode, (ClickableNodeViewBinder) viewBinder);
+        }
+
         viewBinder.bindView(treeNode);
     }
 
@@ -149,6 +167,29 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
                     viewBinder.onNodeSelectedChanged(treeNode, checked);
                 }
             });
+        } else {
+            throw new ClassCastException("The getCheckableViewId() " +
+                    "must return a CheckBox's id");
+        }
+    }
+
+    private void setupClickItem(View nodeView,
+                                    final TreeNode treeNode,
+                                    final ClickableNodeViewBinder viewBinder) {
+        final View view = nodeView.findViewById(viewBinder.getClickableViewId());
+
+        if (view instanceof ImageView) {
+            final ImageView imageView = (ImageView) view;
+             imageView.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View v) {
+                     boolean clicked = imageView.isClickable();
+                     viewBinder.onClickView(treeNode.getId(),clicked);
+                 }
+             });
+
+
+
         } else {
             throw new ClassCastException("The getCheckableViewId() " +
                     "must return a CheckBox's id");
@@ -273,5 +314,18 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
 
     void setTreeView(TreeView treeView) {
         this.treeView = treeView;
+    }
+
+    public interface OnTreeNodeListener {
+        /**
+         * called when TreeNodes were clicked.
+         * @return weather consume the click event.
+         */
+        boolean onClick(TreeNode node, RecyclerView.ViewHolder holder);
+
+        /**
+         * called when TreeNodes were toggle.
+         * @param isExpand the status of TreeNodes after being toggled.
+         */
     }
 }

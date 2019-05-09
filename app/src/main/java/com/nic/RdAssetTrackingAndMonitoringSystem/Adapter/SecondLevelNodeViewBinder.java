@@ -1,5 +1,7 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,8 +20,8 @@ public class SecondLevelNodeViewBinder extends BaseNodeViewBinder {
 
     MyCustomTextView second_level_tv;
     ImageView imageView;
-    public SecondLevelNodeViewBinder(View itemView) {
-        super(itemView);
+    public SecondLevelNodeViewBinder(Context context,View itemView) {
+        super(context,itemView);
         second_level_tv = (MyCustomTextView) itemView.findViewById(R.id.second_level_tv);
         imageView = (ImageView) itemView.findViewById(R.id.arrow_img);
     }

@@ -318,7 +318,11 @@ private PrefManager prefManager;
 //    }
 
     public void saveLatLongData() {
-        new fetchDBData().execute();
+        if(Utils.isOnline()) {
+            new fetchDBData().execute();
+        }else{
+            Utils.showAlert(this,"Turn On Mobile Data To Save");
+        }
     }
 
     public class fetchDBData extends AsyncTask<Void, Void,
@@ -342,7 +346,6 @@ private PrefManager prefManager;
                 }
                 saveLatLongArray.put(latLongData);
 
-                if (Utils.isOnline()) {
                     saveLatLongData = new JSONObject();
                     try {
                         saveLatLongData.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_TRACK_SAVE);
@@ -355,12 +358,19 @@ private PrefManager prefManager;
                             end = end > authKey.length() ? authKey.length() : end;
                             Log.v("to_send+_plain", authKey.substring(start, end));
                         }
+
+                        String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
+
+                        for(int i = 0; i <= authKey1.length() / maxLogSize; i++) {
+                            int start = i * maxLogSize;
+                            int end = (i+1) * maxLogSize;
+                            end = end > authKey.length() ? authKey1.length() : end;
+                            Log.v("to_send_encryt", authKey1.substring(start, end));
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
+
                     saveLatLongList();
-                } else {
-                    Utils.showAlert(AssetTrackingScreen.this, getResources().getString(R.string.no_internet));
                 }
 
             } catch (JSONException e) {

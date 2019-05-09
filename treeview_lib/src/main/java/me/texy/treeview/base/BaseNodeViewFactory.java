@@ -14,6 +14,7 @@
 
 package me.texy.treeview.base;
 
+import android.content.Context;
 import android.view.View;
 
 /**
@@ -30,6 +31,6 @@ public abstract class BaseNodeViewFactory {
      * @param level The treeNode level
      * @return BaseNodeViewBinder
      */
-    public abstract BaseNodeViewBinder getNodeViewBinder(View view, int level);
+    public abstract BaseNodeViewBinder getNodeViewBinder(Context context,View view, int level);
 
 }

@@ -1,5 +1,7 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 
 import me.texy.treeview.base.BaseNodeViewBinder;
@@ -11,16 +13,16 @@ import me.texy.treeview.base.BaseNodeViewFactory;
  */
 
 public class MyNodeViewFactory extends BaseNodeViewFactory {
-
+private Activity activity;
     @Override
-    public BaseNodeViewBinder getNodeViewBinder(View view, int level) {
+    public BaseNodeViewBinder getNodeViewBinder(Context context,View view, int level) {
         switch (level) {
          //   case 0:
 //                return new FirstLevelNodeViewBinder(view);
             case 0:
-                return new SecondLevelNodeViewBinder(view);
+                return new SecondLevelNodeViewBinder(context,view);
             case 1:
-                return new ThirdLevelNodeViewBinder(view);
+                return new ThirdLevelNodeViewBinder(context,view);
             default:
                 return null;
         }

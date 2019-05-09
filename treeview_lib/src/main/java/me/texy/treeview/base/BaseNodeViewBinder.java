@@ -14,6 +14,8 @@
 
 package me.texy.treeview.base;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -24,15 +26,17 @@ import me.texy.treeview.TreeView;
  * Created by zxy on 17/4/23.
  */
 
-public abstract class BaseNodeViewBinder extends RecyclerView.ViewHolder {
+public abstract class BaseNodeViewBinder extends RecyclerView.ViewHolder  {
     /**
      * This reference of TreeView make BaseNodeViewBinder has the ability
      * to expand node or select node.
      */
     protected TreeView treeView;
+    private Context context;
 
-    public BaseNodeViewBinder(View itemView) {
+    public BaseNodeViewBinder(Context context, View itemView) {
         super(itemView);
+        this.context = context;
     }
 
     public void setTreeView(TreeView treeView) {
@@ -69,5 +73,15 @@ public abstract class BaseNodeViewBinder extends RecyclerView.ViewHolder {
      */
     public void onNodeToggled(TreeNode treeNode, boolean expand) {
         //empty
+    }
+
+    /**
+     * Callback when a toggle action happened (only by clicked)
+     *
+     * @param treeNode The toggled node
+     * @param clicked   Expanded or collapsed
+     */
+    public void onClickView(String s,boolean clicked){
+
     }
 }

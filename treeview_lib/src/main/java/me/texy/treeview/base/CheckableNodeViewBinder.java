@@ -14,6 +14,7 @@
 
 package me.texy.treeview.base;
 
+import android.content.Context;
 import android.view.View;
 
 import me.texy.treeview.TreeNode;
@@ -24,8 +25,8 @@ import me.texy.treeview.TreeNode;
 
 public abstract class CheckableNodeViewBinder extends BaseNodeViewBinder {
 
-    public CheckableNodeViewBinder(View itemView) {
-        super(itemView);
+    public CheckableNodeViewBinder(Context context,View itemView) {
+        super(context,itemView);
     }
 
     /**
