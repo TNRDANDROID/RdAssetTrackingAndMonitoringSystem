@@ -184,7 +184,7 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
                  @Override
                  public void onClick(View v) {
                      boolean clicked = imageView.isClickable();
-                     viewBinder.onClickView(treeNode.getId(),clicked);
+                     viewBinder.onClickView(treeNode,clicked);
                  }
              });
 

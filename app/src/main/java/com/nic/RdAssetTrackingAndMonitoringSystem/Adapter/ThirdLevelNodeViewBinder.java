@@ -44,10 +44,10 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
 
 
     @Override
-    public void onClickView(String s ,boolean clicked) {
+    public void onClickView(TreeNode treeNode ,boolean clicked) {
 
         if(clicked) {
-            Log.d("Nodetreeid",""+s);
+            Log.d("Nodetreeid",""+ treeNode.getValue());
             cameraActivity();
         }
     }
