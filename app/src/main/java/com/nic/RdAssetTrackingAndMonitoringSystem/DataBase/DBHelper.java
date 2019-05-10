@@ -11,6 +11,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ROAD_LIST_TABLE = "RoadList";
     public static final String ASSET_LIST_TABLE = "AssetList";
     public static final String SAVE_LAT_LONG_TABLE = "LatLongTable";
+    public static final String SAVE_IMAGE_LAT_LONG_TABLE = "ImageLatLongTable";
 
 
     private Context context;
@@ -45,8 +46,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "road_category TEXT," +
                 "road_id TEXT," +
                 "point_type TEXT," +
-                "road_lat," +
-                "road_long," +
+                "road_lat TEXT," +
+                "road_long TEXT, " +
+                "created_date)");
+
+        db.execSQL("CREATE TABLE " + SAVE_IMAGE_LAT_LONG_TABLE + " ("
+                + "road_category TEXT," +
+                "road_id TEXT," +
+                "asset_id TEXT," +
+                "road_lat TEXT," +
+                "road_long TEXT," +
+                "images blob," +
                 "created_date)");
 
     }
@@ -58,6 +68,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + ROAD_LIST_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ASSET_LIST_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_LAT_LONG_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGE_LAT_LONG_TABLE);
             onCreate(db);
         }
     }

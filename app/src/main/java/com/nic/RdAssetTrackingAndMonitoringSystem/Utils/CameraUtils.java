@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
+import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.BuildConfig;
 
 import java.io.File;
@@ -22,10 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CameraUtils {
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
-    public static final String IMAGE_EXTENSION = "jpg";
-    public static final String VIDEO_EXTENSION = "mp4";
+
     /**
      * Refreshes gallery on adding new image/video. Gallery won't be refreshed
      * on older devices until device is rebooted
@@ -95,17 +93,19 @@ public class CameraUtils {
      */
     public static File getOutputMediaFile(int type) {
 
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.nic.RuralInspection/files");
+
         // External sdcard location
-        File mediaStorageDir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-             "Hello Camera");
+//        File mediaStorageDir = new File(
+//                Environment
+//                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+//                ViewInspectionReportScreen.GALLERY_DIRECTORY_NAME);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.e("Hello Camera", "Oops! Failed create "
-                        +"Hello Camera" + " directory");
+                Log.e(CameraScreen.GALLERY_DIRECTORY_NAME, "Oops! Failed create "
+                        + CameraScreen.GALLERY_DIRECTORY_NAME + " directory");
                 return null;
             }
         }
@@ -115,12 +115,12 @@ public class CameraUtils {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
                 Locale.getDefault()).format(new Date());
         File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
+        if (type == CameraScreen.MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_" + timeStamp + "." + IMAGE_EXTENSION);
-        } else if (type == MEDIA_TYPE_VIDEO) {
+                    + "IMG_" + timeStamp + "." + CameraScreen.IMAGE_EXTENSION);
+        } else if (type == CameraScreen.MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "VID_" + timeStamp + "." + VIDEO_EXTENSION);
+                    + "VID_" + timeStamp + "." + CameraScreen.VIDEO_EXTENSION);
         } else {
             return null;
         }

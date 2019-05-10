@@ -61,7 +61,9 @@ public class AppConstant {
     public static String KEY_ROAD_LONG = "road_long";
     public static String KEY_CREATED_DATE = "created_date";
 
-    public static String KEY_DB_ROAD_LAT = "road_lat";
+    /* ROAD TRACK ASSET SAVE **/
+    public static String KEY_ASSET_ID = "asset_id";
+    public static String KEY_IMAGES = "images";
 
 
 

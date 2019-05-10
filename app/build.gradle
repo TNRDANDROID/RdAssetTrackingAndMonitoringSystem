@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
-    implementation 'com.github.scottyab:showhidepasswordedittext:0.8'
+    implementation 'com.karumi:dexter:4.2.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation files('libs/volley.jar')
     implementation 'com.github.GrenderG:Toasty:1.4.2'

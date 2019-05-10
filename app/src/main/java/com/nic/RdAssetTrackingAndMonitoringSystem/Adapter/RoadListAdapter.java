@@ -15,6 +15,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import java.util.List;
@@ -26,13 +27,13 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final dbData dbData;
     private Context context;
     private List<RoadListValue> roadListValues;
-  //  private PrefManager prefManager;
+    private PrefManager prefManager;
 
     public RoadListAdapter(Context context, List<RoadListValue> roadListValues,dbData dbData) {
         this.context = context;
         this.roadListValues = roadListValues;
         this.dbData = dbData;
-  //      prefManager = new PrefManager(context);
+        prefManager = new PrefManager(context);
     }
 
     // determine which layout to use for the row
@@ -170,9 +171,10 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
         intent.putExtra(AppConstant.KEY_ROAD_NAME,road_name);
         intent.putExtra(AppConstant.KEY_ROAD_CATEGORY,road_category);
+        prefManager.setRoadRoadId(String.valueOf(road_id));
+        prefManager.setRoadCategoty(road_category);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-
     }
 
 

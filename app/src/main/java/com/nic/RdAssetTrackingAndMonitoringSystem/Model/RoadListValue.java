@@ -2,6 +2,8 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Model;
 
 import android.graphics.Bitmap;
 
+import java.sql.Blob;
+
 /**
  * Created by AchanthiSundar on 01-11-2017.
  */
@@ -25,6 +27,24 @@ public String levelType;
 public String pointType;
 public String roadLat;
 public String roadLong;
+public String assetId;
+    public Bitmap Image;
+
+    public Bitmap getImage() {
+        return Image;
+    }
+
+    public void setImage(Bitmap image) {
+        Image = image;
+    }
+
+    public String getAssetId() {
+        return assetId;
+    }
+
+    public void setAssetId(String assetId) {
+        this.assetId = assetId;
+    }
 
     public String getPointType() {
         return pointType;

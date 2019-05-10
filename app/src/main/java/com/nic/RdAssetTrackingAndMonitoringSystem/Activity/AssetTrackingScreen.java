@@ -144,6 +144,7 @@ private PrefManager prefManager;
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
+        locationPermission();
         loadAssets();
 
     }
@@ -173,7 +174,7 @@ private PrefManager prefManager;
         }
     }
 
-    private void getLocationPermissionWithLatLong() {
+    private void locationPermission() {
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
 
@@ -199,6 +200,15 @@ private PrefManager prefManager;
 
                 }
             }
+
+        } else {
+            Utils.showAlert(AssetTrackingScreen.this, "GPS is not turned on...");
+        }
+    }
+    private void getLocationPermissionWithLatLong() {
+
+        if (!pointType.equalsIgnoreCase("") && offlatTextValue != null) {
+
             if (MyLocationListener.latitude > 0) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (MyLocationListener.latitude > 0) {
@@ -213,17 +223,15 @@ private PrefManager prefManager;
             } else {
                 Utils.showAlert(AssetTrackingScreen.this, "Satellite communication not available to get GPS Co-ordination Please Capture Photo in Open Area..");
             }
-        } else {
-            Utils.showAlert(AssetTrackingScreen.this, "GPS is not turned on...");
-        }
-
-        if (!pointType.equalsIgnoreCase("") && offlatTextValue != null) {
-
             RoadListValue roadListValue = new RoadListValue();
-            String date_of_inspection = sdf.format(new Date());
+            String dateOfSaveLatLong = sdf.format(new Date());
             String road_Category = getIntent().getStringExtra(AppConstant.KEY_ROAD_CATEGORY);
 
+
+
             String roadId = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
+
+
             roadListValue.setRoadCategory(road_Category);
             roadListValue.setRoadID(Integer.parseInt(roadId));
 
@@ -237,7 +245,7 @@ private PrefManager prefManager;
 
             roadListValue.setRoadLat(offlatTextValue.toString());
             roadListValue.setRoadLong(offlongTextValue.toString());
-            roadListValue.setCreatedDate(date_of_inspection);
+            roadListValue.setCreatedDate(dateOfSaveLatLong);
 
             dbData.saveLatLong(roadListValue);
         }
@@ -369,10 +377,8 @@ private PrefManager prefManager;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-
-                    saveLatLongList();
                 }
-
+                saveLatLongList();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -234,7 +234,7 @@ public class dbData {
         values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
         values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
         values.put(AppConstant.KEY_POINT_TYPE, saveLatLongValue.getPointType());
-        values.put(AppConstant.KEY_DB_ROAD_LAT, saveLatLongValue.getRoadLat());
+        values.put(AppConstant.KEY_ROAD_LAT, saveLatLongValue.getRoadLat());
         values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
         values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
         long id = db.insert(DBHelper.SAVE_LAT_LONG_TABLE, null, values);
@@ -261,7 +261,7 @@ public class dbData {
                     postLatLong.setRoadCategory(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
                     postLatLong.setRoadID(cursor.getInt(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
                     postLatLong.setPointType(cursor.getString(cursor.getColumnIndex(AppConstant.KEY_POINT_TYPE)));
-                    postLatLong.setRoadLat(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_DB_ROAD_LAT)));
+                    postLatLong.setRoadLat(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
                     postLatLong.setRoadLong(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
                     postLatLong.setCreatedDate(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_CREATED_DATE)));
 
@@ -278,5 +278,22 @@ public class dbData {
         return sendPostLatLong;
     }
 
+    public RoadListValue saveImageLatLong(RoadListValue saveLatLongValue) {
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
+        values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
+        values.put(AppConstant.KEY_ASSET_ID, saveLatLongValue.getAssetId());
+        values.put(AppConstant.KEY_ROAD_LAT, saveLatLongValue.getRoadLat());
+        values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
+        values.put(AppConstant.KEY_IMAGES, saveLatLongValue.getImage().toString());
+        values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
+        long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
+        if(String.valueOf(id).equalsIgnoreCase("1")){
+            Toasty.success(context, "Success!", Toast.LENGTH_LONG, true).show();
+        }
+        Log.d("insIdsaveImageLatLong", String.valueOf(id));
+
+        return saveLatLongValue;
+    }
 
 }

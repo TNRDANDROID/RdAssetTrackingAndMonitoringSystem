@@ -147,6 +147,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/road_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/on_road_tv"
@@ -320,6 +321,19 @@
             customfontdemo:fontName="@string/font_bold" />
 
     </RelativeLayout>
+
+    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/road_layout"
+        android:layout_centerInParent="true"
+        android:padding="8dp"
+        android:text="Sync Data"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/_14sdp"
+        android:background="@drawable/gradient_pink"
+        customfontdemo:fontName="@string/font_demi_bold" />
 
     <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
         android:layout_width="match_parent"

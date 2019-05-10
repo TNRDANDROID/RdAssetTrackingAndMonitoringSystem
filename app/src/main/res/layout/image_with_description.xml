@@ -23,7 +23,7 @@
             customfontdemo:fontName="@string/font_demi_bold" />
 
         <ImageView
-            android:id="@+id/logout_tv"
+            android:id="@+id/back_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/_10sdp"
@@ -69,7 +69,7 @@
                     <ImageView
                         android:id="@+id/image_view_preview"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="160dp"
                         android:scaleType="fitXY"
                         android:background="@drawable/capture_image"
                         />
