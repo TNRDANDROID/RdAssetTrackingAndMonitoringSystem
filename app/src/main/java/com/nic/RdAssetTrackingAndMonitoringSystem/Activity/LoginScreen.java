@@ -57,8 +57,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     JSONObject jsonObject;
     private int setPType;
 
-    private MyCustomTextView sync;
-
     String sb;
     private PrefManager prefManager;
     Handler myHandler = new Handler();
@@ -76,7 +74,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         login_btn = (Button) findViewById(R.id.btn_sign_in);
         userName = (MyEditTextView) findViewById(R.id.user_name);
-        sync = (MyCustomTextView) findViewById(R.id.sync);
         redEye = (ImageView) findViewById(R.id.red_eye);
         passwordEditText = (MyEditTextView) findViewById(R.id.password);
 
@@ -98,7 +95,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         randString = Utils.randomChar();
         setPType = 1;
         redEye.setOnClickListener(this);
-        sync.setOnClickListener(this);
     }
 
     @Override
@@ -109,9 +105,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.red_eye:
                 showPassword();
-                break;
-            case R.id.sync:
-               // syncData();
                 break;
         }
     }

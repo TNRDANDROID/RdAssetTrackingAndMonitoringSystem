@@ -115,17 +115,17 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         back_img = (ImageView) findViewById(R.id.back_img);
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mlocListener);
         image_view_preview.setOnClickListener(this);
         imageView.setOnClickListener(this);
         back_img.setOnClickListener(this);
@@ -341,7 +341,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
 
             if(String.valueOf(id).equalsIgnoreCase("1")){
-                Utils.showAlert(CameraScreen.this, "Succes");
+                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
             }
             Log.d("insIdsaveImageLatLong", String.valueOf(id));
 
