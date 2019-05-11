@@ -57,7 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "road_lat TEXT," +
                 "road_long TEXT," +
                 "images blob," +
-                "created_date)");
+                "created_date TEXT)");
 
     }
 

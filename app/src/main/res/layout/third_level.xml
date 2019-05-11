@@ -48,9 +48,20 @@
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:text="01ffdfdfdfdfdsdsdsdsdsdsdsdsdsdsdsdsdsd"
-                        android:textColor="@android:color/white"
+                        android:textColor="#ce000000"
                         android:textSize="@dimen/_15sdp"
                         android:textStyle="bold" />
+
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/loc_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textColor="#ce000000"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold"
+                        android:visibility="visible"/>
 
                     <View
                         android:layout_width="match_parent"

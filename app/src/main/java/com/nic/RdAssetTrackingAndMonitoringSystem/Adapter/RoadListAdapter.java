@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetTrackingScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;

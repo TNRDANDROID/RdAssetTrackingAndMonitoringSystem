@@ -2,10 +2,12 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -23,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -36,6 +39,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
+import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -54,6 +58,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -81,6 +87,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private JSONArray saveLatLongArray;
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     public dbData dbData = new dbData(this);
+    Integer loc_id;
+    Button assetSave;
+
+    public static DBHelper dbHelper;
+    public static SQLiteDatabase db;
 
 
     @Override
@@ -88,12 +99,19 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_with_description);
         intializeUI();
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
         imageView = (ImageView) findViewById(R.id.image_view);
         image_view_preview = (ImageView) findViewById(R.id.image_view_preview);
+        assetSave = (Button) findViewById(R.id.asset_save);
         back_img = (ImageView) findViewById(R.id.back_img);
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mlocListener = new MyLocationListener();
@@ -111,6 +129,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         image_view_preview.setOnClickListener(this);
         imageView.setOnClickListener(this);
         back_img.setOnClickListener(this);
+        assetSave.setOnClickListener(this);
+
+        loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
     }
 
     @Override
@@ -124,6 +145,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.back_img:
                 onBackPress();
+                break;
+            case R.id.asset_save:
+                saveImage();
                 break;
         }
     }
@@ -241,57 +265,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public void previewCapturedImage() {
         try {
             // hide video preview
-
-
             Bitmap bitmap = CameraUtils.optimizeBitmap(BITMAP_SAMPLE_SIZE, imageStoragePath);
             image_view_preview.setVisibility(View.GONE);
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageBitmap(bitmap);
-
-            byte[] imageInByte = new byte[0];
-            String image_str = "";
-
-            try {
-                Bitmap imagebitmapCompress = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imagebitmapCompress.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                imageInByte = baos.toByteArray();
-                image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-                // String string = new String(imageInByte);
-                //Log.d("imageInByte_string",string);
-                Log.d("image_str", image_str);
-            } catch (Exception e) {
-                Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
-
-                //e.printStackTrace();
-            }
-
-            if (offlatTextValue != null) {
-
-                byte[] stringToBitMap = Base64.decode(image_str, Base64.DEFAULT);
-                Bitmap imageBitMap = BitmapFactory.decodeByteArray(stringToBitMap, 0, stringToBitMap.length);
-                String dateOfSaveImage = sdf.format(new Date());
-            /*Insert LOCALLY */
-                RoadListValue roadListValue = new RoadListValue();
-
-                roadListValue.setRoadCategory(prefManager.getRoadCategoty());
-                roadListValue.setRoadID(Integer.parseInt(prefManager.getRoadId()));
-                roadListValue.setAssetId("23");
-
-
-                roadListValue.setRoadLat(offlatTextValue.toString());
-                roadListValue.setRoadLong(offlongTextValue.toString());
-                roadListValue.setImage(imageBitMap);
-                roadListValue.setCreatedDate(dateOfSaveImage);
-
-                dbData.saveImageLatLong(roadListValue);
-            }
-
-            imageArray.put(offlatTextValue);
-            imageArray.put(offlongTextValue);
-            imageArray.put(image_str.trim());
-            Log.d("ImageArray", "" + imageArray);
-
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -338,6 +315,39 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                         "Sorry! Failed to record video", Toast.LENGTH_SHORT)
                         .show();
             }
+        }
+    }
+
+    public void saveImage() {
+        dbData.open();
+        ImageView imageView = (ImageView) findViewById(R.id.image_view);
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+            ContentValues values = new ContentValues();
+            values.put(AppConstant.KEY_ROAD_CATEGORY, prefManager.getRoadCategoty());
+            values.put(AppConstant.KEY_ROAD_ID, Integer.parseInt(prefManager.getRoadId()));
+            values.put(AppConstant.KEY_ASSET_ID, String.valueOf(loc_id));
+            values.put(AppConstant.KEY_ROAD_LAT, offlatTextValue.toString());
+            values.put(AppConstant.KEY_ROAD_LONG, offlongTextValue.toString());
+            values.put(AppConstant.KEY_IMAGES,image_str.trim());
+            values.put(AppConstant.KEY_CREATED_DATE,sdf.format(new Date()));
+            long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
+
+            if(String.valueOf(id).equalsIgnoreCase("1")){
+                Utils.showAlert(CameraScreen.this, "Succes");
+            }
+            Log.d("insIdsaveImageLatLong", String.valueOf(id));
+
+        } catch (Exception e) {
+            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+            //e.printStackTrace();
         }
     }
 

@@ -14,6 +14,9 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.texy.treeview.TreeNode;
 import me.texy.treeview.base.BaseNodeViewBinder;
 import me.texy.treeview.base.CheckableNodeViewBinder;
@@ -25,12 +28,13 @@ import me.texy.treeview.base.ClickableNodeViewBinder;
  */
 
 public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
-    MyCustomTextView third_level_tv;
+    MyCustomTextView third_level_tv,loc_id;
     private ImageView take_photo;
     private Context appContext;
     public ThirdLevelNodeViewBinder(Context context,View itemView) {
         super(context,itemView);
         third_level_tv = (MyCustomTextView) itemView.findViewById(R.id.third_level_tv);
+        loc_id = (MyCustomTextView) itemView.findViewById(R.id.loc_id);
 
 
         this.appContext = context;
@@ -47,8 +51,14 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     public void onClickView(TreeNode treeNode ,boolean clicked) {
 
         if(clicked) {
-            Log.d("Nodetreeid",""+ treeNode.getValue());
-            cameraActivity();
+            try {
+                JSONObject clicked_id = new JSONObject(String.valueOf(treeNode.getValue()));
+                String loc_id = clicked_id.getString("id");
+                Log.d("Nodetreeid",""+ loc_id);
+                cameraActivity(loc_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -59,13 +69,27 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
 
     @Override
     public void bindView(TreeNode treeNode) {
-        third_level_tv.setText(treeNode.getValue().toString());
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(String.valueOf(treeNode.getValue()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            third_level_tv.setText(jsonObject.getString("display"));
+            loc_id.setTag(loc_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+       // third_level_tv.setText(treeNode.getValue().toString());
     }
 
 
-    public void cameraActivity(){
+    public void cameraActivity(String id){
+        String loc_id = id;
         Activity activity = (Activity) appContext;
         Intent intent = new Intent( appContext, CameraScreen.class);
+        intent.putExtra("loc_id",loc_id);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

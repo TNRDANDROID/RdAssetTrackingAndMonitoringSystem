@@ -49,12 +49,12 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_main);
+        super.setContentView(R.layout.tree_activity_main);
         intializeUI();
 
         root = TreeNode.root();
-      // buildTree();
-       loadAssets();
+        // buildTree();
+        loadAssets();
     }
 
     private void intializeUI() {
@@ -153,7 +153,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
-                buildTree(roadList);
+            buildTree(roadList);
         }
     }
 
@@ -176,7 +176,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
             TreeNode treeNode = new TreeNode(new String(subgrpname));
             treeNode.setLevel(0);
             for (int j = 0; j < locationJson.length(); j++) {
-                String value1 = null;
+                JSONObject value1 = new JSONObject();
                 JSONObject jsonObject =null;
                 try {
                     jsonObject = locationJson.getJSONObject(j);
@@ -186,11 +186,16 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                 for (int l = 0; l < jsonObject.length(); l++)
                 {
                     String value = "";
+                    String id = "";
                     try {
                         int label_id = 0;
                         Iterator keys = jsonObject.keys();
+
                         while (keys.hasNext()) {
                             Object key = keys.next();
+                            if(key.equals("id")) {
+                                id = jsonObject.getString(String.valueOf(key));
+                            }
                             String value2 = jsonObject.getString(String.valueOf(key)) ;
                             Log.d("value",":"+value2+" Label" +colJson.get(label_id));
                             value = value.concat(colJson.get(label_id)+" : " +value2+"\n" );
@@ -199,10 +204,21 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    value1 = value;
+                    try {
+                        value1.put("display",value);
+                        value1.put("id",id);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
-                TreeNode treeNode1 = new TreeNode(new String(value1));
+                TreeNode treeNode1 = null;
+                try {
+                    treeNode1 = new TreeNode(new JSONObject(String.valueOf(value1)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 treeNode1.setLevel(1);
                 treeNode.addChild(treeNode1);
 

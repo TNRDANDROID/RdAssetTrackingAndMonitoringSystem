@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
@@ -50,7 +53,7 @@ public class dbData {
         values.put(AppConstant.KEY_ROAD_VILLAGE_NAME,roadListValue.getRoadVillage());
 
         long id = db.insert(DBHelper.ROAD_LIST_TABLE,null,values);
-        Log.d("Inserted_id",String.valueOf(id));
+        Log.d("Inserted_id_road",String.valueOf(id));
         return roadListValue;
     }
 
@@ -285,9 +288,17 @@ public class dbData {
         values.put(AppConstant.KEY_ASSET_ID, saveLatLongValue.getAssetId());
         values.put(AppConstant.KEY_ROAD_LAT, saveLatLongValue.getRoadLat());
         values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
-        values.put(AppConstant.KEY_IMAGES, saveLatLongValue.getImage().toString());
+
+            Bitmap bitmap = saveLatLongValue.getImage();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            byte[] imageInByte = baos.toByteArray();
+            String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+        values.put(AppConstant.KEY_IMAGES,image_str.trim());
         values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
         long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
+
         if(String.valueOf(id).equalsIgnoreCase("1")){
             Toasty.success(context, "Success!", Toast.LENGTH_LONG, true).show();
         }
