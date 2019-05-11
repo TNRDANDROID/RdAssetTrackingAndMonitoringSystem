@@ -43,7 +43,7 @@ import java.util.List;
 
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, MyDialog.myOnClickListener, Api.ServerResponseListener {
 
-    private MyCustomTextView on_road_tv, district_tv, block_tv;
+    private MyCustomTextView on_road_tv, district_tv, block_tv , sync;
     private LinearLayout district_user_layout, block_user_layout;
     private ImageView logout_tv;
     Handler myHandler = new Handler();
@@ -52,6 +52,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     RelativeLayout vpr_layout,pur_layout,vpr_pur_layout,highway_layout;
     RoadListAdapter roadListAdapter;
     RecyclerView recyclerView;
+    JSONObject dataset;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,11 +74,13 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         pur_layout= (RelativeLayout) findViewById(R.id.PUR_Layout);
         vpr_pur_layout= (RelativeLayout) findViewById(R.id.VPR_PUR_Layout);
         highway_layout= (RelativeLayout) findViewById(R.id.Highway_Road_layout);
+        sync = (MyCustomTextView) findViewById(R.id.sync);
 
         vpr_layout.setOnClickListener(this);
         pur_layout.setOnClickListener(this);
         vpr_pur_layout.setOnClickListener(this);
         highway_layout.setOnClickListener(this);
+        sync.setOnClickListener(this);
 
         on_road_tv.setAlpha(0);
         final Runnable onroad = new Runnable() {
@@ -135,6 +138,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.Highway_Road_layout:
                 roadlistScreen("3");
+                break;
+            case R.id.sync:
+                new toUploadTask().execute();
                 break;
         }
     }
@@ -240,6 +246,15 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 }
                 Log.d("response_AssetList", "" + responseDecryptedBlockKey);
             }
+            if ("save_data".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    finish();
+                }
+                Log.d("saved_response", "" + responseDecryptedBlockKey);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -316,6 +331,67 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             }
             return null;
         }
+    }
+
+    public class toUploadTask extends AsyncTask<Void, Void,
+            JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            dbData.open();
+            JSONArray track_data = new JSONArray();
+            try {
+                dataset.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_ROAD_TRACK_ASSET_SAVE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayList<RoadListValue> assets = dbData.toUploadAsset();
+
+            if (assets.size() > 0) {
+                for (int i = 0; i < assets.size(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put(AppConstant.KEY_ROAD_CATEGORY,assets.get(i).getRoadCategory());
+                        jsonObject.put(AppConstant.KEY_ROAD_ID,assets.get(i).getRoadID());
+                        jsonObject.put(AppConstant.KEY_ASSET_ID,assets.get(i).getAssetId());
+                        jsonObject.put(AppConstant.KEY_ROAD_LAT,assets.get(i).getRoadLat());
+                        jsonObject.put(AppConstant.KEY_ROAD_LONG,assets.get(i).getRoadLong());
+                        jsonObject.put(AppConstant.KEY_IMAGES,assets.get(i).getImage());
+
+                        track_data.put(jsonObject);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            return dataset;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject dataset) {
+            super.onPostExecute(dataset);
+            syncData();
+        }
+    }
+
+
+    public void syncData() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("save_data", Api.Method.POST, UrlGenerator.getRoadListUrl(), dataTobeSavedJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject dataTobeSavedJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), dataset.toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("saving", "" + authKey);
+        return dataSet;
     }
 
     @Override

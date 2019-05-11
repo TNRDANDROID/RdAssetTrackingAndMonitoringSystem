@@ -64,6 +64,7 @@ public class AppConstant {
     /* ROAD TRACK ASSET SAVE **/
     public static String KEY_ASSET_ID = "asset_id";
     public static String KEY_IMAGES = "images";
+    public static String KEY_ROAD_TRACK_ASSET_SAVE = "road_track_asset_save";
 
 
 

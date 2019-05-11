@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -148,6 +149,50 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
                     card.setSubgroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_SUB_GROUP_NAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public ArrayList<RoadListValue> toUploadAsset() {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+          //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+             cursor = db.query(DBHelper.SAVE_LAT_LONG_TABLE,
+                     new String[]{"*"}, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    RoadListValue card = new RoadListValue();
+                    card.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    card.setRoadCategoryCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
+                    card.setAssetId(cursor.getString(cursor
+                            .getColumnIndex(AppConstant.KEY_ASSET_ID)));
+                    card.setRoadLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
+                    card.setRoadLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    card.setImage(decodedByte);
+                    card.setCreatedDate(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CREATED_DATE)));
 
                     cards.add(card);
                 }
