@@ -17,12 +17,12 @@ package me.texy.treeview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,13 +180,24 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
 
         if (view instanceof ImageView) {
             final ImageView imageView = (ImageView) view;
-             imageView.setOnClickListener(new View.OnClickListener() {
-                 @Override
-                 public void onClick(View v) {
-                     boolean clicked = imageView.isClickable();
-                     viewBinder.onClickView(treeNode,clicked);
-                 }
-             });
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean clicked = imageView.isClickable();
+                    viewBinder.onClickView(treeNode, clicked);
+                }
+            });
+        }
+        final View view1 = nodeView.findViewById(viewBinder.getTextViewClickable());
+        if (view1 instanceof TextView) {
+            final TextView textView = (TextView) view1;
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean textclicked = textView.isClickable();
+                    viewBinder.onTextClickView(treeNode, textclicked);
+                }
+            });
 
 
 

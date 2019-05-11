@@ -286,8 +286,8 @@ public class dbData {
         values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
         values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
         long id = db.insert(DBHelper.SAVE_LAT_LONG_TABLE, null, values);
-        if(String.valueOf(id).equalsIgnoreCase("1")){
-            Toasty.success(context, "Success!", Toast.LENGTH_LONG, true).show();
+        if (id > 0) {
+            Toasty.success(context, "Inserted Sucessfully", Toast.LENGTH_LONG, true).show();
         }
         Log.d("Inserted_id_saveLatLong", String.valueOf(id));
 

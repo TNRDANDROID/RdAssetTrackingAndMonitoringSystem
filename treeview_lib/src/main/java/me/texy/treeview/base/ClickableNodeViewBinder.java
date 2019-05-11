@@ -3,8 +3,6 @@ package me.texy.treeview.base;
 import android.content.Context;
 import android.view.View;
 
-import me.texy.treeview.TreeNode;
-
 public abstract class ClickableNodeViewBinder extends BaseNodeViewBinder {
 
 
@@ -13,4 +11,6 @@ public abstract class ClickableNodeViewBinder extends BaseNodeViewBinder {
     }
 
     public abstract int getClickableViewId();
+
+    public abstract int getTextViewClickable();
 }

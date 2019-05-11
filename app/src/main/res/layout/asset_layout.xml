@@ -121,16 +121,42 @@
                                     android:layout_weight="0.9"
                                     android:orientation="vertical">
 
-                                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
-                                        style="@style/font_circular_bold"
+                                    <RelativeLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:background="#ECECEC"
+                                        android:background="#ECECEC">
+
+                                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                        style="@style/font_circular_bold"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_centerInParent="true"
                                         android:padding="10dp"
                                         android:text="Name of the Road:"
                                         android:textAlignment="gravity"
                                         android:textColor="#000080"
                                         android:textSize="18sp" />
+
+                                        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                                            android:id="@+id/marquee_tv"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:ellipsize="start"
+                                            android:focusable="true"
+                                            android:focusableInTouchMode="true"
+                                            android:freezesText="true"
+                                            android:marqueeRepeatLimit="marquee_forever"
+                                            android:minLines="1"
+                                            android:scrollHorizontally="true"
+                                            android:layout_alignParentEnd="true"
+                                            android:layout_centerInParent="true"
+                                            android:padding="10dp"
+                                            android:text="Syn Data in home Page"
+                                            android:textColor="#9e1392"
+                                            android:textSize="18sp" />
+
+                                    </RelativeLayout>
 
 
                                     <LinearLayout
@@ -251,7 +277,8 @@
                                             android:text="Save"
                                             android:textAlignment="center"
                                             android:textColor="@android:color/white"
-                                            android:textStyle="bold" />
+                                            android:textStyle="bold"
+                                            android:visibility="gone"/>
                                     </RelativeLayout>
 
 

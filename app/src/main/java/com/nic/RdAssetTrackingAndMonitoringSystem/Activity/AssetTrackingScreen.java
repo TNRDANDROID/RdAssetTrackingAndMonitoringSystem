@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,7 +58,7 @@ public class AssetTrackingScreen extends AppCompatActivity implements LocationLi
 private PrefManager prefManager;
     private ImageView back_img;
     private LinearLayout district_user_layout, block_user_layout;
-    private MyCustomTextView district_tv, block_tv, start_lat_long_tv, midd_lat_long_tv, end_lat_long_tv, road_name;
+    private MyCustomTextView district_tv, block_tv, start_lat_long_tv, midd_lat_long_tv, end_lat_long_tv, road_name, marquee_tv;
     private Button start_lat_long_click_view, stop_lat_long_click_view, end_lat_long_click_view, save_btn;
     private RecyclerView recyclerView;
     Handler myHandler = new Handler();
@@ -95,11 +96,12 @@ private PrefManager prefManager;
         start_lat_long_click_view = (Button) findViewById(R.id.start_lat_long_click_view);
         stop_lat_long_click_view = (Button) findViewById(R.id.stop_lat_long_click_view);
         end_lat_long_click_view = (Button) findViewById(R.id.end_lat_long_click_view);
-        save_btn = (Button) findViewById(R.id.save_btn);
+//        save_btn = (Button) findViewById(R.id.save_btn);
         start_lat_long_tv = (MyCustomTextView) findViewById(R.id.start_lat_long_tv);
         midd_lat_long_tv = (MyCustomTextView) findViewById(R.id.midd_lat_long_tv);
         end_lat_long_tv = (MyCustomTextView) findViewById(R.id.end_lat_long_tv);
         road_name = (MyCustomTextView)findViewById(R.id.road_name);
+        marquee_tv = (MyCustomTextView) findViewById(R.id.marquee_tv);
 
         road_name.setText(getIntent().getStringExtra(AppConstant.KEY_ROAD_NAME));
         recyclerView = (RecyclerView) findViewById(R.id.road_list);
@@ -119,7 +121,7 @@ private PrefManager prefManager;
         start_lat_long_click_view.setOnClickListener(this);
         stop_lat_long_click_view.setOnClickListener(this);
         end_lat_long_click_view.setOnClickListener(this);
-        save_btn.setOnClickListener(this);
+//        save_btn.setOnClickListener(this);
         block_user_layout.setAlpha(0);
         final Runnable block = new Runnable() {
             @Override
@@ -144,6 +146,7 @@ private PrefManager prefManager;
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
+        marquee_tv.setVisibility(View.GONE);
         loadAssets();
 
     }
@@ -166,9 +169,9 @@ private PrefManager prefManager;
                 pointType = "3";
                 getLocationPermissionWithLatLong();
                 break;
-            case R.id.save_btn:
-                saveLatLongData();
-                break;
+//            case R.id.save_btn:
+//                saveLatLongData();
+//                break;
 
         }
     }
@@ -229,6 +232,9 @@ private PrefManager prefManager;
 
             if (pointType.equalsIgnoreCase("1")) {
                 roadListValue.setPointType(pointType);
+                marquee_tv.setVisibility(View.VISIBLE);
+                Animation marquee = AnimationUtils.loadAnimation(this, R.anim.marquee);
+                marquee_tv.startAnimation(marquee);
             } else if (pointType.equalsIgnoreCase("2")) {
                 roadListValue.setPointType(pointType);
             } else {
@@ -370,7 +376,7 @@ private PrefManager prefManager;
                     } catch (JSONException e) {
                         e.printStackTrace();
                 }
-                saveLatLongList();
+//                saveLatLongList();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

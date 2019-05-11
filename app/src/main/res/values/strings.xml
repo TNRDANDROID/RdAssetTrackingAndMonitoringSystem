@@ -11,6 +11,7 @@
     <string name="font_avenir_medium" translatable="false">Avenir_Next_Medium.ttf</string>
     <string name="font_italic" translatable="false">AvenirNextMediumItalic.ttf</string>
     <string name="no_internet" translatable="false">Your internet seems to be offline!</string>
+    <string name="marquee" translatable="false">Your internet seems</string>
     <string name="app_Name" translatable="false">Road Assets \n Monitoring \n And Tracking</string>
     <string name="init_vector" translatable="false">2SN22SkJGDyOAXUU</string>
 </resources>

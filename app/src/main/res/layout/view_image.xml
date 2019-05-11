@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
-            android:text="Take Photo"
+            android:text="View Image"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             customfontdemo:fontName="@string/font_demi_bold" />
@@ -68,82 +68,44 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/image_view_preview"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:scaleType="fitXY"
-                        android:background="@drawable/capture_image"
-                        />
-
-                    <ImageView
                         android:id="@+id/image_view"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:scaleType="fitXY"
-                        android:visibility="gone"
                         />
-
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="start"-->
-                        <!--android:orientation="horizontal">-->
-
-
-                        <!--<com.nic.RuralInspection.Support.MyCustomTextView-->
-
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:padding="10dp"-->
-                            <!--android:text="Description"-->
-                            <!--android:textAlignment="viewStart"-->
-                            <!--android:textColor="#000"-->
-                            <!--android:textSize="18sp"-->
-                            <!--customfontdemo:fontName="@string/font_circular_book" />-->
-
-
-                    <!--</LinearLayout>-->
-
-                    <!--<View-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="0.5dp"-->
-                        <!--android:layout_gravity="bottom"-->
-                        <!--android:layout_marginLeft="15dp"-->
-                        <!--android:background="@color/dashboard_line_dark" />-->
-
-
-
-
 
                 </LinearLayout>
 
+
+
             </LinearLayout>
+
 
         </android.support.v7.widget.CardView>
 
     </LinearLayout>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_below="@+id/image_layout"
+    android:layout_centerInParent="true"
+    android:layout_height="wrap_content"
+    android:visibility="gone">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/image_layout"
-        android:layout_centerInParent="true"
+    <Button
+        android:id="@+id/asset_save"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
 
-        >
-        <Button
-            android:id="@+id/asset_save"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerInParent="true"
-            android:layout_margin="5dp"
-            android:background="@drawable/add_button"
-            android:text="SAVE ASSET PHOTO"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            />
-    </RelativeLayout>
 
+
+        android:background="@drawable/add_button"
+        android:text="SAVE ASSET PHOTO"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
+
+</RelativeLayout>
 
 
 </RelativeLayout>

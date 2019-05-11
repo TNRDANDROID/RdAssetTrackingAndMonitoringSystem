@@ -78,13 +78,26 @@
                             android:id="@+id/take_photo"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="@dimen/_5sdp"
-                            android:layout_marginRight="@dimen/_12sdp"
+                            android:layout_centerInParent="true"
+                            android:layout_centerHorizontal="true"
                             android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_12sdp"
+                            android:layout_toLeftOf="@+id/view_image_tv"
                             android:gravity="end"
                             android:src="@drawable/camera"
                             android:text="Take Photo" />
+
+                        <TextView
+                            android:id="@+id/view_image_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:padding="5dp"
+                            android:text="View Image"
+                            android:textColor="#ce000000"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold" />
                     </RelativeLayout>
                 </LinearLayout>
 

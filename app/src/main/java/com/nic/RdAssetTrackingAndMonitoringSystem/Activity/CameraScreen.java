@@ -340,7 +340,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put(AppConstant.KEY_CREATED_DATE,sdf.format(new Date()));
             long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
 
-            if(String.valueOf(id).equalsIgnoreCase("1")){
+            if(id > 0){
                 Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
             }
             Log.d("insIdsaveImageLatLong", String.valueOf(id));

@@ -84,4 +84,15 @@ public abstract class BaseNodeViewBinder extends RecyclerView.ViewHolder  {
     public void onClickView(TreeNode treeNode,boolean clicked){
 
     }
+
+    /**
+     * Callback when a toggle action happened (only by clicked)
+     *
+     * @param treeNode The toggled node
+     * @param clicked   Expanded or collapsed
+     */
+
+    public void onTextClickView(TreeNode treeNode,boolean clicked){
+
+    }
 }

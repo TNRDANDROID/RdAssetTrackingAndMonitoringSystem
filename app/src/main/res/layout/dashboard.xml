@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/margin"
-            android:text="Dashboard"
+            android:text="Home Page"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             customfontdemo:fontName="@string/font_demi_bold" />
@@ -327,6 +327,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/road_layout"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_centerInParent="true"
         android:padding="8dp"
         android:text="Sync Data"
