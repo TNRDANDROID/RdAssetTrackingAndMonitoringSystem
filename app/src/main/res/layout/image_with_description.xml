@@ -20,7 +20,7 @@
             android:text="Take Photo"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            customfontdemo:fontName="@string/font_demi_bold" />
+            style="@style/font_circular_bold" />
 
         <ImageView
             android:id="@+id/back_img"

@@ -155,7 +155,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 roadlistScreen("3");
                 break;
             case R.id.sync:
-                new toUploadTask().execute();
+                if(Utils.isOnline()) {
+                    new toUploadTask().execute();
+                }else{
+                    Utils.showAlert(this,"Turn On Mobile Data To Save");
+                }
                 break;
         }
     }
@@ -427,5 +431,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void OnError(VolleyError volleyError) {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncButtonVisibility();
     }
 }
