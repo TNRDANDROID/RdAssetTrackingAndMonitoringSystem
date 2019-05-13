@@ -163,7 +163,7 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<RoadListValue> toUploadAsset() {
+    public ArrayList<RoadListValue> getSavedAsset() {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
         Cursor cursor = null;
@@ -294,7 +294,7 @@ public class dbData {
         return saveLatLongValue;
     }
 
-    public ArrayList<RoadListValue> sendPostLatLong() {
+    public ArrayList<RoadListValue> getSavedTrack() {
 
         ArrayList<RoadListValue> sendPostLatLong = new ArrayList<>();
         Cursor cursor = null;
@@ -333,5 +333,18 @@ public class dbData {
         values.put("server_flag",1);
         db.update(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, values, whereClause, null);
     }
+
+    public void update_Track() {
+        String whereClause = "server_flag = server_flag";
+        Log.d("Update id is " ,"id");
+        ContentValues values = new ContentValues();
+        values.put("server_flag",1);
+        db.update(DBHelper.SAVE_LAT_LONG_TABLE, values, whereClause, null);
+    }
+
+    public void deleteAssetTable() {
+        db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
+    }
+
 
 }

@@ -48,6 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "point_type TEXT," +
                 "road_lat TEXT," +
                 "road_long TEXT, " +
+                "server_flag  INTEGER DEFAULT 0," +
                 "created_date TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_IMAGE_LAT_LONG_TABLE + " ("

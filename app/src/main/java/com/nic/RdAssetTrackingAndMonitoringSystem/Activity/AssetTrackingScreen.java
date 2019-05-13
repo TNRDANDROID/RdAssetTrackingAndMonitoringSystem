@@ -323,84 +323,7 @@ private PrefManager prefManager;
 //        }
 //    }
 
-    public void saveLatLongData() {
-        if(Utils.isOnline()) {
-            new fetchDBData().execute();
-        }else{
-            Utils.showAlert(this,"Turn On Mobile Data To Save");
-        }
-    }
 
-    public class fetchDBData extends AsyncTask<Void, Void,
-            Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                dbData.open();
-                saveLatLongLists = dbData.sendPostLatLong();
-                saveLatLongArray = new JSONArray();
-                latLongData = new JSONObject();
-                if (saveLatLongLists.size() > 0) {
-                    for (int i = 0; i < saveLatLongLists.size(); i++) {
-                        latLongData.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongLists.get(i).getRoadCategory());
-                        latLongData.put(AppConstant.KEY_ROAD_ID, saveLatLongLists.get(i).getRoadID());
-                        latLongData.put(AppConstant.KEY_POINT_TYPE, saveLatLongLists.get(i).getPointType());
-                        latLongData.put(AppConstant.KEY_ROAD_LAT, saveLatLongLists.get(i).getRoadLat());
-                        latLongData.put(AppConstant.KEY_ROAD_LONG, saveLatLongLists.get(i).getRoadLong());
-                        latLongData.put(AppConstant.KEY_CREATED_DATE, saveLatLongLists.get(i).getCreatedDate());
-                    }
-                }
-                saveLatLongArray.put(latLongData);
-
-                    saveLatLongData = new JSONObject();
-                    try {
-                        saveLatLongData.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_TRACK_SAVE);
-                        saveLatLongData.put(AppConstant.KEY_TRACK_DATA, saveLatLongArray);
-                        String authKey = saveLatLongData.toString();
-                        int maxLogSize = 2000;
-                        for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-                            int start = i * maxLogSize;
-                            int end = (i + 1) * maxLogSize;
-                            end = end > authKey.length() ? authKey.length() : end;
-                            Log.v("to_send+_plain", authKey.substring(start, end));
-                        }
-
-                        String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
-
-                        for(int i = 0; i <= authKey1.length() / maxLogSize; i++) {
-                            int start = i * maxLogSize;
-                            int end = (i+1) * maxLogSize;
-                            end = end > authKey.length() ? authKey1.length() : end;
-                            Log.v("to_send_encryt", authKey1.substring(start, end));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                }
-//                saveLatLongList();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-
-    public void saveLatLongList() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("saveLatLongList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveLatLongListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject saveLatLongListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("saveLatLongList", "" + authKey);
-        return dataSet;
-    }
 //    Runnable runLocation = new Runnable(){
 //        @Override
 //        public void run() {
@@ -447,15 +370,6 @@ private PrefManager prefManager;
         try {
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
-            if ("saveLatLongList".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Saved");
-                }
-                Log.d("saved_response", "" + responseDecryptedBlockKey);
-            }
 
         } catch (JSONException e) {
             e.printStackTrace();
