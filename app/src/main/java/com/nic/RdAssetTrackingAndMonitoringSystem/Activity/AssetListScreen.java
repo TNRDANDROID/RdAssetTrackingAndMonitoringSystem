@@ -186,7 +186,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                 for (int l = 0; l < jsonObject.length(); l++)
                 {
                     String value = "";
-                    String id = "";
+                    String id = "",image_available =  "",image = "";
                     try {
                         int label_id = 0;
                         Iterator keys = jsonObject.keys();
@@ -196,10 +196,27 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                             if(key.equals("id")) {
                                 id = jsonObject.getString(String.valueOf(key));
                             }
-                            String value2 = jsonObject.getString(String.valueOf(key)) ;
-                            Log.d("value",":"+value2+" Label" +colJson.get(label_id));
-                            value = value.concat(colJson.get(label_id)+" : " +value2+"\n" );
-                            label_id++;
+                            if(key.equals("image_available")) {
+                                image_available = jsonObject.getString(String.valueOf(key));
+                            }
+                            if(key.equals("image")) {
+                                image = jsonObject.getString(String.valueOf(key));
+                            }
+                            if(!key.equals("image")) {
+                                if(!key.equals("id")) {
+                                    if(!key.equals("data_type")) {
+                                        if(!key.equals("image_name")) {
+                                            if (!key.equals("image_available")) {
+                                                String value2 = jsonObject.getString(String.valueOf(key));
+                                                Log.d("value", ":" + value2 + " Label" + colJson.get(label_id));
+                                                value = value.concat(colJson.get(label_id) + " : " + value2 + "\n");
+                                                label_id++;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -207,6 +224,8 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                     try {
                         value1.put("display",value);
                         value1.put("id",id);
+                        value1.put("image_available",image_available);
+                        value1.put("image",image);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.ViewImageScreen;
@@ -24,10 +25,12 @@ import me.texy.treeview.base.ClickableNodeViewBinder;
 
 public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     MyCustomTextView third_level_tv,loc_id;
+    TextView view_image_tv;
     private Context appContext;
     public ThirdLevelNodeViewBinder(Context context,View itemView) {
         super(context,itemView);
         third_level_tv = (MyCustomTextView) itemView.findViewById(R.id.third_level_tv);
+        view_image_tv = (TextView) itemView.findViewById(R.id.view_image_tv);
         loc_id = (MyCustomTextView) itemView.findViewById(R.id.loc_id);
         this.appContext = context;
 
@@ -62,7 +65,14 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     @Override
     public void onTextClickView(TreeNode treeNode, boolean clicked) {
         if (clicked) {
-            viewImageScreen();
+            try {
+                JSONObject clicked_id = new JSONObject(String.valueOf(treeNode.getValue()));
+              //  String image = clicked_id.getString("image");
+              //  String image_available = clicked_id.getString("image_available");
+                viewImageScreen(clicked_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -74,6 +84,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     @Override
     public void bindView(TreeNode treeNode) {
         JSONObject jsonObject = new JSONObject();
+        String image_available = "";
         try {
             jsonObject = new JSONObject(String.valueOf(treeNode.getValue()));
         } catch (JSONException e) {
@@ -81,6 +92,13 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         }
         try {
             third_level_tv.setText(jsonObject.getString("display"));
+            image_available =  jsonObject.getString("image_available");
+            if(image_available.equalsIgnoreCase("Y")) {
+                view_image_tv.setVisibility(View.VISIBLE);
+            }
+            else {
+                view_image_tv.setVisibility(View.GONE);
+            }
             loc_id.setTag(loc_id);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -98,9 +116,10 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
-    public void viewImageScreen() {
+    public void viewImageScreen(JSONObject jsonObject) {
         Activity activity = (Activity) appContext;
         Intent intent = new Intent(appContext, ViewImageScreen.class);
+        intent.putExtra("imageData", String.valueOf(jsonObject));
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
