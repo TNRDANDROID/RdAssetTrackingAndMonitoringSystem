@@ -285,7 +285,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.open();
                     dbData.deleteAssetTable();
                     dbData.update_image();
-                    finish();
+//                    finish();
                     startActivity(getIntent());
                 }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
@@ -298,7 +298,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     Utils.showAlert(this, "Saved");
                     dbData.open();
                     dbData.update_Track();
-                    finish();
+//                    finish();
                     startActivity(getIntent());
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
