@@ -298,6 +298,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     Utils.showAlert(this, "Saved");
                     dbData.open();
                     dbData.update_Track();
+                    finish();
+                    startActivity(getIntent());
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
             }

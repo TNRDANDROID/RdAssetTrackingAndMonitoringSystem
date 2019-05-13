@@ -281,13 +281,23 @@ public class dbData {
         ContentValues values = new ContentValues();
         values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
         values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
-        values.put(AppConstant.KEY_POINT_TYPE, saveLatLongValue.getPointType());
+        String pointtype = saveLatLongValue.getPointType();
+        values.put(AppConstant.KEY_POINT_TYPE, pointtype);
         values.put(AppConstant.KEY_ROAD_LAT, saveLatLongValue.getRoadLat());
         values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
         values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
         long id = db.insert(DBHelper.SAVE_LAT_LONG_TABLE, null, values);
         if (id > 0) {
-            Toasty.success(context, "Inserted Sucessfully", Toast.LENGTH_LONG, true).show();
+            if(pointtype.equalsIgnoreCase("1")) {
+                Toasty.success(context, "Start Point Inserted", Toast.LENGTH_LONG, true).show();
+            } else
+            if(pointtype.equalsIgnoreCase("2")) {
+                Toasty.success(context, "Middle Point Inserted", Toast.LENGTH_LONG, true).show();
+            } else
+                if(pointtype.equalsIgnoreCase("3")) {
+                Toasty.success(context, "End Point Inserted", Toast.LENGTH_LONG, true).show();
+            }
+
         }
         Log.d("Inserted_id_saveLatLong", String.valueOf(id));
 
@@ -300,7 +310,9 @@ public class dbData {
         Cursor cursor = null;
 
         try {
-            cursor = db.rawQuery("select * from " + DBHelper.SAVE_LAT_LONG_TABLE, null);
+           // cursor = db.rawQuery("select * from " + DBHelper.SAVE_LAT_LONG_TABLE, null);
+            cursor = db.query(DBHelper.SAVE_LAT_LONG_TABLE,
+                    new String[]{"*"}, "server_flag = ?", new String[]{"0"}, null, null, null);
 
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
