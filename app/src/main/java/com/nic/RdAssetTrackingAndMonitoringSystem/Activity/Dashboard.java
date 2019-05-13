@@ -281,12 +281,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this,"Saved");
+                    Utils.showAlert(this,"Asset Saved");
                     dbData.open();
                     dbData.deleteAssetTable();
                     dbData.update_image();
 //                    finish();
-                    startActivity(getIntent());
+//                    startActivity(getIntent());
+                    getAssetList();
+                    syncButtonVisibility();
                 }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
             }
@@ -295,11 +297,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Saved");
+                    Utils.showAlert(this, "Lat Long Saved");
                     dbData.open();
                     dbData.update_Track();
 //                    finish();
-                    startActivity(getIntent());
+//                    startActivity(getIntent());
+                    getAssetList();
+                    syncButtonVisibility();
+
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
             }

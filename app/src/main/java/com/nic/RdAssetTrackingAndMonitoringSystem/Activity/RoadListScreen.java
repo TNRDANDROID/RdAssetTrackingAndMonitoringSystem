@@ -34,7 +34,7 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     private ArrayList<RoadListValue> roadLists = new ArrayList<>();
     private ImageView back_img;
     private LinearLayout district_user_layout, block_user_layout;
-    private MyCustomTextView district_tv, block_tv;
+    private MyCustomTextView district_tv, block_tv,title_tv;
     Handler myHandler = new Handler();
     private PrefManager prefManager;
 
@@ -51,6 +51,7 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
         district_user_layout = (LinearLayout) findViewById(R.id.district_user_layout);
         block_user_layout = (LinearLayout) findViewById(R.id.block_user_layout);
         district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
+        title_tv = (MyCustomTextView) findViewById(R.id.title_tv);
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         recyclerView = (RecyclerView) findViewById(R.id.road_list);
         back_img = (ImageView) findViewById(R.id.back_img);
@@ -91,6 +92,15 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
 
     public void loadVPR() {
         String code = getIntent().getExtras().getString(AppConstant.KEY_ROAD_CATEGORY_CODE);
+        if(code.equalsIgnoreCase("1")){
+            title_tv.setText("PUR Road List");
+        }else if(code.equalsIgnoreCase("2")){
+            title_tv.setText("VPR Road List");
+        }else if(code.equalsIgnoreCase("3")){
+            title_tv.setText("Highway Road List");
+        } else if(code.equalsIgnoreCase("4")){
+            title_tv.setText("VPR/PUR Road List");
+        }
         new fetchRoadtask().execute(code);
     }
 
