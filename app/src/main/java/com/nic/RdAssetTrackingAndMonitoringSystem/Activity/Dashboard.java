@@ -3,6 +3,7 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -38,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +55,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     RelativeLayout vpr_layout,pur_layout,vpr_pur_layout,highway_layout;
     RoadListAdapter roadListAdapter;
     RecyclerView recyclerView;
-    JSONObject dataset;
+    JSONObject dataset = new JSONObject();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +122,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         logout_tv.setOnClickListener(this);
         getRoadList();
         getAssetList();
+
+        syncButtonVisibility();
+    }
+
+    public void syncButtonVisibility() {
+        dbData.open();
+        ArrayList<RoadListValue> assets = dbData.toUploadAsset();
+        if(assets.size() >0 ){
+            sync.setVisibility(View.VISIBLE);
+        }else {
+            sync.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -251,7 +266,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this,"Saved");
+                    dbData.open();
+                    dbData.update_image();
                     finish();
+                    startActivity(getIntent());
                 }
                 Log.d("saved_response", "" + responseDecryptedBlockKey);
             }
@@ -355,7 +374,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         jsonObject.put(AppConstant.KEY_ASSET_ID,assets.get(i).getAssetId());
                         jsonObject.put(AppConstant.KEY_ROAD_LAT,assets.get(i).getRoadLat());
                         jsonObject.put(AppConstant.KEY_ROAD_LONG,assets.get(i).getRoadLong());
-                        jsonObject.put(AppConstant.KEY_IMAGES,assets.get(i).getImage());
+
+                        Bitmap bitmap = assets.get(i).getImage();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        byte[] imageInByte = baos.toByteArray();
+                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+                        jsonObject.put(AppConstant.KEY_IMAGES,image_str);
 
                         track_data.put(jsonObject);
 
@@ -363,6 +389,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         e.printStackTrace();
                     }
 
+                }
+                try {
+                    dataset.put(AppConstant.KEY_TRACK_DATA,track_data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 

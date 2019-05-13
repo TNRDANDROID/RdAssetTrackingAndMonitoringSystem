@@ -170,8 +170,8 @@ public class dbData {
 
         try {
           //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
-             cursor = db.query(DBHelper.SAVE_LAT_LONG_TABLE,
-                     new String[]{"*"}, null, null, null, null, null);
+             cursor = db.query(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,
+                     new String[]{"*"}, "server_flag = ?", new String[]{"0"}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
 
@@ -182,7 +182,7 @@ public class dbData {
                     RoadListValue card = new RoadListValue();
                     card.setRoadID(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
-                    card.setRoadCategoryCode(cursor.getInt(cursor
+                    card.setRoadCategory(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
                     card.setAssetId(cursor.getString(cursor
                             .getColumnIndex(AppConstant.KEY_ASSET_ID)));
@@ -326,30 +326,12 @@ public class dbData {
         return sendPostLatLong;
     }
 
-    public RoadListValue saveImageLatLong(RoadListValue saveLatLongValue) {
+    public void update_image() {
+        String whereClause = "server_flag = server_flag";
+        Log.d("Update id is " ,"id");
         ContentValues values = new ContentValues();
-        values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
-        values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
-        values.put(AppConstant.KEY_ASSET_ID, saveLatLongValue.getAssetId());
-        values.put(AppConstant.KEY_ROAD_LAT, saveLatLongValue.getRoadLat());
-        values.put(AppConstant.KEY_ROAD_LONG, saveLatLongValue.getRoadLong());
-
-            Bitmap bitmap = saveLatLongValue.getImage();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-            byte[] imageInByte = baos.toByteArray();
-            String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-        values.put(AppConstant.KEY_IMAGES,image_str.trim());
-        values.put(AppConstant.KEY_CREATED_DATE, saveLatLongValue.getCreatedDate());
-        long id = db.insert(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, null, values);
-
-        if(String.valueOf(id).equalsIgnoreCase("1")){
-            Toasty.success(context, "Success!", Toast.LENGTH_LONG, true).show();
-        }
-        Log.d("insIdsaveImageLatLong", String.valueOf(id));
-
-        return saveLatLongValue;
+        values.put("server_flag",1);
+        db.update(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE, values, whereClause, null);
     }
 
 }
