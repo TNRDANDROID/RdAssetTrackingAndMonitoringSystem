@@ -55,8 +55,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     RelativeLayout vpr_layout,pur_layout,vpr_pur_layout,highway_layout;
     RoadListAdapter roadListAdapter;
     RecyclerView recyclerView;
-    JSONObject datasetAsset = new JSONObject();
-    JSONObject datasetTrack = new JSONObject();
+    JSONObject dataset = new JSONObject();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,10 +128,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     public void syncButtonVisibility() {
         dbData.open();
-        ArrayList<RoadListValue> assetsCount = dbData.getSavedAsset();
-        ArrayList<RoadListValue> trackCount = dbData.getSavedTrack();
-
-        if(assetsCount.size() >0 || trackCount.size() > 0 ){
+        ArrayList<RoadListValue> assets = dbData.toUploadAsset();
+        if(assets.size() >0 ){
             sync.setVisibility(View.VISIBLE);
         }else {
             sync.setVisibility(View.GONE);
@@ -158,22 +155,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 roadlistScreen("3");
                 break;
             case R.id.sync:
-                toUpload();
+                new toUploadTask().execute();
                 break;
         }
     }
-
-    public void toUpload() {
-        if(Utils.isOnline()) {
-            new toUploadAssetTask().execute();
-            new toUploadTrackTask().execute();
-        }
-        else {
-            Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
-        }
-
-    }
-
 
     public void roadlistScreen(String code) {
         Intent intent = new Intent(this,RoadListScreen.class);
@@ -276,30 +261,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 }
                 Log.d("response_AssetList", "" + responseDecryptedBlockKey);
             }
-            if ("save_dataAsset".equals(urlType) && responseObj != null) {
+            if ("save_data".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     Utils.showAlert(this,"Saved");
                     dbData.open();
-                    dbData.deleteAssetTable();
                     dbData.update_image();
                     finish();
                     startActivity(getIntent());
                 }
-                Log.d("saved_Asset", "" + responseDecryptedBlockKey);
-            }
-            if ("saveLatLongList".equals(urlType) && responseObj != null) {
-                String key = responseObj.getString(AppConstant.ENCODE_DATA);
-                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
-                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
-                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Saved");
-                    dbData.open();
-                    dbData.update_Track();
-                }
-                Log.d("saved_Track", "" + responseDecryptedBlockKey);
+                Log.d("saved_response", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -379,13 +352,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    public class toUploadAssetTask extends AsyncTask<Void, Void,
+    public class toUploadTask extends AsyncTask<Void, Void,
             JSONObject> {
         @Override
         protected JSONObject doInBackground(Void... voids) {
             dbData.open();
             JSONArray track_data = new JSONArray();
-            ArrayList<RoadListValue> assets = dbData.getSavedAsset();
+            try {
+                dataset.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_ROAD_TRACK_ASSET_SAVE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayList<RoadListValue> assets = dbData.toUploadAsset();
 
             if (assets.size() > 0) {
                 for (int i = 0; i < assets.size(); i++) {
@@ -410,98 +388,36 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                 }
-
-                datasetAsset = new JSONObject();
-
                 try {
-                    datasetAsset.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_ROAD_TRACK_ASSET_SAVE);
-                    datasetAsset.put(AppConstant.KEY_TRACK_DATA,track_data);
+                    dataset.put(AppConstant.KEY_TRACK_DATA,track_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-            return datasetAsset;
+            return dataset;
         }
 
         @Override
         protected void onPostExecute(JSONObject dataset) {
             super.onPostExecute(dataset);
-            syncData_Asset();
-        }
-    }
-
-    public class toUploadTrackTask extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            try {
-                dbData.open();
-                ArrayList<RoadListValue> saveLatLongLists = dbData.getSavedTrack();
-                JSONArray saveLatLongArray = new JSONArray();
-                if (saveLatLongLists.size() > 0) {
-                    for (int i = 0; i < saveLatLongLists.size(); i++) {
-                        JSONObject latLongData = new JSONObject();
-                        latLongData.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongLists.get(i).getRoadCategory());
-                        latLongData.put(AppConstant.KEY_ROAD_ID, saveLatLongLists.get(i).getRoadID());
-                        latLongData.put(AppConstant.KEY_POINT_TYPE, saveLatLongLists.get(i).getPointType());
-                        latLongData.put(AppConstant.KEY_ROAD_LAT, saveLatLongLists.get(i).getRoadLat());
-                        latLongData.put(AppConstant.KEY_ROAD_LONG, saveLatLongLists.get(i).getRoadLong());
-                        latLongData.put(AppConstant.KEY_CREATED_DATE, saveLatLongLists.get(i).getCreatedDate());
-
-                        saveLatLongArray.put(latLongData);
-                    }
-                }
-
-                datasetTrack = new JSONObject();
-                try {
-                    datasetTrack.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_TRACK_SAVE);
-                    datasetTrack.put(AppConstant.KEY_TRACK_DATA, saveLatLongArray);
-
-//                    String authKey = datasetTrack.toString();
-//                    int maxLogSize = 2000;
-//                    for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i + 1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey.length() : end;
-//                        Log.v("to_send_plain", authKey.substring(start, end));
-//                    }
-//
-//                    String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
-//
-//                    for(int i = 0; i <= authKey1.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i+1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey1.length() : end;
-//                        Log.v("to_send_encryt", authKey1.substring(start, end));
-//                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return datasetTrack;
-        }
-
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncData_Track();
+            syncData();
         }
     }
 
 
-    public void syncData_Asset() {
+    public void syncData() {
         try {
-            new ApiService(this).makeJSONObjectRequest("save_dataAsset", Api.Method.POST, UrlGenerator.getRoadListUrl(), dataTobeSavedJsonParams(), "not cache", this);
+            new ApiService(this).makeJSONObjectRequest("save_data", Api.Method.POST, UrlGenerator.getRoadListUrl(), dataTobeSavedJsonParams(), "not cache", this);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     public JSONObject dataTobeSavedJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetAsset.toString());
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), dataset.toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
@@ -509,30 +425,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         return dataSet;
     }
 
-    public void syncData_Track() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("saveLatLongList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveLatLongListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject saveLatLongListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetTrack.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("saveLatLongList", "" + authKey);
-        return dataSet;
-    }
-
     @Override
     public void OnError(VolleyError volleyError) {
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        syncButtonVisibility();
     }
 }
