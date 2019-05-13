@@ -432,10 +432,4 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     public void OnError(VolleyError volleyError) {
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        syncButtonVisibility();
-    }
 }
