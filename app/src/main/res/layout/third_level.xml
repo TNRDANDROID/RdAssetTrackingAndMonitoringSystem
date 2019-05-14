@@ -41,6 +41,23 @@
                     android:background="@drawable/gradient_blue"
                     android:orientation="vertical">
 
+                    <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                        android:id="@+id/view_offline_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:padding="5dp"
+                        android:text="View Offline Image"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="italic" />
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="15dp"
+                        android:background="#FFFFFF" />
 
                     <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                         android:id="@+id/third_level_tv"
