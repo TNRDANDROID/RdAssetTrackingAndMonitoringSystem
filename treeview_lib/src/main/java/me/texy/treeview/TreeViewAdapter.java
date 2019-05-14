@@ -201,7 +201,22 @@ public class TreeViewAdapter extends RecyclerView.Adapter {
 
 
 
-        } else {
+        }
+        final View offlinetextView = nodeView.findViewById(viewBinder.getOfflineTextViewClickable());
+        if (offlinetextView instanceof TextView) {
+            final TextView textView = (TextView) offlinetextView;
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean textclicked = textView.isClickable();
+                    viewBinder.onOfflineTextClickView(treeNode, textclicked);
+                }
+            });
+
+
+
+        }
+        else {
             throw new ClassCastException("The getCheckableViewId() " +
                     "must return a CheckBox's id");
         }

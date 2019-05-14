@@ -95,4 +95,8 @@ public abstract class BaseNodeViewBinder extends RecyclerView.ViewHolder  {
     public void onTextClickView(TreeNode treeNode,boolean clicked){
 
     }
+
+    public void onOfflineTextClickView(TreeNode treeNode,boolean clicked){
+
+    }
 }

@@ -13,4 +13,6 @@ public abstract class ClickableNodeViewBinder extends BaseNodeViewBinder {
     public abstract int getClickableViewId();
 
     public abstract int getTextViewClickable();
+
+    public abstract int getOfflineTextViewClickable();
 }

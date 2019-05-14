@@ -24,7 +24,7 @@ import me.texy.treeview.base.ClickableNodeViewBinder;
  */
 
 public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
-    MyCustomTextView third_level_tv,loc_id;
+    MyCustomTextView third_level_tv,loc_id,view_offline_image;
     TextView view_image_tv;
     private Context appContext;
     public ThirdLevelNodeViewBinder(Context context,View itemView) {
@@ -44,6 +44,11 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     @Override
     public int getTextViewClickable() {
         return R.id.view_image_tv;
+    }
+
+    @Override
+    public int getOfflineTextViewClickable() {
+        return R.id.view_offline_image;
     }
 
 
@@ -73,6 +78,13 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Override
+    public void onOfflineTextClickView(TreeNode treeNode, boolean clicked) {
+        if (clicked) {
+
         }
     }
 
