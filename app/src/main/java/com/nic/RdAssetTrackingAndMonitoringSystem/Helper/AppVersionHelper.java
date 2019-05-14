@@ -83,7 +83,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
 
     @Override
     public void OnError(VolleyError volleyError) {
-        Log.i("Error", "Volley error");
+        Log.i("Error", ""+volleyError);
     }
 
     // This is my interface //
