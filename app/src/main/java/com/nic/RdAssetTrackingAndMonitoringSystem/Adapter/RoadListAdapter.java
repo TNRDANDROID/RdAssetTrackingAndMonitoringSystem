@@ -170,7 +170,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
         intent.putExtra(AppConstant.KEY_ROAD_NAME,road_name);
         intent.putExtra(AppConstant.KEY_ROAD_CATEGORY,road_category);
-        prefManager.setRoadRoadId(String.valueOf(road_id));
+        prefManager.setRoadId(String.valueOf(road_id));
         prefManager.setRoadCategoty(road_category);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

@@ -202,7 +202,7 @@ public class PrefManager {
         return pref.getString(KEY_ROAD_ID,null);
     }
 
-    public void setRoadRoadId(String RoadId) {
+    public void setRoadId(String RoadId) {
         editor.putString(KEY_ROAD_ID,RoadId);
         editor.commit();
     }

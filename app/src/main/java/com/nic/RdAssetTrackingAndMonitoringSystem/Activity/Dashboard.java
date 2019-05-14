@@ -297,7 +297,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     dbData.open();
                     dbData.update_Track();
-                    getAssetList();
+                   // getAssetList();
                     Utils.showAlert(this, "Lat Long Saved");
                     syncButtonVisibility();
                 }

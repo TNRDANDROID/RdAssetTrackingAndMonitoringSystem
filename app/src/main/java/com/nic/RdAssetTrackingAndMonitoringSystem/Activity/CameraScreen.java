@@ -35,6 +35,8 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.MyNodeViewFactory;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.ThirdLevelNodeViewBinder;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
@@ -60,6 +62,8 @@ import java.util.Date;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+import me.texy.treeview.TreeNode;
+import me.texy.treeview.TreeView;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -93,6 +97,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
 
+    private TreeNode root;
+    private TreeView treeView;
+    private ThirdLevelNodeViewBinder thirdLevelNodeViewBinder;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,6 +113,9 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        root = TreeNode.root();
+        treeView = new TreeView(root, this, new MyNodeViewFactory());
     }
 
     public void intializeUI() {
@@ -342,6 +353,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
             if(id > 0){
                 Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                treeView.refreshTreeView();
             }
             Log.d("insIdsaveImageLatLong", String.valueOf(id));
 
