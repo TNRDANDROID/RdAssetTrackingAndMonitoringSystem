@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/header_layout"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginRight="20dp"
         android:orientation="vertical">
 
@@ -133,7 +133,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/district_card"
         android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_12sdp"
         android:background="@drawable/white_background_two_corners"
         android:padding="@dimen/_5sdp"
         android:paddingLeft="5dp"
@@ -145,14 +145,12 @@
         android:textStyle="normal"
         customfontdemo:fontName="@string/font_normal" />
 
-
     <RelativeLayout
         android:id="@+id/road_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/on_road_tv"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/_15sdp"
         android:layout_gravity="center">
 
         <LinearLayout
@@ -327,7 +325,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/road_layout"
-        android:layout_marginTop="@dimen/_12sdp"
         android:layout_centerInParent="true"
         android:padding="8dp"
         android:text="Sync Data"

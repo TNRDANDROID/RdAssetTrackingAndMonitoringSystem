@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.RelativeLayout;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetTrackingScreen;
@@ -17,28 +19,32 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
     private static final int TYPE_ONE = 1;
     private static final int TYPE_TWO = 2;
 
     private final dbData dbData;
     private Context context;
     private List<RoadListValue> roadListValues;
+    private List<RoadListValue> roadListValuesFiltered;
     private PrefManager prefManager;
+    private static  RoadListAdapterListener listener;
 
     public RoadListAdapter(Context context, List<RoadListValue> roadListValues,dbData dbData) {
         this.context = context;
         this.roadListValues = roadListValues;
         this.dbData = dbData;
         prefManager = new PrefManager(context);
+        this.roadListValuesFiltered = roadListValues;
     }
 
     // determine which layout to use for the row
     @Override
     public int getItemViewType(int position) {
-        RoadListValue item = roadListValues.get(position);
+        RoadListValue item = roadListValuesFiltered.get(position);
         if (item.getType() == RoadListValue.ItemType.ONE_ITEM) {
             return TYPE_ONE;
         } else if (item.getType() == RoadListValue.ItemType.TWO_ITEM) {
@@ -79,16 +85,16 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void initLayoutOne(ViewHolderOne holder, final int position) {
 
-        String string = String.valueOf(roadListValues.get(position).getRoadCategory());
-        String code = String.valueOf(roadListValues.get(position).getRoadCode());
-        String village_code = String.valueOf(roadListValues.get(position).getRoadCategoryCode());
+        String string = String.valueOf(roadListValuesFiltered.get(position).getRoadCategory());
+        String code = String.valueOf(roadListValuesFiltered.get(position).getRoadCode());
+        String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValues.get(position).getRoadName());
+        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName());
 
         if(village_code.equalsIgnoreCase("2")) {
             holder.road_village_name.setVisibility(View.VISIBLE);
-            holder.road_village_name.setText(roadListValues.get(position).getRoadVillage());
+            holder.road_village_name.setText(roadListValuesFiltered.get(position).getRoadVillage());
         }
         else {
             holder.road_village_name.setVisibility(View.GONE);
@@ -104,16 +110,16 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void initLayoutTwo(ViewHolderTwo holder, final int position) {
 
-        String string = String.valueOf(roadListValues.get(position).getRoadCategory());
-        String code = String.valueOf(roadListValues.get(position).getRoadCode());
-        String village_code = String.valueOf(roadListValues.get(position).getRoadCategoryCode());
+        String string = String.valueOf(roadListValuesFiltered.get(position).getRoadCategory());
+        String code = String.valueOf(roadListValuesFiltered.get(position).getRoadCode());
+        String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValues.get(position).getRoadName());
+        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName());
 
         if(village_code.equalsIgnoreCase("2")) {
             holder.road_village_name.setVisibility(View.VISIBLE);
-            holder.road_village_name.setText(roadListValues.get(position).getRoadVillage());
+            holder.road_village_name.setText(roadListValuesFiltered.get(position).getRoadVillage());
         }
         else {
             holder.road_village_name.setVisibility(View.GONE);
@@ -158,13 +164,13 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
        // return roadListValues.size();
-        return roadListValues == null ? 0 : roadListValues.size();
+        return roadListValuesFiltered == null ? 0 : roadListValuesFiltered.size();
     }
 
     public void openAssetList(int pos) {
-        Integer road_id =  roadListValues.get(pos).getRoadID();
-        String road_name = roadListValues.get(pos).getRoadName();
-        String road_category = roadListValues.get(pos).getRoadCategory();
+        Integer road_id =  roadListValuesFiltered.get(pos).getRoadID();
+        String road_name = roadListValuesFiltered.get(pos).getRoadName();
+        String road_category = roadListValuesFiltered.get(pos).getRoadCategory();
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, AssetTrackingScreen.class);
         intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
@@ -223,5 +229,42 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //
 //    }
 
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    roadListValuesFiltered = roadListValues;
+                } else {
+                    List<RoadListValue> filteredList = new ArrayList<>();
+                    for (RoadListValue row : roadListValues) {
 
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getRoadName().toLowerCase().contains(charString.toLowerCase()) || String.valueOf(row.getRoadCode()).contains(charString)) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    roadListValuesFiltered = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = roadListValuesFiltered;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                roadListValuesFiltered = (ArrayList<RoadListValue>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public interface RoadListAdapterListener {
+        void onContactSelected(RoadListValue contact);
+    }
 }

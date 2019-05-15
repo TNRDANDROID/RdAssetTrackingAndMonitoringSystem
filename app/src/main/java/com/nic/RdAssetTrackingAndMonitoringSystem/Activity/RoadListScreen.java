@@ -1,6 +1,8 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,10 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
@@ -26,7 +32,7 @@ import java.util.ArrayList;
 
 
 
-public class RoadListScreen extends AppCompatActivity implements View.OnClickListener {
+public class RoadListScreen extends AppCompatActivity implements View.OnClickListener{
 
     private RecyclerView recyclerView;
     public dbData dbData = new dbData(this);
@@ -36,12 +42,15 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     private LinearLayout district_user_layout, block_user_layout;
     private MyCustomTextView district_tv, block_tv,title_tv;
     Handler myHandler = new Handler();
+    private SearchView searchView;
     private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.road_list_activity);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         intializeUI();
     }
 
@@ -166,9 +175,44 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
     }
 
     public void onBackPress() {
+        if (!searchView.isIconified()) {
+            searchView.setIconified(true);
+            return;
+        }
         super.onBackPressed();
         setResult(Activity.RESULT_CANCELED);
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.action_search)
+                .getActionView();
+        searchView.setSearchableInfo(searchManager
+                .getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
+        // listening to search query text change
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // filter recycler view when query submitted
+                roadListAdapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                // filter recycler view when text is changed
+                roadListAdapter.getFilter().filter(query);
+                return false;
+            }
+        });
+        return true;
     }
 
 }
