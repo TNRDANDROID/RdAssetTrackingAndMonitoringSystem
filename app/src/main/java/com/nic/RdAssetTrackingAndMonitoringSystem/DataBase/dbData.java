@@ -335,13 +335,13 @@ public class dbData {
         long id = db.insert(DBHelper.SAVE_LAT_LONG_TABLE, null, values);
         if (id > 0) {
             if(pointtype.equalsIgnoreCase("1")) {
-                Toasty.success(context, "Start Point Inserted", Toast.LENGTH_LONG, true).show();
+                Toasty.success(context, "Start Point Inserted", Toast.LENGTH_SHORT, true).show();
             } else
             if(pointtype.equalsIgnoreCase("2")) {
-                Toasty.success(context, "Middle Point Inserted", Toast.LENGTH_LONG, true).show();
+                Toasty.success(context, "Middle Point Inserted", Toast.LENGTH_SHORT, true).show();
             } else
                 if(pointtype.equalsIgnoreCase("3")) {
-                Toasty.success(context, "End Point Inserted", Toast.LENGTH_LONG, true).show();
+                Toasty.success(context, "End Point Inserted", Toast.LENGTH_SHORT, true).show();
             }
 
         }
