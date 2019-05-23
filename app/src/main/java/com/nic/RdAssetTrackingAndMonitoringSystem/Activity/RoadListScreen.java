@@ -130,6 +130,7 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
                     card.setRoadVillage(roadLists.get(i).getRoadVillage());
                     card.setRoadCategory(roadLists.get(i).getRoadCategory());
                     card.setRoadCategoryCode(roadLists.get(i).getRoadCategoryCode());
+                    card.setState(roadLists.get(i).getState());
                     if (i%2 == 0) {
                        card.setType(RoadListValue.ItemType.ONE_ITEM);
                     } else {

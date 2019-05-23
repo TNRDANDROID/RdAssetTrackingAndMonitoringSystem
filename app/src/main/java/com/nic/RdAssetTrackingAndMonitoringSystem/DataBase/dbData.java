@@ -52,6 +52,11 @@ public class dbData {
         values.put(AppConstant.KEY_ROAD_CATEGORY,roadListValue.getRoadCategory());
         values.put(AppConstant.KEY_ROAD_NAME,roadListValue.getRoadName());
         values.put(AppConstant.KEY_ROAD_VILLAGE_NAME,roadListValue.getRoadVillage());
+        values.put(AppConstant.KEY_TOTAL_ASSET,roadListValue.getTotalAsset());
+        values.put(AppConstant.KEY_ASSET_CAPTURED_COUNT,roadListValue.getAssetCapturedCount());
+        values.put(AppConstant.KEY_TOTAL_START_POINT,roadListValue.getTotalStartPoint());
+        values.put(AppConstant.KEY_TOTAL_MID_POINT,roadListValue.getTotalMidPoint());
+        values.put(AppConstant.KEY_TOTAL_END_POINT,roadListValue.getTotalEndPoint());
 
         long id = db.insert(DBHelper.ROAD_LIST_TABLE,null,values);
         Log.d("Inserted_id_road",String.valueOf(id));
@@ -96,6 +101,31 @@ public class dbData {
                     card.setRoadVillage(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_VILLAGE_NAME)));
 
+                    Integer tot_asset = cursor.getInt(cursor.getColumnIndex(AppConstant.KEY_TOTAL_ASSET));
+                    Integer asset_cap_cnt = cursor.getInt(cursor.getColumnIndex(AppConstant.KEY_ASSET_CAPTURED_COUNT));
+                    Integer tot_start_point = cursor.getInt(cursor.getColumnIndex(AppConstant.KEY_TOTAL_START_POINT));
+                    Integer tot_mid_point = cursor.getInt(cursor.getColumnIndex(AppConstant.KEY_TOTAL_MID_POINT));
+                    Integer tot_end_point = cursor.getInt(cursor.getColumnIndex(AppConstant.KEY_TOTAL_END_POINT));
+
+                    String state = null;
+
+                    if(tot_asset == asset_cap_cnt){
+
+                        if((tot_start_point != 0) && (tot_mid_point != 0) && (tot_end_point != 0)){
+                            state = "completed";
+                        }else {
+                            state = "partial";
+                        }
+                    }
+                    else if(tot_asset != asset_cap_cnt) {
+
+                        if((asset_cap_cnt == 0) && (tot_start_point == 0) && (tot_mid_point == 0) && (tot_end_point == 0)){
+                            state = "Not_Started";
+                        }else {
+                            state = "partial";
+                        }
+                    }
+                    card.setState(state);
                     cards.add(card);
                 }
             }
@@ -107,6 +137,10 @@ public class dbData {
             }
         }
         return cards;
+    }
+
+    public void deleteRoadListTable() {
+        db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
     }
 
     /**** ASSET LIST ***/
@@ -404,5 +438,10 @@ public class dbData {
         db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
     }
 
+    /************** DELETE ALL TABLE *************/
+    public  void deleteAll(){
+        db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
+    }
 
 }

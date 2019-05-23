@@ -90,7 +90,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName());
+        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName() + " "+ roadListValuesFiltered.get(position).getState());
 
         if(village_code.equalsIgnoreCase("2")) {
             holder.road_village_name.setVisibility(View.VISIBLE);
@@ -115,7 +115,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName());
+        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName() + " "+ roadListValuesFiltered.get(position).getState());
 
         if(village_code.equalsIgnoreCase("2")) {
             holder.road_village_name.setVisibility(View.VISIBLE);

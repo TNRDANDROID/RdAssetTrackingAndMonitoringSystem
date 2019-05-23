@@ -16,6 +16,12 @@ public Integer roadCode;
 public String roadName;
 public String roadVillage;
 private ItemType type;
+private Integer totalAsset;
+private Integer assetCapturedCount;
+private Integer totalStartPoint;
+private Integer totalMidPoint;
+private Integer totalEndPoint;
+private String state;
 
 public  Integer locGroup;
 public  Integer locID;
@@ -28,7 +34,7 @@ public String pointType;
 public String roadLat;
 public String roadLong;
 public String assetId;
-    public Bitmap Image;
+public Bitmap Image;
 
     public Bitmap getImage() {
         return Image;
@@ -192,5 +198,53 @@ public String assetId;
 
     public void setRoadName(String roadName) {
         this.roadName = roadName;
+    }
+
+    public Integer getTotalAsset() {
+        return totalAsset;
+    }
+
+    public void setTotalAsset(Integer totalAsset) {
+        this.totalAsset = totalAsset;
+    }
+
+    public Integer getAssetCapturedCount() {
+        return assetCapturedCount;
+    }
+
+    public void setAssetCapturedCount(Integer assetCapturedCount) {
+        this.assetCapturedCount = assetCapturedCount;
+    }
+
+    public Integer getTotalMidPoint() {
+        return totalMidPoint;
+    }
+
+    public void setTotalMidPoint(Integer totalMidPoint) {
+        this.totalMidPoint = totalMidPoint;
+    }
+
+    public Integer getTotalEndPoint() {
+        return totalEndPoint;
+    }
+
+    public void setTotalEndPoint(Integer totalEndPoint) {
+        this.totalEndPoint = totalEndPoint;
+    }
+
+    public Integer getTotalStartPoint() {
+        return totalStartPoint;
+    }
+
+    public void setTotalStartPoint(Integer totalStartPoint) {
+        this.totalStartPoint = totalStartPoint;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }

@@ -29,6 +29,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "road_category_code INTEGER," +
                 "road_id INTEGER," +
                 "road_code INTEGER," +
+                "tot_asset INTEGER," +
+                "asset_cap_cnt INTEGER," +
+                "tot_start_point INTEGER," +
+                "tot_mid_point INTEGER," +
+                "tot_end_point INTEGER," +
                 "road_category TEXT," +
                 "pvname TEXT," +
                 "road_name TEXT)");

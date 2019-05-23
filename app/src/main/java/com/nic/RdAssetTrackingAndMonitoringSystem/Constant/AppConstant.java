@@ -42,6 +42,11 @@ public class AppConstant {
      public static String KEY_ROAD_CODE = "road_code";
      public static String KEY_ROAD_NAME = "road_name";
      public static String KEY_ROAD_VILLAGE_NAME = "pvname";
+     public static String KEY_TOTAL_ASSET = "tot_asset";
+     public static String KEY_ASSET_CAPTURED_COUNT = "asset_cap_cnt";
+     public static String KEY_TOTAL_START_POINT = "tot_start_point";
+     public static String KEY_TOTAL_MID_POINT = "tot_mid_point";
+     public static String KEY_TOTAL_END_POINT = "tot_end_point";
 
      /* ASSET LIST TABLE **/
 
