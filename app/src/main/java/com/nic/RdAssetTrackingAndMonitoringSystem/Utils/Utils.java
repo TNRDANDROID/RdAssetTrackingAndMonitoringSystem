@@ -3,6 +3,8 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
@@ -274,5 +276,17 @@ public class Utils {
         Log.d("utils_assetlist", "" + dataSet);
         return dataSet;
     }
-
+    //Version name
+    public static String getVersionName(Context context) {
+        PackageManager manager = context.getPackageManager();
+        PackageInfo info = null;
+        try {
+            info = manager.getPackageInfo(
+                    context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        String version = info.versionName;
+        return version;
+    }
 }

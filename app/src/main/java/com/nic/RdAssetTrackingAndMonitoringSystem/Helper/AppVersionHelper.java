@@ -10,6 +10,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,7 +52,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
     public static JSONObject versionCheck() throws JSONException {
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        dataSet.put(AppConstant.KEY_APP_CODE, "I");
+        dataSet.put(AppConstant.KEY_APP_CODE, "A");
         Log.d("versionCheck", "" + dataSet);
         return dataSet;
     }
@@ -66,7 +67,7 @@ public class AppVersionHelper implements Api.ServerResponseListener {
             if ("versionCheck".equals(urlType) && responseObj != null) {
                 String version = responseObj.getString("version");
 
-                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("I") && (!version.equalsIgnoreCase("1") )) {
+                if (responseObj.getString(AppConstant.KEY_APP_CODE).equalsIgnoreCase("A") && (!version.equalsIgnoreCase(Utils.getVersionName(mContext)))) {
                     myListener.onAppVersionCallback("Update");
                 } else {
                     myListener.onAppVersionCallback("Don't update");

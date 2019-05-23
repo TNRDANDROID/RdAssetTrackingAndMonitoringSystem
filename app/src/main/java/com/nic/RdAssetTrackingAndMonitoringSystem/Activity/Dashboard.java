@@ -47,7 +47,7 @@ import java.util.List;
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, MyDialog.myOnClickListener, Api.ServerResponseListener {
 
     private MyCustomTextView on_road_tv, district_tv, block_tv , sync;
-    private LinearLayout district_user_layout, block_user_layout;
+    private LinearLayout district_user_layout, block_user_layout,pmgsy_layout;
     private ImageView logout_tv;
     Handler myHandler = new Handler();
     private PrefManager prefManager;
@@ -70,6 +70,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         prefManager = new PrefManager(this);
         district_user_layout = (LinearLayout) findViewById(R.id.district_user_layout);
         block_user_layout = (LinearLayout) findViewById(R.id.block_user_layout);
+        pmgsy_layout = (LinearLayout) findViewById(R.id.pmgsy_layout);
         district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         on_road_tv = (MyCustomTextView) findViewById(R.id.on_road_tv);
@@ -116,7 +117,16 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             }
         };
         myHandler.postDelayed(district, 1200);
+        pmgsy_layout.setAlpha(0);
+        final Runnable pmgsy = new Runnable() {
+            @Override
+            public void run() {
+                pmgsy_layout.setAlpha(1);
+                pmgsy_layout.startAnimation(AnimationUtils.loadAnimation(Dashboard.this, R.anim.text_view_move_right));
 
+            }
+        };
+        myHandler.postDelayed(pmgsy, 1700);
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
@@ -331,6 +341,11 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
                             roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
                             roadListValue.setRoadVillage(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_VILLAGE_NAME));
+                            roadListValue.setTotalAsset(Integer.valueOf(jsonArray.getJSONObject(i).getString(AppConstant.KEY_TOTAL_ASSET)));
+                            roadListValue.setAssetCapturedCount(Integer.valueOf(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ASSET_CAPTURED_COUNT)));
+                            roadListValue.setTotalStartPoint(Integer.valueOf(jsonArray.getJSONObject(i).getString(AppConstant.KEY_TOTAL_START_POINT)));
+                            roadListValue.setTotalMidPoint(Integer.valueOf(jsonArray.getJSONObject(i).getString(AppConstant.KEY_TOTAL_MID_POINT)));
+                            roadListValue.setTotalEndPoint(Integer.valueOf(jsonArray.getJSONObject(i).getString(AppConstant.KEY_TOTAL_END_POINT)));
                             dbData.create_newRoad(roadListValue);
                         } catch (JSONException e) {
                             e.printStackTrace();

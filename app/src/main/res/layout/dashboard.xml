@@ -334,6 +334,31 @@
         android:background="@drawable/gradient_pink"
         customfontdemo:fontName="@string/font_demi_bold" />
 
+    <LinearLayout
+        android:id="@+id/pmgsy_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sync"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:background="@drawable/white_background_left_two_corners"
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
+
+        <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="PMGSY Habitation"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            customfontdemo:fontName="@string/font_normal" />
+
+    </LinearLayout>
+
     <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
