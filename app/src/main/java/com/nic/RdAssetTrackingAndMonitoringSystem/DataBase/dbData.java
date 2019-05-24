@@ -109,22 +109,32 @@ public class dbData {
 
                     String state = null;
 
-                    if(tot_asset == asset_cap_cnt){
 
-                        if((tot_start_point != 0) && (tot_mid_point != 0) && (tot_end_point != 0)){
+                    if (tot_asset == 0) {
+
+                        if ((tot_start_point != 0) && (tot_mid_point != 0) && (tot_end_point != 0)) {
                             state = "completed";
-                        }else {
+                        } else {
                             state = "partial";
                         }
-                    }
-                    else if(tot_asset != asset_cap_cnt) {
+                    } else {
+                        if (tot_asset == asset_cap_cnt) {
 
-                        if((asset_cap_cnt == 0) && (tot_start_point == 0) && (tot_mid_point == 0) && (tot_end_point == 0)){
-                            state = "Not_Started";
-                        }else {
-                            state = "partial";
+                            if ((tot_start_point != 0) && (tot_mid_point != 0) && (tot_end_point != 0)) {
+                                state = "completed";
+                            } else {
+                                state = "partial";
+                            }
+                        } else if (tot_asset != asset_cap_cnt) {
+
+                            if ((asset_cap_cnt == 0) && (tot_start_point == 0) && (tot_mid_point == 0) && (tot_end_point == 0)) {
+                                state = "Not_Started";
+                            } else {
+                                state = "partial";
+                            }
                         }
                     }
+
                     card.setState(state);
                     cards.add(card);
                 }
@@ -436,6 +446,173 @@ public class dbData {
 
     public void deleteAssetTable() {
         db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
+    }
+
+    /****** PMGSY VILLAGE LIST *******/
+
+    public RoadListValue insert_newPMGSYVillage(RoadListValue pmgsyvillageValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_PMGSY_DCODE,pmgsyvillageValue.getPmgsyDcode());
+        values.put(AppConstant.KEY_PMGSY_BCODE,pmgsyvillageValue.getPmgsyBcode());
+        values.put(AppConstant.KEY_PMGSY_PVCODE,pmgsyvillageValue.getPmgsyPvcode());
+        values.put(AppConstant.KEY_PMGSY_PVNAME,pmgsyvillageValue.getPmgsyPvname());
+
+        long id = db.insert(DBHelper.PMGSY_VILLAGE_LIST_TABLE,null,values);
+        Log.d("Inserted_id_PMGSYVil",String.valueOf(id));
+        return pmgsyvillageValue;
+    }
+
+    public ArrayList<RoadListValue> getAll_PMGSYVillage() {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.PMGSY_VILLAGE_LIST_TABLE,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue card = new RoadListValue();
+                    card.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_DCODE)));
+                    card.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_BCODE)));
+                    card.setPmgsyPvcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_PVCODE)));
+                    card.setPmgsyPvname(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_PVNAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    /****** PMGSY VILLAGE LIST *******/
+
+    public RoadListValue insert_newPMGSYHabitation(RoadListValue pmgsyhabitationValue) {
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_DCODE,pmgsyhabitationValue.getdCode());
+        values.put(AppConstant.KEY_BCODE,pmgsyhabitationValue.getbCode());
+        values.put(AppConstant.KEY_PVCODE,pmgsyhabitationValue.getPvCode());
+        values.put(AppConstant.KEY_HABCODE,pmgsyhabitationValue.getHabCode());
+        values.put(AppConstant.KEY_PMGSY_DCODE,pmgsyhabitationValue.getPmgsyDcode());
+        values.put(AppConstant.KEY_PMGSY_BCODE,pmgsyhabitationValue.getPmgsyBcode());
+        values.put(AppConstant.KEY_PMGSY_PVCODE,pmgsyhabitationValue.getPmgsyPvcode());
+        values.put(AppConstant.KEY_PMGSY_HAB_CODE,pmgsyhabitationValue.getPmgsyHabcode());
+        values.put(AppConstant.KEY_PMGSY_HAB_NAME,pmgsyhabitationValue.getPmgsyHabName());
+
+
+        long id = db.insert(DBHelper.PMGSY_HABITATION_LIST_TABLE,null,values);
+        Log.d("Inserted_id_PMGSYHab",String.valueOf(id));
+        return pmgsyhabitationValue;
+    }
+
+    public ArrayList<RoadListValue> getAll_PMGSYHabitation() {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select * from "+DBHelper.PMGSY_HABITATION_LIST_TABLE,null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue card = new RoadListValue();
+                    card.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    card.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    card.setPvCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                    card.setHabCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_HABCODE)));
+                    card.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_DCODE)));
+                    card.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_BCODE)));
+                    card.setPmgsyPvcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_PVCODE)));
+                    card.setPmgsyHabcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_CODE)));
+                    card.setPmgsyHabName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_NAME)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public ArrayList<RoadListValue> select_Habitation(JSONObject data) {
+
+        ArrayList<RoadListValue> habits = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ?";
+        String[] selectionArgs = new String[0];
+
+        try {
+            selectionArgs = new String[]{String.valueOf(data.get(AppConstant.KEY_PMGSY_DCODE)), String.valueOf(data.get(AppConstant.KEY_PMGSY_BCODE)), String.valueOf(data.get(AppConstant.KEY_PMGSY_PVCODE))};
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            cursor = db.query(DBHelper.PMGSY_HABITATION_LIST_TABLE,
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue habitation = new RoadListValue();
+                    habitation.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    habitation.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    habitation.setPvCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                    habitation.setHabCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_HABCODE)));
+                    habitation.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_DCODE)));
+                    habitation.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_BCODE)));
+                    habitation.setPmgsyPvcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_PVCODE)));
+                    habitation.setPmgsyHabcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_CODE)));
+                    habitation.setPmgsyHabName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_NAME)));
+
+
+                    habits.add(habitation);
+                }
+            }
+        } catch (Exception e){
+            Log.d( "Exception", String.valueOf(e));
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return habits;
     }
 
     /************** DELETE ALL TABLE *************/

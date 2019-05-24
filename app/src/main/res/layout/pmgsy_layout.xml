@@ -104,7 +104,7 @@
                     customfontdemo:fontName="@string/font_normal" />
 
                 <Spinner
-                    android:id="@+id/village_spinner"
+                    android:id="@+id/pmgsy_vil_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

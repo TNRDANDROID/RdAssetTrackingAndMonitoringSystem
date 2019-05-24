@@ -71,7 +71,23 @@ public class AppConstant {
     public static String KEY_IMAGES = "images";
     public static String KEY_ROAD_TRACK_ASSET_SAVE = "road_track_asset_save";
 
+    /*  PMGSY VIILLAGE TABLE */
 
+    public static String KEY_PMGSY_VILLAGE_LIST = "pmgsy_village";
+    public static String KEY_PMGSY_DCODE = "pmgsy_dcode";
+    public static String KEY_PMGSY_BCODE = "pmgsy_bcode";
+    public static String KEY_PMGSY_PVCODE = "pmgsy_pvcode";
+    public static String KEY_PMGSY_PVNAME = "pmgsy_pvname";
+
+    /*  PMGSY HABITATION TABLE */
+
+    public static String KEY_PMGSY_HABITATION_LIST = "pmgsy_habitation";
+    public static String KEY_DCODE = "dcode";
+    public static String KEY_BCODE = "bcode";
+    public static String KEY_PVCODE = "pvcode";
+    public static String KEY_HABCODE = "habcode";
+    public static String KEY_PMGSY_HAB_CODE = "pmgsy_hab_code";
+    public static String KEY_PMGSY_HAB_NAME = "pmgsy_habname";
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

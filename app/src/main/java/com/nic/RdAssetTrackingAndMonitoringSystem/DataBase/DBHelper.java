@@ -10,6 +10,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     public static final String ROAD_LIST_TABLE = "RoadList";
     public static final String ASSET_LIST_TABLE = "AssetList";
+    public static final String PMGSY_VILLAGE_LIST_TABLE = "PMGSYVillageList";
+    public static final String PMGSY_HABITATION_LIST_TABLE = "PMGSYHabitationList";
     public static final String SAVE_LAT_LONG_TABLE = "LatLongTable";
     public static final String SAVE_IMAGE_LAT_LONG_TABLE = "ImageLatLongTable";
 
@@ -47,6 +49,23 @@ public class DBHelper extends SQLiteOpenHelper {
                 "col_label TEXT," +
                 "location_details TEXT)");
 
+        db.execSQL("CREATE TABLE " + PMGSY_VILLAGE_LIST_TABLE + " ("
+                + "pmgsy_dcode INTEGER," +
+                "pmgsy_bcode INTEGER," +
+                "pmgsy_pvcode INTEGER," +
+                "pmgsy_pvname TEXT)");
+
+        db.execSQL("CREATE TABLE " + PMGSY_HABITATION_LIST_TABLE + " ("
+                + "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "habcode INTEGER," +
+                "pmgsy_dcode INTEGER," +
+                "pmgsy_bcode INTEGER," +
+                "pmgsy_pvcode INTEGER," +
+                "pmgsy_hab_code INTEGER," +
+                "pmgsy_habname TEXT)");
+
         db.execSQL("CREATE TABLE " + SAVE_LAT_LONG_TABLE + " ("
                 + "road_category TEXT," +
                 "road_id TEXT," +
@@ -74,6 +93,8 @@ public class DBHelper extends SQLiteOpenHelper {
             //drop table if already exists
             db.execSQL("DROP TABLE IF EXISTS " + ROAD_LIST_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + ASSET_LIST_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + PMGSY_VILLAGE_LIST_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + PMGSY_HABITATION_LIST_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_LAT_LONG_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGE_LAT_LONG_TABLE);
             onCreate(db);

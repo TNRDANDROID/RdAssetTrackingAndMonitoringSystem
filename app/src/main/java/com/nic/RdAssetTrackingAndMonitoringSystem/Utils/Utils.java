@@ -276,6 +276,24 @@ public class Utils {
         Log.d("utils_assetlist", "" + dataSet);
         return dataSet;
     }
+    public static JSONObject pmgsyVillageListJsonParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMGSY_VILLAGE_LIST);
+        dataSet.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE,prefManager.getBlockCode());
+        Log.d("utils_pmgsyVillage", "" + dataSet);
+        return dataSet;
+    }
+    public static JSONObject pmgsyHabitationListJsonParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMGSY_HABITATION_LIST);
+        dataSet.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode());
+        dataSet.put(AppConstant.BLOCK_CODE,prefManager.getBlockCode());
+        Log.d("utils_pmgsyHabitation", "" + dataSet);
+        return dataSet;
+    }
     //Version name
     public static String getVersionName(Context context) {
         PackageManager manager = context.getPackageManager();

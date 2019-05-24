@@ -36,6 +36,98 @@ public String roadLong;
 public String assetId;
 public Bitmap Image;
 
+public Integer pmgsyDcode;
+public Integer pmgsyBcode;
+public Integer pmgsyPvcode;
+public String pmgsyPvname;
+public Integer pmgsyHabcode;
+public String pmgsyHabName;
+
+public Integer dCode;
+public Integer bCode;
+public Integer pvCode;
+public Integer habCode;
+
+    public Integer getPmgsyDcode() {
+        return pmgsyDcode;
+    }
+
+    public void setPmgsyDcode(Integer pmgsyDcode) {
+        this.pmgsyDcode = pmgsyDcode;
+    }
+
+    public Integer getPmgsyBcode() {
+        return pmgsyBcode;
+    }
+
+    public void setPmgsyBcode(Integer pmgsyBcode) {
+        this.pmgsyBcode = pmgsyBcode;
+    }
+
+    public Integer getPmgsyPvcode() {
+        return pmgsyPvcode;
+    }
+
+    public void setPmgsyPvcode(Integer pmgsyPvcode) {
+        this.pmgsyPvcode = pmgsyPvcode;
+    }
+
+    public String getPmgsyPvname() {
+        return pmgsyPvname;
+    }
+
+    public void setPmgsyPvname(String pmgsyPvname) {
+        this.pmgsyPvname = pmgsyPvname;
+    }
+
+    public Integer getPmgsyHabcode() {
+        return pmgsyHabcode;
+    }
+
+    public void setPmgsyHabcode(Integer pmgsyHabcode) {
+        this.pmgsyHabcode = pmgsyHabcode;
+    }
+
+    public String getPmgsyHabName() {
+        return pmgsyHabName;
+    }
+
+    public void setPmgsyHabName(String pmgsyHabName) {
+        this.pmgsyHabName = pmgsyHabName;
+    }
+
+    public Integer getdCode() {
+        return dCode;
+    }
+
+    public void setdCode(Integer dCode) {
+        this.dCode = dCode;
+    }
+
+    public Integer getbCode() {
+        return bCode;
+    }
+
+    public void setbCode(Integer bCode) {
+        this.bCode = bCode;
+    }
+
+    public Integer getPvCode() {
+        return pvCode;
+    }
+
+    public void setPvCode(Integer pvCode) {
+        this.pvCode = pvCode;
+    }
+
+    public Integer getHabCode() {
+        return habCode;
+    }
+
+    public void setHabCode(Integer habCode) {
+        this.habCode = habCode;
+    }
+
     public Bitmap getImage() {
         return Image;
     }

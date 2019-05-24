@@ -93,6 +93,12 @@
             android:windowSoftInputMode="stateUnchanged|adjustPan" />
 
         <activity
+            android:name="com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PMGSYScreen"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateUnchanged|adjustPan" />
+
+        <activity
             android:name="com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
