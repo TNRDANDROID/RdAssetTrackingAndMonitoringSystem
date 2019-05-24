@@ -2,7 +2,9 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,7 +31,6 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.AssetListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
@@ -39,7 +39,6 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import org.json.JSONArray;
@@ -159,7 +158,7 @@ private PrefManager prefManager;
                 break;
             case R.id.start_lat_long_click_view:
                 pointType = "1";
-                getLocationPermissionWithLatLong();
+                showAlert(pointType);
                 break;
             case R.id.stop_lat_long_click_view:
                 pointType = "2";
@@ -167,13 +166,41 @@ private PrefManager prefManager;
                 break;
             case R.id.end_lat_long_click_view:
                 pointType = "3";
-                getLocationPermissionWithLatLong();
+                showAlert(pointType);
+
                 break;
 //            case R.id.save_btn:
 //                saveLatLongData();
 //                break;
 
         }
+    }
+    public void showAlert(String pointType) {
+        String startAlert = "Capturing of Road Starting GPS-co-ordinate is allowed only once.So stand on the correct starting point of this Road and capture Gps co-ordinate";
+        String endAlert = "Capturing of Road Ending GPS-co-ordinate is allowed only once.So stand on the correct ending point of this Road and capture Gps co-ordinate";
+        String alert = "";
+        if(pointType.equalsIgnoreCase("1")){
+            alert= startAlert;
+        }
+        else{
+            alert = endAlert;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Alert")
+                .setMessage(alert)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                         getLocationPermissionWithLatLong();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                }).show();
+
     }
 
     private void getLocationPermissionWithLatLong() {
@@ -233,12 +260,16 @@ private PrefManager prefManager;
             if (pointType.equalsIgnoreCase("1")) {
                 roadListValue.setPointType(pointType);
                 marquee_tv.setVisibility(View.VISIBLE);
+                start_lat_long_click_view.setBackgroundResource(R.drawable.start_disable_button);
+                start_lat_long_click_view.setClickable(false);
                 Animation marquee = AnimationUtils.loadAnimation(this, R.anim.marquee);
                 marquee_tv.startAnimation(marquee);
             } else if (pointType.equalsIgnoreCase("2")) {
                 roadListValue.setPointType(pointType);
             } else {
                 roadListValue.setPointType(pointType);
+                start_lat_long_click_view.setBackgroundResource(R.drawable.start_button);
+                start_lat_long_click_view.setClickable(true);
             }
 
             roadListValue.setRoadLat(offlatTextValue.toString());

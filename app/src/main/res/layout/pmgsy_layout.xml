@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Road List"
+                    android:text="PMGSY Habitation"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sdp" />
 
@@ -64,37 +64,67 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-            <include
-                android:id="@+id/header"
-                layout="@layout/header_layout"
+            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                android:id="@+id/select_village_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true" />
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="Select Village"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="visible"
+                customfontdemo:fontName="@string/font_circular_bold" />
 
-            <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/road_list"
+            <RelativeLayout
+                android:id="@+id/pmgsy_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/header"
-                android:layout_alignParentBottom="true"
-                app:shimmer_demo_layout="@layout/vpr_screen"
-                app:shimmer_demo_layout_manager_type="linear_horizontal"
-                app:shimmer_demo_angle="20"
-                />
+                android:layout_height="@dimen/header"
+                android:layout_below="@+id/select_village_tv"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:background="@drawable/rectangle_box"
+                android:orientation="vertical"
+                android:visibility="visible">
 
-            <!--<android.support.v7.widget.RecyclerView-->
-                <!--android:id="@+id/road_list"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@+id/header"-->
-                <!--android:layout_alignParentBottom="true"-->
-                <!--android:fadeScrollbars="false"-->
-                <!--android:scrollbarSize="4dp"-->
-                <!--android:scrollbars="vertical" />-->
+                <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="15dp"
+
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sdp"
+                    android:visibility="visible"
+                    customfontdemo:fontName="@string/font_normal" />
+
+                <Spinner
+                    android:id="@+id/village_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/pmgsy_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pmgsy_layout"
+                android:layout_margin="5dp"
+                android:layout_alignParentBottom="true"
+                android:fadeScrollbars="false"
+                android:scrollbarSize="4dp"
+                android:scrollbars="vertical" />
 
             <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
                 android:id="@+id/not_found_tv"

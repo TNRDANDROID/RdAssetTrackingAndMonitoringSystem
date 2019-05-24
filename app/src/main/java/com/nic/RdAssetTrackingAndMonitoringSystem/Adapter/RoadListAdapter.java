@@ -3,12 +3,18 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.Animatable2Compat;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetTrackingScreen;
@@ -27,7 +33,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int TYPE_TWO = 2;
 
     private final dbData dbData;
-    private Context context;
+    private static Context context;
     private List<RoadListValue> roadListValues;
     private List<RoadListValue> roadListValuesFiltered;
     private PrefManager prefManager;
@@ -90,7 +96,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
-        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName() + " "+ roadListValuesFiltered.get(position).getState());
+        holder.road_name.setText(roadListValuesFiltered.get(position).getRoadName());
 
         if(village_code.equalsIgnoreCase("2")) {
             holder.road_village_name.setVisibility(View.VISIBLE);
@@ -138,6 +144,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         public MyCustomTextView road_code, road_name, road_village_name;
         RelativeLayout road_layout;
+        private ImageView imageView;
 
         public ViewHolderOne(View itemView) {
             super(itemView);
@@ -145,6 +152,8 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             road_name = (MyCustomTextView) itemView.findViewById(R.id.road_name);
             road_village_name = (MyCustomTextView) itemView.findViewById(R.id.road_village_name);
             road_layout = (RelativeLayout) itemView.findViewById(R.id.road_layout);
+            imageView = (ImageView)itemView. findViewById(R.id.imageView);
+
         }
     }
 

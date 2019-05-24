@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.RoadListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 
 public class RoadListScreen extends AppCompatActivity implements View.OnClickListener{
 
-    private RecyclerView recyclerView;
+    private ShimmerRecyclerView recyclerView;
     public dbData dbData = new dbData(this);
     private RoadListAdapter roadListAdapter;
     private ArrayList<RoadListValue> roadLists = new ArrayList<>();
@@ -62,7 +63,7 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
         district_tv = (MyCustomTextView) findViewById(R.id.district_tv);
         title_tv = (MyCustomTextView) findViewById(R.id.title_tv);
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
-        recyclerView = (RecyclerView) findViewById(R.id.road_list);
+        recyclerView = (ShimmerRecyclerView) findViewById(R.id.road_list);
         back_img = (ImageView) findViewById(R.id.back_img);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -148,7 +149,20 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
             roadListAdapter = new RoadListAdapter(RoadListScreen.this,
                     roadList, dbData);
             recyclerView.setAdapter(roadListAdapter);
+            recyclerView.showShimmerAdapter();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadCards();
+                }
+            }, 3000);
         }
+
+        private void loadCards() {
+
+            recyclerView.hideShimmerAdapter();
+        }
+
     }
 
     @Override
