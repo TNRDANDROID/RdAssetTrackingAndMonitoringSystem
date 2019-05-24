@@ -92,6 +92,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     public dbData dbData = new dbData(this);
     Integer loc_id;
+    String screen_Type;
     Button assetSave;
 
     public static DBHelper dbHelper;
@@ -142,7 +143,15 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         back_img.setOnClickListener(this);
         assetSave.setOnClickListener(this);
 
-        loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+        screen_Type = getIntent().getStringExtra("screen_Type");
+
+        if(screen_Type.equalsIgnoreCase(getIntent().getStringExtra("habitation"))){
+           // loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+        }
+        else {
+            loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+        }
+
     }
 
     @Override
@@ -158,7 +167,12 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 onBackPress();
                 break;
             case R.id.asset_save:
-                saveImage();
+                if(screen_Type.equalsIgnoreCase(getIntent().getStringExtra("habitation"))){
+                    saveImage_habitation();
+                }
+                else {
+                    saveImage();
+                }
                 break;
         }
     }
@@ -356,6 +370,44 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 treeView.refreshTreeView();
             }
             Log.d("insIdsaveImageLatLong", String.valueOf(id));
+
+        } catch (Exception e) {
+            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+            //e.printStackTrace();
+        }
+    }
+
+    public void saveImage_habitation() {
+        dbData.open();
+        ImageView imageView = (ImageView) findViewById(R.id.image_view);
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+            ContentValues values = new ContentValues();
+            values.put(AppConstant.KEY_DCODE,getIntent().getStringExtra(AppConstant.KEY_DCODE) );
+            values.put(AppConstant.KEY_BCODE, getIntent().getStringExtra(AppConstant.KEY_BCODE));
+            values.put(AppConstant.KEY_PVCODE,getIntent().getStringExtra(AppConstant.KEY_PVCODE) );
+            values.put(AppConstant.KEY_PMGSY_DCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_DCODE) );
+            values.put(AppConstant.KEY_PMGSY_BCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_BCODE) );
+            values.put(AppConstant.KEY_PMGSY_PVCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_PVCODE) );
+            values.put(AppConstant.KEY_PMGSY_HAB_CODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE) );
+            values.put(AppConstant.KEY_ROAD_LAT, offlatTextValue.toString());
+            values.put(AppConstant.KEY_ROAD_LONG, offlongTextValue.toString());
+            values.put(AppConstant.KEY_IMAGES,image_str.trim());
+
+            long id = db.insert(DBHelper.SAVE_IMAGE_HABITATION_TABLE, null, values);
+
+            if(id > 0){
+                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                treeView.refreshTreeView();
+            }
+            Log.d("insIdsaveHabitation", String.valueOf(id));
 
         } catch (Exception e) {
             Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");

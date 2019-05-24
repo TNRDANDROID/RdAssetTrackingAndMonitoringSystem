@@ -14,6 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String PMGSY_HABITATION_LIST_TABLE = "PMGSYHabitationList";
     public static final String SAVE_LAT_LONG_TABLE = "LatLongTable";
     public static final String SAVE_IMAGE_LAT_LONG_TABLE = "ImageLatLongTable";
+    public static final String SAVE_IMAGE_HABITATION_TABLE = "ImageHabitationTable";
 
 
     private Context context;
@@ -84,6 +85,20 @@ public class DBHelper extends SQLiteOpenHelper {
                 "images blob," +
                 "server_flag  INTEGER DEFAULT 0," +
                 "created_date TEXT)");
+
+        db.execSQL("CREATE TABLE " + SAVE_IMAGE_HABITATION_TABLE + " ("
+                + "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "habcode INTEGER," +
+                "pmgsy_dcode INTEGER," +
+                "pmgsy_bcode INTEGER," +
+                "pmgsy_pvcode INTEGER," +
+                "pmgsy_hab_code INTEGER," +
+                "images blob," +
+                "road_lat TEXT," +
+                "road_long TEXT," +
+                "server_flag  INTEGER DEFAULT 0)");
 
     }
 
