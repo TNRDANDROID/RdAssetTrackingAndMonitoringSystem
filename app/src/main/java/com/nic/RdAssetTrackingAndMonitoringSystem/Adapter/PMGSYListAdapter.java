@@ -7,10 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.AssetListScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.ViewImageScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
@@ -35,18 +35,20 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.inner_asset_layout, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.habitation_list, parent, false);
         return new MyViewHolder(itemView);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private MyCustomTextView asset_groupName;
-        LinearLayout grpName_layout;
+        private MyCustomTextView habitation_tv, view_online_image_tv, view_offline_image_tv;
+        private ImageView take_photo;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            asset_groupName = (MyCustomTextView) itemView.findViewById(R.id.asset_groupName);
-            grpName_layout = (LinearLayout) itemView.findViewById(R.id.grpName_layout);
+            habitation_tv = (MyCustomTextView) itemView.findViewById(R.id.habitation_tv);
+            view_online_image_tv = (MyCustomTextView) itemView.findViewById(R.id.view_online_image_tv);
+            view_offline_image_tv = (MyCustomTextView) itemView.findViewById(R.id.view_offline_image_tv);
+            take_photo = (ImageView) itemView.findViewById(R.id.take_photo);
         }
 
 
@@ -61,12 +63,26 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        holder.asset_groupName.setText(pmgsyListValues.get(position).getPmgsyHabName());
+        holder.habitation_tv.setText(pmgsyListValues.get(position).getPmgsyHabName());
 
-        holder.grpName_layout.setOnClickListener(new View.OnClickListener() {
+        holder.take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openphotocapture(position);
+            }
+        });
+
+        holder.view_online_image_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewImageScreen("Online");
+            }
+        });
+
+        holder.view_offline_image_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewImageScreen("Offline");
             }
         });
     }
@@ -91,11 +107,18 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
         intent.putExtra(AppConstant.KEY_PMGSY_BCODE,String.valueOf(pmgsy_bcode));
         intent.putExtra(AppConstant.KEY_PMGSY_PVCODE,String.valueOf(pmgsy_pvcode));
         intent.putExtra(AppConstant.KEY_PMGSY_HAB_CODE,String.valueOf(pmgsy_hab_code));
-        intent.putExtra("screen_Type","habitation");
-
+        intent.putExtra(AppConstant.KEY_SCREEN_TYPE, "Habitation");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
+    }
+
+    public void viewImageScreen(String type) {
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(context, ViewImageScreen.class);
+        intent.putExtra("type", type);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     @Override

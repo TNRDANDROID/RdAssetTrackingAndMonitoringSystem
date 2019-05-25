@@ -27,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -46,6 +47,8 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyEditTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.CameraUtils;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
@@ -83,16 +86,13 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     LocationManager mlocManager = null;
     LocationListener mlocListener;
     Double offlatTextValue, offlongTextValue;
-    JSONArray imageArray = new JSONArray();
     private PrefManager prefManager;
     private ImageView back_img;
     private JSONObject roadTracksaveImageList;
-    private JSONObject latLongData;
-    private JSONArray saveLatLongArray;
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     public dbData dbData = new dbData(this);
     Integer loc_id;
-    String screen_Type;
+    String screen_type = "";
     Button assetSave;
 
     public static DBHelper dbHelper;
@@ -100,29 +100,36 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
 
     private TreeNode root;
     private TreeView treeView;
-    private ThirdLevelNodeViewBinder thirdLevelNodeViewBinder;
+    private LinearLayout description_layout;
+    private MyEditTextView description;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_with_description);
-        intializeUI();
         try {
             dbHelper = new DBHelper(this);
             db = dbHelper.getWritableDatabase();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            screen_type = bundle.getString(AppConstant.KEY_SCREEN_TYPE);
+            loc_id = bundle.getInt("loc_id");
+            Log.d("ScreenType",""+screen_type);
+        }
 
-        root = TreeNode.root();
-        treeView = new TreeView(root, this, new MyNodeViewFactory());
+        intializeUI();
     }
 
     public void intializeUI() {
         prefManager = new PrefManager(this);
         imageView = (ImageView) findViewById(R.id.image_view);
         image_view_preview = (ImageView) findViewById(R.id.image_view_preview);
+        description_layout = (LinearLayout) findViewById(R.id.description_layout);
+        description = (MyEditTextView ) findViewById(R.id.description);
         assetSave = (Button) findViewById(R.id.asset_save);
         back_img = (ImageView) findViewById(R.id.back_img);
         mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -142,14 +149,12 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         imageView.setOnClickListener(this);
         back_img.setOnClickListener(this);
         assetSave.setOnClickListener(this);
-
-        screen_Type = getIntent().getStringExtra("screen_Type");
-
-        if(screen_Type.equalsIgnoreCase(getIntent().getStringExtra("habitation"))){
-           // loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
-        }
-        else {
-            loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+        root = TreeNode.root();
+        treeView = new TreeView(root, this, new MyNodeViewFactory());
+        if(!screen_type.equalsIgnoreCase("Habitation")){
+             loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+        }else{
+            description_layout.setVisibility(View.VISIBLE);
         }
 
     }
@@ -167,7 +172,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 onBackPress();
                 break;
             case R.id.asset_save:
-                if(screen_Type.equalsIgnoreCase(getIntent().getStringExtra("habitation"))){
+                if(screen_type.equalsIgnoreCase("Habitation")){
                     saveImage_habitation();
                 }
                 else {
@@ -396,10 +401,12 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put(AppConstant.KEY_PMGSY_DCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_DCODE) );
             values.put(AppConstant.KEY_PMGSY_BCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_BCODE) );
             values.put(AppConstant.KEY_PMGSY_PVCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_PVCODE) );
+            values.put(AppConstant.KEY_HABCODE,getIntent().getStringExtra(AppConstant.KEY_HABCODE) );
             values.put(AppConstant.KEY_PMGSY_HAB_CODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE) );
             values.put(AppConstant.KEY_ROAD_LAT, offlatTextValue.toString());
             values.put(AppConstant.KEY_ROAD_LONG, offlongTextValue.toString());
             values.put(AppConstant.KEY_IMAGES,image_str.trim());
+            values.put(AppConstant.KEY_IMAGE_DESCRIPTION,description.getText().toString());
 
             long id = db.insert(DBHelper.SAVE_IMAGE_HABITATION_TABLE, null, values);
 

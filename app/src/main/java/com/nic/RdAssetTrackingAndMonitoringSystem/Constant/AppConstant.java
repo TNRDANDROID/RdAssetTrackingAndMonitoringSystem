@@ -88,6 +88,9 @@ public class AppConstant {
     public static String KEY_HABCODE = "habcode";
     public static String KEY_PMGSY_HAB_CODE = "pmgsy_hab_code";
     public static String KEY_PMGSY_HAB_NAME = "pmgsy_habname";
+    public static String KEY_SCREEN_TYPE = "screen_type";
+    public static String KEY_PMGSY_HABITATION_SAVE = "offroad_pmgsy_habitation_location_save";
+    public static String KEY_IMAGE_DESCRIPTION = "image_description";
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

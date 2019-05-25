@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:customfontdemo="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -81,10 +80,8 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/header"
                 android:layout_alignParentBottom="true"
-                app:shimmer_demo_layout="@layout/vpr_screen"
-                app:shimmer_demo_layout_manager_type="linear_horizontal"
-                app:shimmer_demo_angle="20"
-                />
+                app:shimmer_demo_layout="@layout/layout_demo"
+                app:shimmer_demo_shimmer_color="#8FFFFFFF" />
 
             <!--<android.support.v7.widget.RecyclerView-->
                 <!--android:id="@+id/road_list"-->

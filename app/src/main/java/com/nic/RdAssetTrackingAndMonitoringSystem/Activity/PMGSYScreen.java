@@ -1,5 +1,6 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,13 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.android.volley.VolleyError;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.AssetListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.CommonAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.PMGSYListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
@@ -22,20 +22,23 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponseListener {
+public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponseListener, View.OnClickListener {
 
     private Spinner pmgsy_village_sp;
+    private MyCustomTextView habitation_tv;
     private RecyclerView habitationRecycler;
     public dbData dbData = new dbData(this);
     ArrayList<RoadListValue> pmgsyVillageList = new ArrayList<>();
     ArrayList<RoadListValue> pmgsyHabitationList = new ArrayList<>();
     private PMGSYListAdapter pmgsyListAdapter;
+    private ImageView back_img;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +49,9 @@ public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponse
 
     public void intializeUI() {
         pmgsy_village_sp = (Spinner)findViewById(R.id.pmgsy_vil_spinner);
+        habitation_tv = (MyCustomTextView) findViewById(R.id.habitation_tv);
         habitationRecycler = (RecyclerView) findViewById(R.id.pmgsy_list);
+        back_img = (ImageView) findViewById(R.id.back_img);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         habitationRecycler.setLayoutManager(mLayoutManager);
@@ -56,6 +61,7 @@ public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponse
         habitationRecycler.setFocusable(false);
         pmgsyListAdapter = new PMGSYListAdapter(this, pmgsyHabitationList, dbData);
         habitationRecycler.setAdapter(pmgsyListAdapter);
+        back_img.setOnClickListener(this);
 
         pmgsy_village_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,6 +91,29 @@ public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponse
         loadVillageSpinner();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_img:
+                onBackPress();
+                break;
+
+        }
+    }
+
+    public void onBackPress() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(Activity.RESULT_CANCELED);
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
     public class fetchHabitationtask extends AsyncTask<JSONObject, Void,
             ArrayList<RoadListValue>> {
         @Override
@@ -100,6 +129,7 @@ public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponse
             super.onPostExecute(pmgsyHabitationList);
             pmgsyListAdapter = new PMGSYListAdapter(PMGSYScreen.this,
                     pmgsyHabitationList, dbData);
+            habitation_tv.setVisibility(View.VISIBLE);
             habitationRecycler.setAdapter(pmgsyListAdapter);
         }
     }

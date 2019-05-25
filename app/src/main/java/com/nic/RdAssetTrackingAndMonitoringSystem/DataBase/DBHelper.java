@@ -96,6 +96,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "pmgsy_pvcode INTEGER," +
                 "pmgsy_hab_code INTEGER," +
                 "images blob," +
+                "image_description TEXT," +
                 "road_lat TEXT," +
                 "road_long TEXT," +
                 "server_flag  INTEGER DEFAULT 0)");

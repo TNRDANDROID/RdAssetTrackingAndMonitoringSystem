@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.ViewImageScreen;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -160,6 +161,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         Activity activity = (Activity) appContext;
         Intent intent = new Intent( appContext, CameraScreen.class);
         intent.putExtra("loc_id",loc_id);
+        intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
@@ -169,6 +171,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         Intent intent = new Intent(appContext, ViewImageScreen.class);
         intent.putExtra("imageData", String.valueOf(jsonObject));
         intent.putExtra("type",type);
+        intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

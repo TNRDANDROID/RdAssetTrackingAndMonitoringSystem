@@ -1,7 +1,6 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -26,13 +25,13 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
-import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Dialog.MyDialog;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.ProgressHUD;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
@@ -42,7 +41,6 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Dashboard extends AppCompatActivity implements View.OnClickListener, MyDialog.myOnClickListener, Api.ServerResponseListener {
 
@@ -57,6 +55,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     RecyclerView recyclerView;
     JSONObject datasetAsset = new JSONObject();
     JSONObject datasetTrack = new JSONObject();
+    JSONObject datasetHabitation = new JSONObject();
+    private ProgressHUD progressHUD;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,7 +127,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
             }
         };
-        myHandler.postDelayed(pmgsy, 1700);
+        myHandler.postDelayed(pmgsy, 1500);
 
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
@@ -144,8 +144,9 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         dbData.open();
         ArrayList<RoadListValue> assetsCount = dbData.getSavedAsset();
         ArrayList<RoadListValue> trackCount = dbData.getSavedTrack();
+        ArrayList<RoadListValue> habitationCount = dbData.getSavedHabitation();
 
-        if(assetsCount.size() >0 || trackCount.size() > 0 ){
+        if (assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0) {
             sync.setVisibility(View.VISIBLE);
         }else {
             sync.setVisibility(View.GONE);
@@ -182,12 +183,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     public void pmgsyScreen() {
         Intent intent = new Intent(this,PMGSYScreen.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
     public void toUpload() {
         if(Utils.isOnline()) {
             new toUploadAssetTask().execute();
             new toUploadTrackTask().execute();
+            new toUploadHabitation().execute();
         }
         else {
             Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
@@ -347,7 +350,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                    new InsertPMGSYHabitationListTask().execute(jsonObject);
                 }
-                Log.d("response_AssetList", "" + responseDecryptedBlockKey);
+                Log.d("resp_pmgsyHabitation", "" + responseDecryptedBlockKey);
             }
             if ("save_dataAsset".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
@@ -379,6 +382,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     syncButtonVisibility();
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
+            }
+            if ("saveHabitation".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "PMGSY Habitation Saved");
+                    dbData.open();
+                    dbData.deleteImageHabitationTable();
+                    syncButtonVisibility();
+                }
+                Log.d("savedHabitation", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -518,7 +533,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             pmgsyHabitation.setdCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_DCODE));
                             pmgsyHabitation.setbCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_BCODE));
                             pmgsyHabitation.setPvCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PVCODE));
-                            pmgsyHabitation.setHabCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PVCODE));
+                            pmgsyHabitation.setHabCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_HABCODE));
                             pmgsyHabitation.setPmgsyDcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_DCODE));
                             pmgsyHabitation.setPmgsyBcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_BCODE));
                             pmgsyHabitation.setPmgsyPvcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_PVCODE));
@@ -535,6 +550,21 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
             }
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(Dashboard.this, "Downloading", true, false, null);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
         }
     }
 
@@ -651,6 +681,64 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public class toUploadHabitation extends AsyncTask<Void, Void,
+            JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            dbData.open();
+            JSONArray habitation = new JSONArray();
+            ArrayList<RoadListValue> Habitation = dbData.getSavedHabitation();
+
+            if (Habitation.size() > 0) {
+                for (int i = 0; i < Habitation.size(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put(AppConstant.KEY_DCODE, Habitation.get(i).getdCode());
+                        jsonObject.put(AppConstant.KEY_BCODE, Habitation.get(i).getbCode());
+                        jsonObject.put(AppConstant.KEY_PVCODE, Habitation.get(i).getPvCode());
+                        jsonObject.put(AppConstant.KEY_HABCODE, Habitation.get(i).getHabCode());
+                        jsonObject.put(AppConstant.KEY_PMGSY_DCODE, Habitation.get(i).getPmgsyDcode());
+                        jsonObject.put(AppConstant.KEY_PMGSY_BCODE, Habitation.get(i).getPmgsyBcode());
+                        jsonObject.put(AppConstant.KEY_PMGSY_PVCODE, Habitation.get(i).getPmgsyPvcode());
+                        jsonObject.put(AppConstant.KEY_PMGSY_HAB_CODE, Habitation.get(i).getPmgsyHabcode());
+                        jsonObject.put(AppConstant.KEY_ROAD_LAT, Habitation.get(i).getRoadLat());
+                        jsonObject.put(AppConstant.KEY_ROAD_LONG, Habitation.get(i).getRoadLong());
+
+                        Bitmap bitmap = Habitation.get(i).getImage();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        byte[] imageInByte = baos.toByteArray();
+                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+                        jsonObject.put(AppConstant.KEY_IMAGES, image_str);
+
+                        habitation.put(jsonObject);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                datasetHabitation = new JSONObject();
+
+                try {
+                    datasetHabitation.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMGSY_HABITATION_SAVE);
+                    datasetHabitation.put(AppConstant.KEY_TRACK_DATA, habitation);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return datasetHabitation;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject dataset) {
+            super.onPostExecute(dataset);
+            syncHabitation();
+        }
+    }
+
 
     public void syncData_Asset() {
         try {
@@ -683,6 +771,23 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("saveLatLongList", "" + authKey);
+        return dataSet;
+    }
+
+    public void syncHabitation() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("saveHabitation", Api.Method.POST, UrlGenerator.getRoadListUrl(), habitaionSavedJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject habitaionSavedJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetHabitation.toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("Habitation", "" + authKey);
         return dataSet;
     }
 

@@ -115,11 +115,25 @@
 
             </RelativeLayout>
 
+            <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
+                android:id="@+id/habitation_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pmgsy_layout"
+                android:layout_marginLeft="@dimen/margin_left_20dp"
+                android:layout_marginTop="@dimen/padding"
+                android:layout_marginRight="@dimen/margin_left_20dp"
+                android:text="Habitation Name"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_15sdp"
+                android:visibility="gone"
+                customfontdemo:fontName="@string/font_circular_bold" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/pmgsy_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/pmgsy_layout"
+                android:layout_below="@+id/habitation_tv"
                 android:layout_margin="5dp"
                 android:layout_alignParentBottom="true"
                 android:fadeScrollbars="false"

@@ -105,10 +105,13 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:visibility="visible"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+               android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/_2sdp"
+                 android:visibility="visible"
                 android:layout_alignParentEnd="true"
+                 android:background="@mipmap/tick_mark"
                   />
 
                 <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView

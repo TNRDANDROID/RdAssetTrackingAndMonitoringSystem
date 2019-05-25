@@ -615,6 +615,61 @@ public class dbData {
         return habits;
     }
 
+    public ArrayList<RoadListValue> getSavedHabitation() {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+            cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
+                    new String[]{"*"}, "server_flag = ?", new String[]{"0"}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    RoadListValue card = new RoadListValue();
+                    card.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    card.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    card.setPvCode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PVCODE)));
+                    card.setHabCode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_HABCODE)));
+                    card.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_DCODE)));
+                    card.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_BCODE)));
+                    card.setPmgsyPvcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_PVCODE)));
+                    card.setPmgsyHabcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_HAB_CODE)));
+                    card.setRoadLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
+                    card.setRoadLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    card.setImage(decodedByte);
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public void deleteImageHabitationTable() {
+        db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE);
+    }
+
     /************** DELETE ALL TABLE *************/
     public  void deleteAll(){
         db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
