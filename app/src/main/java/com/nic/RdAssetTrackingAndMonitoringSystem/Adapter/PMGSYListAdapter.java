@@ -17,6 +17,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyViewHolder>{
@@ -60,6 +61,7 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
         }
     }
 
+
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
@@ -72,17 +74,29 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
             }
         });
 
+      //  visibleOfflinebutton(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+
+        dbData.open();
+        ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+
+        if (habitation_image.size() > 0) {
+           holder.view_offline_image_tv.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.view_offline_image_tv.setVisibility(View.GONE);
+        }
+
         holder.view_online_image_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewImageScreen("Online");
+                viewImageScreen("Online",String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
             }
         });
 
         holder.view_offline_image_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewImageScreen("Offline");
+                viewImageScreen("Offline",String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
             }
         });
     }
@@ -113,10 +127,12 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
     }
 
-    public void viewImageScreen(String type) {
+    public void viewImageScreen(String type,String habcode) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, ViewImageScreen.class);
+        intent.putExtra(AppConstant.KEY_PMGSY_HAB_CODE,habcode);
         intent.putExtra("type", type);
+        intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"Habitation");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

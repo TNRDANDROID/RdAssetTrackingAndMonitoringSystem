@@ -153,8 +153,10 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         treeView = new TreeView(root, this, new MyNodeViewFactory());
         if(!screen_type.equalsIgnoreCase("Habitation")){
              loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+             assetSave.setText("SAVE ASSET PHOTO");
         }else{
             description_layout.setVisibility(View.VISIBLE);
+            assetSave.setText("SAVE HABITATION PHOTO");
         }
 
     }

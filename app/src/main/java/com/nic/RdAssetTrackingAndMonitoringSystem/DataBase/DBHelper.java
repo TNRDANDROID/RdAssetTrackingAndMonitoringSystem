@@ -113,6 +113,7 @@ public class DBHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + PMGSY_HABITATION_LIST_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_LAT_LONG_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGE_LAT_LONG_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + SAVE_IMAGE_HABITATION_TABLE);
             onCreate(db);
         }
     }

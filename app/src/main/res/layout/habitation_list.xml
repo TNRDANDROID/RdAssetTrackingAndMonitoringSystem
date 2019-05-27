@@ -68,7 +68,7 @@ card_view:cardBackgroundColor="@android:color/white"
                                     android:textColor="@android:color/black"
                                     android:textSize="@dimen/_15sdp"
                                     style="@style/font_circular_bold"
-                                    android:visibility="gone"/>
+                                    android:visibility="visible"/>
                                 <View
                                     android:id="@+id/view"
                                     android:layout_width="match_parent"

@@ -114,6 +114,42 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
 
     public void habitationImage() {
 
+        String pmgsy_habcode = getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE);
+        String type = getIntent().getStringExtra("type");
+        Log.d("pmgsy_habcode",pmgsy_habcode);
+
+
+        if (type.equalsIgnoreCase("online")) {
+            String imagestr = "";
+            try {
+                imagestr = jsonObject.getString("image");
+                String image_available = jsonObject.getString("image_available");
+
+                if (imagestr != "") {
+                    byte[] decodedString = Base64.decode(jsonObject.getString("image"), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    image_view.setImageBitmap(decodedByte);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else if (type.equalsIgnoreCase("offline")) {
+
+            dbData.open();
+            ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(pmgsy_habcode);
+
+            if (habitation_image.size() > 0) {
+                for (int i = 0; i < habitation_image.size(); i++) {
+                    Bitmap bitmap = habitation_image.get(i).getImage();
+                    image_view.setImageBitmap(bitmap);
+                    description_tv.setText(habitation_image.get(i).getImageDescription());
+                    description_tv.setEnabled(false);
+                }
+            }
+
+        }
+
     }
 
     @Override

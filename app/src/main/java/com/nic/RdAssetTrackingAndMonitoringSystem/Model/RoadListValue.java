@@ -48,6 +48,8 @@ public Integer bCode;
 public Integer pvCode;
 public Integer habCode;
 
+public String imageDescription;
+
     public Integer getPmgsyDcode() {
         return pmgsyDcode;
     }
@@ -338,5 +340,13 @@ public Integer habCode;
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public String getImageDescription() {
+        return imageDescription;
+    }
+
+    public void setImageDescription(String imageDescription) {
+        this.imageDescription = imageDescription;
     }
 }

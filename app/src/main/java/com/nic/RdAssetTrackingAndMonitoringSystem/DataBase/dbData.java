@@ -666,6 +666,48 @@ public class dbData {
         return cards;
     }
 
+    public ArrayList<RoadListValue> selectImage_Habitation(String hab_code) {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "pmgsy_hab_code = ? and server_flag = ?";
+        String[] selectionArgs = new String[]{hab_code,"0"};
+
+        try {
+            //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+            cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    RoadListValue card = new RoadListValue();
+                    card.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_DCODE)));
+                    card.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_BCODE)));
+                    card.setPmgsyHabcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_HAB_CODE)));
+                    card.setImageDescription(cursor.getString(cursor
+                            .getColumnIndex(AppConstant.KEY_IMAGE_DESCRIPTION)));
+                    card.setImage(decodedByte);
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" , e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
     public void deleteImageHabitationTable() {
         db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE);
     }
@@ -674,6 +716,8 @@ public class dbData {
     public  void deleteAll(){
         db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.PMGSY_VILLAGE_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.PMGSY_HABITATION_LIST_TABLE);
     }
 
 }
