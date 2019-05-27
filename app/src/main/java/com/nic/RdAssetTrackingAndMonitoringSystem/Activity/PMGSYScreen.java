@@ -171,4 +171,10 @@ public class PMGSYScreen extends AppCompatActivity implements Api.ServerResponse
     public void OnError(VolleyError volleyError) {
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        pmgsyListAdapter.notifyDataSetChanged();
+    }
 }

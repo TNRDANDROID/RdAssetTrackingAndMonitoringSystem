@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -55,7 +56,7 @@ import static android.Manifest.permission.CAMERA;
 
 public class AssetTrackingScreen extends AppCompatActivity implements LocationListener, View.OnClickListener, Api.ServerResponseListener {
 private PrefManager prefManager;
-    private ImageView back_img;
+    private ImageView back_img,home_img;
     private LinearLayout district_user_layout, block_user_layout;
     private MyCustomTextView district_tv, block_tv, start_lat_long_tv, midd_lat_long_tv, end_lat_long_tv, road_name, marquee_tv;
     private Button start_lat_long_click_view, stop_lat_long_click_view, end_lat_long_click_view, save_btn;
@@ -105,7 +106,7 @@ private PrefManager prefManager;
         road_name.setText(getIntent().getStringExtra(AppConstant.KEY_ROAD_NAME));
         recyclerView = (RecyclerView) findViewById(R.id.road_list);
         back_img = (ImageView) findViewById(R.id.back_img);
-
+        home_img = (ImageView) findViewById(R.id.home_img);
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -146,6 +147,7 @@ private PrefManager prefManager;
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
         marquee_tv.setVisibility(View.GONE);
+        home_img.setOnClickListener(this);
         loadAssets();
 
     }
@@ -167,13 +169,23 @@ private PrefManager prefManager;
             case R.id.end_lat_long_click_view:
                 pointType = "3";
                 showAlert(pointType);
-
+                break;
+            case R.id.home_img:
+                dashboard();
                 break;
 //            case R.id.save_btn:
 //                saveLatLongData();
 //                break;
 
         }
+    }
+
+    public void dashboard() {
+        Intent intent = new Intent(this, Dashboard.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
     public void showAlert(String pointType) {
         String startAlert = "Capturing of Road Starting GPS-co-ordinate is allowed only once.So stand on the correct starting point of this Road and capture Gps co-ordinate";

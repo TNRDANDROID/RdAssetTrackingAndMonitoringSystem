@@ -85,7 +85,7 @@ card_view:cardBackgroundColor="@android:color/white"
                                     android:layout_height="wrap_content"
                                     android:padding="10dp"
                                     android:text="01ffdfdfdfdfdsdsdsdsdsdsdsdsdsdsdsdsdsd"
-                                    android:textColor="#ce000000"
+                                    android:textColor="#000080"
                                     android:textSize="@dimen/_15sdp"
                                     android:textStyle="bold" />
 

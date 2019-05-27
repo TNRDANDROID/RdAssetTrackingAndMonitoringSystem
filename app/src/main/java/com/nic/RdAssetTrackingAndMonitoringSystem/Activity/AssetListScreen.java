@@ -1,6 +1,7 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,7 +43,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     private TreeView treeView;
     private ArrayList<RoadListValue> ListValues;
     public dbData dbData = new dbData(this);
-    private ImageView back_img;
+    private ImageView back_img,home_img;
     View view;
 
 
@@ -61,7 +62,10 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         viewGroup = (RelativeLayout) findViewById(R.id.container);
 //        setLightStatusBar(viewGroup);
         back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
         back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
+        treeView = new TreeView(root, this, new MyNodeViewFactory());
 
     }
 
@@ -72,10 +76,19 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
             case R.id.back_img:
                 onBackPress();
                 break;
+            case R.id.home_img:
+                dashboard();
+                break;
 
         }
     }
-
+    public void dashboard() {
+        Intent intent = new Intent(this, Dashboard.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -279,5 +292,10 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        treeView.refreshTreeView();
+    }
 
 }

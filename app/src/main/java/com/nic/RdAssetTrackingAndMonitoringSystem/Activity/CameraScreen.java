@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -37,24 +36,20 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.MyNodeViewFactory;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.ThirdLevelNodeViewBinder;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyEditTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyLocationListener;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.CameraUtils;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +86,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
     private JSONObject roadTracksaveImageList;
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     public dbData dbData = new dbData(this);
-    Integer loc_id;
+    String loc_id;
     String screen_type = "";
     Button assetSave;
 
@@ -117,7 +112,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             screen_type = bundle.getString(AppConstant.KEY_SCREEN_TYPE);
-            loc_id = bundle.getInt("loc_id");
+            loc_id = bundle.getString("loc_id");
             Log.d("ScreenType",""+screen_type);
         }
 
@@ -152,7 +147,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         root = TreeNode.root();
         treeView = new TreeView(root, this, new MyNodeViewFactory());
         if(!screen_type.equalsIgnoreCase("Habitation")){
-             loc_id = Integer.valueOf(getIntent().getStringExtra("loc_id"));
+            loc_id = getIntent().getStringExtra("loc_id");
              assetSave.setText("SAVE ASSET PHOTO");
         }else{
             description_layout.setVisibility(View.VISIBLE);
