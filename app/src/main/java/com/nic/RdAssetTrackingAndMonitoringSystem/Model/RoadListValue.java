@@ -47,8 +47,17 @@ public Integer dCode;
 public Integer bCode;
 public Integer pvCode;
 public Integer habCode;
+private String remark;
 
-public String imageDescription;
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String imageDescription;
 
     public Integer getPmgsyDcode() {
         return pmgsyDcode;

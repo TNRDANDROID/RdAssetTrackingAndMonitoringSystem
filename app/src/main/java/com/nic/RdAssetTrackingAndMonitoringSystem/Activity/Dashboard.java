@@ -731,6 +731,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
                         jsonObject.put(AppConstant.KEY_IMAGES, image_str);
+                        jsonObject.put(AppConstant.KEY_IMAGE_REMARK,Habitation.get(i).getRemark());
 
                         habitation.put(jsonObject);
 

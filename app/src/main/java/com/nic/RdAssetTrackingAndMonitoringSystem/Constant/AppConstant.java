@@ -91,6 +91,7 @@ public class AppConstant {
     public static String KEY_SCREEN_TYPE = "screen_type";
     public static String KEY_PMGSY_HABITATION_SAVE = "offroad_pmgsy_habitation_location_save";
     public static String KEY_IMAGE_DESCRIPTION = "image_description";
+    public static String KEY_IMAGE_REMARK= "remark";
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

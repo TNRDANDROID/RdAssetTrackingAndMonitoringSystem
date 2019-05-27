@@ -653,6 +653,8 @@ public class dbData {
                     card.setRoadLong(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
                     card.setImage(decodedByte);
+                    card.setRemark(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
                     cards.add(card);
                 }
             }

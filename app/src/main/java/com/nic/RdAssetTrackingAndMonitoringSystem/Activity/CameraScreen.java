@@ -403,7 +403,7 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
             values.put(AppConstant.KEY_ROAD_LAT, offlatTextValue.toString());
             values.put(AppConstant.KEY_ROAD_LONG, offlongTextValue.toString());
             values.put(AppConstant.KEY_IMAGES,image_str.trim());
-            values.put(AppConstant.KEY_IMAGE_DESCRIPTION,description.getText().toString());
+            values.put(AppConstant.KEY_IMAGE_REMARK,description.getText().toString());
 
             long id = db.insert(DBHelper.SAVE_IMAGE_HABITATION_TABLE, null, values);
 
