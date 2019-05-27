@@ -268,6 +268,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public void getPMGSYImages(){
+        try {
+            new ApiService(this).makeJSONObjectRequest("PMGSYImages", Api.Method.POST, UrlGenerator.getRoadListUrl(), pmgsyImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONObject roadListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roadListJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
@@ -301,6 +309,15 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("pmgsyHabitationList", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject pmgsyImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.pmgsyImagesListJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("pmgsyImagesList", "" + authKey);
         return dataSet;
     }
 
@@ -361,6 +378,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.deleteRoadListTable();
                     dbData.deleteAssetTable();
                     dbData.update_image();
+                    datasetAsset = new JSONObject();
                     getAssetList();
                     getRoadList();
                     Utils.showAlert(this,"Asset Saved");
@@ -376,6 +394,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.open();
                     dbData.update_Track();
                     dbData.deleteRoadListTable();
+                    datasetTrack = new JSONObject();
                     getRoadList();
                    // getAssetList();
                     Utils.showAlert(this, "Lat Long Saved");
@@ -391,6 +410,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     Utils.showAlert(this, "PMGSY Habitation Saved");
                     dbData.open();
                     dbData.deleteImageHabitationTable();
+                    datasetHabitation = new JSONObject();
                     syncButtonVisibility();
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);

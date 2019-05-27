@@ -77,13 +77,23 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
       //  visibleOfflinebutton(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
 
         dbData.open();
-        ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+        ArrayList<RoadListValue> habitation_imageOffline = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()),"0");
 
-        if (habitation_image.size() > 0) {
+        if (habitation_imageOffline.size() > 0) {
            holder.view_offline_image_tv.setVisibility(View.VISIBLE);
         }
         else {
             holder.view_offline_image_tv.setVisibility(View.GONE);
+        }
+
+        dbData.open();
+        ArrayList<RoadListValue> habitation_imageOnline = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()),"1");
+
+        if (habitation_imageOnline.size() > 0) {
+            holder.view_online_image_tv.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.view_online_image_tv.setVisibility(View.GONE);
         }
 
         holder.view_online_image_tv.setOnClickListener(new View.OnClickListener() {

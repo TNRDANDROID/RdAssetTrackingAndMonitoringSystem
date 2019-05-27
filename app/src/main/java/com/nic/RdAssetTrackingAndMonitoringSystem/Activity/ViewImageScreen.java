@@ -117,27 +117,17 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         String pmgsy_habcode = getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE);
         String type = getIntent().getStringExtra("type");
         Log.d("pmgsy_habcode",pmgsy_habcode);
-
+        String server_flag = null;
 
         if (type.equalsIgnoreCase("online")) {
-            String imagestr = "";
-            try {
-                imagestr = jsonObject.getString("image");
-                String image_available = jsonObject.getString("image_available");
-
-                if (imagestr != "") {
-                    byte[] decodedString = Base64.decode(jsonObject.getString("image"), Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    image_view.setImageBitmap(decodedByte);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+           server_flag = "1";
         } else if (type.equalsIgnoreCase("offline")) {
+            server_flag = "0";
+        }
+
 
             dbData.open();
-            ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(pmgsy_habcode);
+            ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(pmgsy_habcode,server_flag);
 
             if (habitation_image.size() > 0) {
                 for (int i = 0; i < habitation_image.size(); i++) {
@@ -147,9 +137,6 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                     description_tv.setEnabled(false);
                 }
             }
-
-        }
-
     }
 
     @Override

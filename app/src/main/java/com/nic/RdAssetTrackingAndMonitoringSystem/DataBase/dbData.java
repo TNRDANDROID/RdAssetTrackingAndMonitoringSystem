@@ -666,12 +666,12 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<RoadListValue> selectImage_Habitation(String hab_code) {
+    public ArrayList<RoadListValue> selectImage_Habitation(String hab_code,String server_flag) {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
         Cursor cursor = null;
         String selection = "pmgsy_hab_code = ? and server_flag = ?";
-        String[] selectionArgs = new String[]{hab_code,"0"};
+        String[] selectionArgs = new String[]{hab_code,server_flag};
 
         try {
             //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
