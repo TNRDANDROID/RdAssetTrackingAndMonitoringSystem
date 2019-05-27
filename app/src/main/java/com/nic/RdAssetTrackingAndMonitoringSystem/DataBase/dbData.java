@@ -693,8 +693,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_BCODE)));
                     card.setPmgsyHabcode(cursor.getInt(cursor
                             .getColumnIndex(AppConstant.KEY_PMGSY_HAB_CODE)));
-                    card.setImageDescription(cursor.getString(cursor
-                            .getColumnIndex(AppConstant.KEY_IMAGE_DESCRIPTION)));
+                    card.setRemark(cursor.getString(cursor
+                            .getColumnIndex(AppConstant.KEY_IMAGE_REMARK)));
                     card.setImage(decodedByte);
 
                     cards.add(card);

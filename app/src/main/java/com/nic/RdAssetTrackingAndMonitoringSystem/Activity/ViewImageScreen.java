@@ -133,7 +133,7 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                 for (int i = 0; i < habitation_image.size(); i++) {
                     Bitmap bitmap = habitation_image.get(i).getImage();
                     image_view.setImageBitmap(bitmap);
-                    description_tv.setText(habitation_image.get(i).getImageDescription());
+                    description_tv.setText(habitation_image.get(i).getRemark());
                     description_tv.setEnabled(false);
                 }
             }
