@@ -48,6 +48,15 @@ public Integer bCode;
 public Integer pvCode;
 public Integer habCode;
 private String remark;
+private String serverFlag;
+
+    public String getServerFlag() {
+        return serverFlag;
+    }
+
+    public void setServerFlag(String serverFlag) {
+        this.serverFlag = serverFlag;
+    }
 
     public String getRemark() {
         return remark;

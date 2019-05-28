@@ -297,9 +297,7 @@ public class Utils {
     public static JSONObject pmgsyImagesListJsonParams(Activity activity) throws JSONException {
         prefManager = new PrefManager(activity);
         JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMGSY_HABITATION_LIST);
-        dataSet.put(AppConstant.DISTRICT_CODE,prefManager.getDistrictCode());
-        dataSet.put(AppConstant.BLOCK_CODE,prefManager.getBlockCode());
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_HABITATION_IMAGE);
         Log.d("utils_pmgsyImages", "" + dataSet);
         return dataSet;
     }

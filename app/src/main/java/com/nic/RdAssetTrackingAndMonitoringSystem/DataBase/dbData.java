@@ -615,7 +615,7 @@ public class dbData {
         return habits;
     }
 
-    public ArrayList<RoadListValue> getSavedHabitation() {
+    public ArrayList<RoadListValue> getSavedHabitation(String flag_code) {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
         Cursor cursor = null;
@@ -623,7 +623,7 @@ public class dbData {
         try {
             //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
             cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
-                    new String[]{"*"}, "server_flag = ?", new String[]{"0"}, null, null, null);
+                    new String[]{"*"}, "server_flag = ?", new String[]{flag_code}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
 
@@ -666,6 +666,37 @@ public class dbData {
             }
         }
         return cards;
+    }
+
+    public RoadListValue insert_newPMGSYImages(RoadListValue pmgsyImageValue) {
+
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_DCODE, pmgsyImageValue.getdCode());
+        values.put(AppConstant.KEY_BCODE, pmgsyImageValue.getbCode());
+        values.put(AppConstant.KEY_PVCODE,pmgsyImageValue.getPvCode() );
+        values.put(AppConstant.KEY_HABCODE,pmgsyImageValue.getHabCode() );
+        values.put(AppConstant.KEY_PMGSY_DCODE,pmgsyImageValue.getPmgsyDcode() );
+        values.put(AppConstant.KEY_PMGSY_BCODE,pmgsyImageValue.getPmgsyBcode() );
+        values.put(AppConstant.KEY_PMGSY_PVCODE,pmgsyImageValue.getPmgsyPvcode() );
+        values.put(AppConstant.KEY_PMGSY_HAB_CODE,pmgsyImageValue.getPmgsyHabcode() );
+        values.put(AppConstant.KEY_ROAD_LAT, pmgsyImageValue.getRoadLat());
+        values.put(AppConstant.KEY_ROAD_LONG, pmgsyImageValue.getRoadLong());
+        values.put(AppConstant.KEY_IMAGE_REMARK,pmgsyImageValue.getRemark());
+        values.put("server_flag",pmgsyImageValue.getServerFlag());
+
+        Bitmap bitmap = pmgsyImageValue.getImage();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        byte[] imageInByte = baos.toByteArray();
+        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+        values.put(AppConstant.KEY_IMAGES,image_str);
+
+
+        long id = db.insert(DBHelper.SAVE_IMAGE_HABITATION_TABLE,null,values);
+        Log.d("Inserted_id_HabImage",String.valueOf(id));
+        return pmgsyImageValue;
     }
 
     public ArrayList<RoadListValue> selectImage_Habitation(String hab_code,String server_flag) {
@@ -720,6 +751,7 @@ public class dbData {
         db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.PMGSY_VILLAGE_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.PMGSY_HABITATION_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE +" WHERE server_flag = 1 ");
     }
 
 }
