@@ -44,17 +44,9 @@ public class AppVersionHelper implements Api.ServerResponseListener {
         Map<String, String> params = new HashMap<>();
 
         params.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        params.put(AppConstant.KEY_APP_CODE, "I");
+        params.put(AppConstant.KEY_APP_CODE, "A");
 
         return params;
-    }
-
-    public static JSONObject versionCheck() throws JSONException {
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_VERSION_CHECK);
-        dataSet.put(AppConstant.KEY_APP_CODE, "A");
-        Log.d("versionCheck", "" + dataSet);
-        return dataSet;
     }
 
     @Override
