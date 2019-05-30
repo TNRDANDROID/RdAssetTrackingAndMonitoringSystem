@@ -150,7 +150,13 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
             e.printStackTrace();
         }
 
-        new fetchAssettask().execute(param);
+        if(loc_grp.equalsIgnoreCase("7") || loc_grp.equalsIgnoreCase("8")){
+            new fetchBridgetask().execute(param);
+        }else {
+            new fetchAssettask().execute(param);
+        }
+
+
     }
 
     public class fetchAssettask extends AsyncTask<JSONObject, Void,
@@ -166,11 +172,28 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
-            buildTree(roadList);
+            buildTreeAssets(roadList);
         }
     }
 
-    private void buildTree(ArrayList<RoadListValue> listValues) {
+    public class fetchBridgetask extends AsyncTask<JSONObject, Void,
+            ArrayList<RoadListValue>> {
+        @Override
+        protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
+            dbData.open();
+            ListValues = new ArrayList<>();
+            ListValues = dbData.selectBridges(params[0],"secondLevel");
+            return ListValues;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<RoadListValue> roadList) {
+            super.onPostExecute(roadList);
+            buildTreeBridges(roadList);
+        }
+    }
+
+    private void buildTreeAssets(ArrayList<RoadListValue> listValues) {
 
         for (int i = 0; i < listValues.size(); i++) {
             String subgrpname = listValues.get(i).getSubgroupName();
@@ -239,6 +262,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                         value1.put("id",id);
                         value1.put("image_available",image_available);
                         value1.put("image",image);
+                        value1.put("type","assetScreen");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -261,6 +285,66 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
 // }
 // treeNode.addChild(treeNode1);
             }
+            root.addChild(treeNode);
+        }
+
+        treeView = new TreeView(root, this, new MyNodeViewFactory());
+        view = treeView.getView();
+        view.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        viewGroup.addView(view);
+    }
+
+    private void buildTreeBridges(ArrayList<RoadListValue> listValues) {
+
+        for (int i = 0; i < listValues.size(); i++) {
+            Integer road_id = listValues.get(i).getRoadID();
+            Integer loc_grp = listValues.get(i).getLocGroup();
+            Integer loc = listValues.get(i).getLocID();
+            String culvert_type_name = listValues.get(i).getCulvertTypeName();
+
+            TreeNode treeNode = new TreeNode(new String(culvert_type_name));
+            treeNode.setLevel(0);
+
+            JSONObject jsonObject =new JSONObject();
+            try {
+                jsonObject.put(AppConstant.KEY_ROAD_ID,road_id);
+                jsonObject.put(AppConstant.KEY_LOCATION_GROUP,loc_grp);
+                jsonObject.put(AppConstant.KEY_LOCATION_ID,loc);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            dbData.open();
+            ArrayList<RoadListValue> thirdlevelList = dbData.selectBridges(jsonObject,"thirdLevel");
+
+            if(thirdlevelList.size() > 0){
+                for(int j = 0; j < thirdlevelList.size(); j++){
+                    JSONObject thirdObject = new JSONObject();
+                    try {
+                        thirdObject.put(AppConstant.KEY_CHAINAGE,thirdlevelList.get(j).getChainage());
+                        thirdObject.put(AppConstant.KEY_WIDTH,thirdlevelList.get(j).getWidth());
+                        thirdObject.put(AppConstant.KEY_LENGTH,thirdlevelList.get(j).getLength());
+                        thirdObject.put(AppConstant.KEY_VENT_HEIGHT,thirdlevelList.get(j).getVentHeight());
+                        thirdObject.put(AppConstant.KEY_SPAN,thirdlevelList.get(j).getSpan());
+                        thirdObject.put(AppConstant.KEY_CULVERT_ID,thirdlevelList.get(j).getCulvertId());
+                        thirdObject.put(AppConstant.KEY_CULVERT_NAME,thirdlevelList.get(j).getCulvertName());
+                        thirdObject.put("type","bridgeScreen");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    TreeNode treeNode1 = null;
+                    try {
+                        treeNode1 = new TreeNode(new JSONObject(String.valueOf(thirdObject)));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    treeNode1.setLevel(1);
+                    treeNode.addChild(treeNode1);
+                }
+            }
+
             root.addChild(treeNode);
         }
 

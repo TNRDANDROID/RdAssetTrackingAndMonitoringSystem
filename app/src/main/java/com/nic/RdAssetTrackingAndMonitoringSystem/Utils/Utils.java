@@ -301,6 +301,13 @@ public class Utils {
         Log.d("utils_pmgsyImages", "" + dataSet);
         return dataSet;
     }
+    public static JSONObject bridgesListJsonParams(Activity activity) throws JSONException {
+        prefManager = new PrefManager(activity);
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BRIDGES_CULVERT);
+        Log.d("utils_bridges", "" + dataSet);
+        return dataSet;
+    }
     //Version name
     public static String getVersionName(Context context) {
         PackageManager manager = context.getPackageManager();

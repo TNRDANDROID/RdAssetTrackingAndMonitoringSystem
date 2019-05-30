@@ -59,15 +59,20 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         if (screen_type.equalsIgnoreCase("Habitation")) {
             description_layout.setVisibility(View.VISIBLE);
             habitationImage();
-        } else {
+        }
+        else if(screen_type.equalsIgnoreCase("thirdLevelNode")) {
             description_layout.setVisibility(View.GONE);
             thirdLevelNodeImage();
+        }
+        else if(screen_type.equalsIgnoreCase("bridgeScreen")) {
+            description_layout.setVisibility(View.GONE);
+            bridgeImage();
         }
     }
 
     public void thirdLevelNodeImage() {
         String image = getIntent().getStringExtra("imageData");
-        String type = getIntent().getStringExtra("type");
+        String OffOntype = getIntent().getStringExtra("OffOntype");
 
         try {
             jsonObject = new JSONObject(image);
@@ -75,7 +80,7 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             e.printStackTrace();
         }
 
-        if (type.equalsIgnoreCase("online")) {
+        if (OffOntype.equalsIgnoreCase("online")) {
             String imagestr = "";
             try {
                 imagestr = jsonObject.getString("image");
@@ -90,7 +95,7 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (type.equalsIgnoreCase("offline")) {
+        } else if (OffOntype.equalsIgnoreCase("offline")) {
             try {
                 String asset_id = jsonObject.getString("id");
                 String road_id = prefManager.getRoadId();
@@ -115,13 +120,13 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
     public void habitationImage() {
 
         String pmgsy_habcode = getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE);
-        String type = getIntent().getStringExtra("type");
+        String OffOntype = getIntent().getStringExtra("OffOntype");
         Log.d("pmgsy_habcode",pmgsy_habcode);
         String server_flag = null;
 
-        if (type.equalsIgnoreCase("online")) {
+        if (OffOntype.equalsIgnoreCase("online")) {
            server_flag = "1";
-        } else if (type.equalsIgnoreCase("offline")) {
+        } else if (OffOntype.equalsIgnoreCase("offline")) {
             server_flag = "0";
         }
 
@@ -137,6 +142,34 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                     description_tv.setEnabled(false);
                 }
             }
+    }
+
+    public void bridgeImage() {
+
+        String culvert_id = getIntent().getStringExtra(AppConstant.KEY_CULVERT_ID);
+        String road_id = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
+        String OffOntype = getIntent().getStringExtra("OffOntype");
+        Log.d("culvert_id",culvert_id);
+        String image_flag = null;
+
+        if (OffOntype.equalsIgnoreCase("online")) {
+            image_flag = "1";
+        } else if (OffOntype.equalsIgnoreCase("offline")) {
+            image_flag = "0";
+        }
+
+
+        dbData.open();
+        ArrayList<RoadListValue> habitation_image = dbData.selectBridgeImage(road_id,culvert_id,image_flag);
+
+        if (habitation_image.size() > 0) {
+            for (int i = 0; i < habitation_image.size(); i++) {
+                Bitmap bitmap = habitation_image.get(i).getImage();
+                image_view.setImageBitmap(bitmap);
+                description_tv.setText(habitation_image.get(i).getRemark());
+                description_tv.setEnabled(false);
+            }
+        }
     }
 
     @Override

@@ -745,12 +745,343 @@ public class dbData {
         db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE);
     }
 
+    /********************** BRIDGES AND CULVERT ****************************/
+
+    public RoadListValue insert_newBridges(RoadListValue bridgesValue) {
+
+
+        ContentValues values = new ContentValues();
+        values.put(AppConstant.KEY_DATA_TYPE, bridgesValue.getDataType());
+        values.put(AppConstant.KEY_LOCATION_GROUP, bridgesValue.getLocGroup());
+        values.put(AppConstant.KEY_LOCATION_ID, bridgesValue.getLocID());
+        values.put(AppConstant.KEY_DCODE, bridgesValue.getdCode());
+        values.put(AppConstant.KEY_BCODE, bridgesValue.getbCode());
+        values.put(AppConstant.KEY_PVCODE,bridgesValue.getPvCode() );
+        values.put(AppConstant.KEY_ROAD_ID,bridgesValue.getRoadID() );
+        values.put(AppConstant.KEY_CULVERT_TYPE,bridgesValue.getCulvertType() );
+        values.put(AppConstant.KEY_CULVERT_TYPE_NAME,bridgesValue.getCulvertTypeName() );
+        values.put(AppConstant.KEY_CHAINAGE,bridgesValue.getChainage() );
+        values.put(AppConstant.KEY_CULVERT_NAME,bridgesValue.getCulvertName() );
+        values.put(AppConstant.KEY_SPAN,bridgesValue.getSpan() );
+        values.put(AppConstant.KEY_NO_OF_SPAN, bridgesValue.getNoOfSpan());
+        values.put(AppConstant.KEY_WIDTH, bridgesValue.getWidth());
+        values.put(AppConstant.KEY_VENT_HEIGHT,bridgesValue.getVentHeight());
+        values.put(AppConstant.KEY_LENGTH,bridgesValue.getLength());
+        values.put(AppConstant.KEY_CULVERT_ID,bridgesValue.getCulvertId());
+        values.put(AppConstant.KEY_START_LAT,bridgesValue.getStartLat());
+        values.put(AppConstant.KEY_START_LONG,bridgesValue.getStartLong());
+
+        Bitmap bitmap = bridgesValue.getImage();
+        if(bitmap != null){
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            byte[] imageInByte = baos.toByteArray();
+            String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+            values.put(AppConstant.KEY_ONLINE_IMAGES,image_str.trim());
+        }
+
+        values.put(AppConstant.KEY_SERVER_FLAG,bridgesValue.getServerFlag());
+
+        long id = db.insert(DBHelper.BRIDGES_CULVERT,null,values);
+        Log.d("Inserted_id_Bridges",String.valueOf(id));
+        return bridgesValue;
+    }
+
+    public ArrayList<RoadListValue> getAllBridges(String flagCode,String purpose) {
+
+        ArrayList<RoadListValue> bridges = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "server_flag = ?";
+        if(purpose.equalsIgnoreCase("upload")){
+            selection = "image_flag = ?";
+        }
+
+        try {
+            cursor = db.query(DBHelper.BRIDGES_CULVERT,
+                    new String[]{"*"},selection , new String[]{flagCode}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue bridge = new RoadListValue();
+                    bridge.setDataType(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DATA_TYPE)));
+                    bridge.setLocGroup(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
+                    bridge.setLocID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                    bridge.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    bridge.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    bridge.setPvCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                    bridge.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    bridge.setCulvertType(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE)));
+                    bridge.setCulvertTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE_NAME)));
+                    bridge.setChainage(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CHAINAGE)));
+                    bridge.setCulvertName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_NAME)));
+                    bridge.setSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SPAN)));
+                    bridge.setNoOfSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_SPAN)));
+                    bridge.setWidth(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_WIDTH)));
+                    bridge.setVentHeight(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_VENT_HEIGHT)));
+                    bridge.setLength(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LENGTH)));
+                    bridge.setCulvertId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_ID)));
+                    bridge.setStartLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LAT)));
+                    bridge.setStartLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LONG)));
+                    if(purpose.equalsIgnoreCase("upload"))
+                    {
+                        byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                        byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                        bridge.setImage(decodedByte);
+                    }
+
+
+                    bridges.add(bridge);
+                }
+            }
+        } catch (Exception e){
+            Log.d( "Exception", String.valueOf(e));
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return bridges;
+    }
+
+    public ArrayList<RoadListValue> selectBridges(JSONObject code, String type) {
+
+        ArrayList<RoadListValue> bridges = new ArrayList<>();
+        Cursor cursor = null;
+        String condition = "";
+        String road_id ="";
+        String loc_grp ="";
+        String loc ="";
+
+        String[] columns = new String[0];
+        String selection = null;
+        String[] selectionArgs = new String[0];
+
+        if (type.equalsIgnoreCase("firstLevel"))
+        {
+            try {
+                road_id = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                columns = new String[]{"distinct road_id,loc_grp"};
+                selection = "road_id = ?";
+                selectionArgs = new String[]{road_id};
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(type.equalsIgnoreCase("secondLevel")) {
+            try {
+                road_id = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                loc_grp = String.valueOf(code.get(AppConstant.KEY_LOCATION_GROUP));
+                columns = new String[]{"distinct road_id,loc_grp,loc,culvert_type,culvert_type_name"};
+                selection = "road_id = ? and loc_grp = ?";
+                selectionArgs = new String[]{road_id,loc_grp};
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(type.equalsIgnoreCase("thirdLevel")) {
+            try {
+                road_id = String.valueOf(code.get(AppConstant.KEY_ROAD_ID));
+                loc_grp = String.valueOf(code.get(AppConstant.KEY_LOCATION_GROUP));
+                loc = String.valueOf(code.get(AppConstant.KEY_LOCATION_ID));
+                columns = new String[]{"*"};
+                selection = "road_id = ? and loc_grp = ? and loc = ?";
+                selectionArgs = new String[]{road_id,loc_grp,loc};
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            cursor = db.query(DBHelper.BRIDGES_CULVERT,
+                    columns, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue bridge = new RoadListValue();
+                    bridge.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    Integer locgrp = cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP));
+                    bridge.setLocGroup(locgrp);
+
+                    if(locgrp == 7){
+                        bridge.setGroupName("Bridges");
+                    }else if(locgrp == 8){
+                        bridge.setGroupName("Culverts");
+                    }
+
+                    bridge.setLevelType(type);
+
+                    if (type.equalsIgnoreCase("secondLevel")) {
+
+                        bridge.setCulvertType(cursor.getInt(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE)));
+                        bridge.setCulvertTypeName(cursor.getString(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE_NAME)));
+                        bridge.setLocID(cursor.getInt(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                    }else
+                        if(type.equalsIgnoreCase("thirdLevel")){
+
+                            bridge.setDataType(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_DATA_TYPE)));
+                            bridge.setLocID(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                            bridge.setdCode(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                            bridge.setbCode(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                            bridge.setPvCode(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                            bridge.setCulvertType(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE)));
+                            bridge.setCulvertTypeName(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE_NAME)));
+                            bridge.setChainage(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_CHAINAGE)));
+                            bridge.setCulvertName(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_NAME)));
+                            bridge.setSpan(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_SPAN)));
+                            bridge.setNoOfSpan(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_SPAN)));
+                            bridge.setWidth(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_WIDTH)));
+                            bridge.setVentHeight(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_VENT_HEIGHT)));
+                            bridge.setLength(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_LENGTH)));
+                            bridge.setCulvertId(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_ID)));
+                            bridge.setStartLat(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_START_LAT)));
+                            bridge.setStartLong(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_START_LONG)));
+                    }
+
+                    bridges.add(bridge);
+                }
+            }
+        } catch (Exception e){
+            Log.d( "Exception", String.valueOf(e));
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return bridges;
+    }
+
+
+    public ArrayList<RoadListValue> selectBridgeImage(String road_id,String culvert_id,String image_flag ) {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "road_id = ? and culvert_id = ? and image_flag = ? ";
+        String[] selectionArgs = new String[]{road_id,culvert_id,image_flag};
+
+        try {
+            //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+            cursor = db.query(DBHelper.BRIDGES_CULVERT,
+                    new String[]{"*"}, selection, selectionArgs, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    Bitmap decodedByte = null;
+
+                  //  byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    if(image_flag.equalsIgnoreCase("0")){
+                        byte[] decodedString = Base64.decode(cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES)), Base64.DEFAULT);
+                        decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+                    else if(image_flag.equalsIgnoreCase("1")) {
+                        byte[] decodedString = Base64.decode(cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_ONLINE_IMAGES)), Base64.DEFAULT);
+                        decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    }
+
+
+                    RoadListValue bridge = new RoadListValue();
+
+                    bridge.setDataType(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DATA_TYPE)));
+                    bridge.setLocID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                    bridge.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    bridge.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    bridge.setPvCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                    bridge.setCulvertType(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE)));
+                    bridge.setCulvertTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE_NAME)));
+                    bridge.setChainage(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CHAINAGE)));
+                    bridge.setCulvertName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_NAME)));
+                    bridge.setSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SPAN)));
+                    bridge.setNoOfSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_SPAN)));
+                    bridge.setWidth(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_WIDTH)));
+                    bridge.setVentHeight(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_VENT_HEIGHT)));
+                    bridge.setLength(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LENGTH)));
+                    bridge.setCulvertId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_ID)));
+                    bridge.setStartLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LAT)));
+                    bridge.setStartLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LONG)));
+                    bridge.setImage(decodedByte);
+
+                    cards.add(bridge);
+                }
+            }
+        } catch (Exception e){
+            Log.d("Exception" , e.toString());
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
+    public void deleteBridgesTable() {
+        db.execSQL("delete from "+ DBHelper.BRIDGES_CULVERT);
+    }
+
     /************** DELETE ALL TABLE *************/
     public  void deleteAll(){
         db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.PMGSY_VILLAGE_LIST_TABLE);
         db.execSQL("delete from "+ DBHelper.PMGSY_HABITATION_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.BRIDGES_CULVERT +" WHERE image_flag = 1 ");
         db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE +" WHERE server_flag = 1 ");
     }
 

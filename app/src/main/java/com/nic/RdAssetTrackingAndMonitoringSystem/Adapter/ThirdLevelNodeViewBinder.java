@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
@@ -32,7 +34,8 @@ import me.texy.treeview.base.ClickableNodeViewBinder;
 public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     MyCustomTextView third_level_tv,loc_id,view_offline_image;
     TextView view_image_tv;
-    View view;
+    View viewTop,viewBottom;
+    ImageView take_photo;
     private Context appContext;
     private dbData dbData;
     private PrefManager prefManager;
@@ -40,7 +43,9 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         super(context,itemView);
         third_level_tv = (MyCustomTextView) itemView.findViewById(R.id.third_level_tv);
         view_image_tv = (TextView) itemView.findViewById(R.id.view_image_tv);
-        view = (View) itemView.findViewById(R.id.view);
+        viewTop = (View) itemView.findViewById(R.id.viewTop);
+        viewBottom = (View) itemView.findViewById(R.id.viewBottom);
+        take_photo = (ImageView) itemView.findViewById(R.id.take_photo);
         view_offline_image = (MyCustomTextView) itemView.findViewById(R.id.view_offline_image);
         loc_id = (MyCustomTextView) itemView.findViewById(R.id.loc_id);
         this.appContext = context;
@@ -72,9 +77,10 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         if(clicked) {
             try {
                 JSONObject clicked_id = new JSONObject(String.valueOf(treeNode.getValue()));
-                String loc_id = clicked_id.getString("id");
-                Log.d("Nodetreeid",""+ loc_id);
-                cameraActivity(loc_id);
+              //  String loc_id = clicked_id.getString("id");
+               // Log.d("Nodetreeid",""+ loc_id);
+               // cameraActivity(loc_id);
+                cameraActivity(clicked_id);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -116,25 +122,53 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     public void bindView(TreeNode treeNode) {
         JSONObject jsonObject = new JSONObject();
         String image_available = "";
+        String type = "";
         try {
             jsonObject = new JSONObject(String.valueOf(treeNode.getValue()));
-            visibleOfflinebutton(jsonObject.getString("id"));
+            type =  jsonObject.getString("type");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        try {
-            third_level_tv.setText(jsonObject.getString("display"));
-            image_available =  jsonObject.getString("image_available");
-            if(image_available.equalsIgnoreCase("Y")) {
-                view_image_tv.setVisibility(View.VISIBLE);
+        if(type.equalsIgnoreCase("assetScreen")) {
+
+            try {
+                visibleOfflinebutton(jsonObject.getString("id"));
+
+                third_level_tv.setText(jsonObject.getString("display"));
+                image_available =  jsonObject.getString("image_available");
+                if(image_available.equalsIgnoreCase("Y")) {
+                    view_image_tv.setVisibility(View.VISIBLE);
+                }
+                else {
+                    view_image_tv.setVisibility(View.GONE);
+                }
+                loc_id.setTag(loc_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            else {
-                view_image_tv.setVisibility(View.GONE);
-            }
-            loc_id.setTag(loc_id);
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+        else if(type.equalsIgnoreCase("bridgeScreen")) {
+            try {
+
+                visibleOfflineBridge(jsonObject.getString(AppConstant.KEY_CULVERT_ID));
+                visibleOnlineBridge(jsonObject.getString(AppConstant.KEY_CULVERT_ID));
+
+                String text = jsonObject.getString(AppConstant.KEY_CULVERT_NAME)+"\n"
+                        +"CHAINAGE:"+jsonObject.getString(AppConstant.KEY_CHAINAGE)+"\n"
+                        +"WIDTH:"+jsonObject.getString(AppConstant.KEY_WIDTH)+"\n"
+                        +"LENGTH:"+jsonObject.getString(AppConstant.KEY_LENGTH)+"\n"
+                        +"VENT HEIGHT:"+jsonObject.getString(AppConstant.KEY_VENT_HEIGHT)+"\n"
+                        +"SPAN:"+jsonObject.getString(AppConstant.KEY_SPAN);
+
+                third_level_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
+                third_level_tv.setText(text);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
 
         // third_level_tv.setText(treeNode.getValue().toString());
     }
@@ -147,31 +181,107 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
 
         if (assets.size() > 0) {
             view_offline_image.setVisibility(View.VISIBLE);
-            view.setVisibility(View.VISIBLE);
+            viewTop.setVisibility(View.VISIBLE);
         }
         else {
             view_offline_image.setVisibility(View.GONE);
-            view.setVisibility(View.GONE);
+            viewTop.setVisibility(View.GONE);
+        }
+    }
+
+    public void visibleOfflineBridge(String culvert_id){
+        String road_id = prefManager.getRoadId();
+        dbData.open();
+        ArrayList<RoadListValue> image = dbData.selectBridgeImage(road_id,culvert_id,"0");
+
+        if (image.size() > 0) {
+            view_offline_image.setVisibility(View.VISIBLE);
+            viewTop.setVisibility(View.VISIBLE);
+        }
+        else {
+            view_offline_image.setVisibility(View.GONE);
+            viewTop.setVisibility(View.GONE);
+        }
+    }
+
+    public void visibleOnlineBridge(String culvert_id){
+        String road_id = prefManager.getRoadId();
+        dbData.open();
+        ArrayList<RoadListValue> image = dbData.selectBridgeImage(road_id,culvert_id,"1");
+
+        if (image.size() > 0) {
+            view_image_tv.setVisibility(View.VISIBLE);
+        }
+        else {
+            view_image_tv.setVisibility(View.GONE);
         }
     }
 
 
-    public void cameraActivity(String id){
-        String loc_id = id;
-        Activity activity = (Activity) appContext;
-        Intent intent = new Intent( appContext, CameraScreen.class);
-        intent.putExtra("loc_id",loc_id);
-        intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
-        activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    public void cameraActivity(JSONObject clicked_id){
+        String loc_id = null;
+        String type = null;
+        try {
+            type = clicked_id.getString("type");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(type.equalsIgnoreCase("assetScreen")){
+            try {
+                loc_id = clicked_id.getString("id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Activity activity = (Activity) appContext;
+            Intent intent = new Intent( appContext, CameraScreen.class);
+            intent.putExtra("loc_id",loc_id);
+            intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
+        else if(type.equalsIgnoreCase("bridgeScreen")){
+            String culvert_id = null;
+            try {
+                culvert_id = clicked_id.getString(AppConstant.KEY_CULVERT_ID);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Activity activity = (Activity) appContext;
+            Intent intent = new Intent( appContext, CameraScreen.class);
+            intent.putExtra(AppConstant.KEY_CULVERT_ID,culvert_id);
+            intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"bridgeLevel");
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        }
+
     }
 
-    public void viewImageScreen(JSONObject jsonObject,String  type) {
+    public void viewImageScreen(JSONObject jsonObject,String  OffOntype) {
+        String type = "";
+        String culvert_id = "";
+        try {
+            type = jsonObject.getString("type");
+            culvert_id = jsonObject.getString(AppConstant.KEY_CULVERT_ID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Activity activity = (Activity) appContext;
         Intent intent = new Intent(appContext, ViewImageScreen.class);
-        intent.putExtra("imageData", String.valueOf(jsonObject));
-        intent.putExtra("type",type);
-        intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
+
+        if(type.equalsIgnoreCase("assetScreen")) {
+            intent.putExtra("imageData", String.valueOf(jsonObject));
+            intent.putExtra("OffOntype",OffOntype);
+            intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
+        }
+        else if(type.equalsIgnoreCase("bridgeScreen")) {
+            intent.putExtra(AppConstant.KEY_CULVERT_ID,culvert_id);
+            intent.putExtra(AppConstant.KEY_ROAD_ID,prefManager.getRoadId());
+            intent.putExtra("OffOntype",OffOntype);
+            intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"bridgeScreen");
+        }
+
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }

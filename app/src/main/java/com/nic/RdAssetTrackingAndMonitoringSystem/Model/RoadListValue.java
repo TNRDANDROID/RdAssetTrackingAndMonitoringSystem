@@ -50,6 +50,124 @@ public Integer habCode;
 private String remark;
 private String serverFlag;
 
+private String dataType;
+private Integer culvertType;
+private String  culvertTypeName;
+private Integer chainage;
+private String culvertName;
+private Integer span;
+private Integer noOfSpan;
+private Integer width;
+private Integer ventHeight;
+private Integer length;
+private Integer culvertId;
+private String startLat;
+private String startLong;
+
+    public String getCulvertTypeName() {
+        return culvertTypeName;
+    }
+
+    public void setCulvertTypeName(String culvertTypeName) {
+        this.culvertTypeName = culvertTypeName;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
+    public Integer getCulvertType() {
+        return culvertType;
+    }
+
+    public void setCulvertType(Integer culvertType) {
+        this.culvertType = culvertType;
+    }
+
+    public Integer getChainage() {
+        return chainage;
+    }
+
+    public void setChainage(Integer chainage) {
+        this.chainage = chainage;
+    }
+
+    public String getCulvertName() {
+        return culvertName;
+    }
+
+    public void setCulvertName(String culvertName) {
+        this.culvertName = culvertName;
+    }
+
+    public Integer getSpan() {
+        return span;
+    }
+
+    public void setSpan(Integer span) {
+        this.span = span;
+    }
+
+    public Integer getNoOfSpan() {
+        return noOfSpan;
+    }
+
+    public void setNoOfSpan(Integer noOfSpan) {
+        this.noOfSpan = noOfSpan;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getVentHeight() {
+        return ventHeight;
+    }
+
+    public void setVentHeight(Integer ventHeight) {
+        this.ventHeight = ventHeight;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public Integer getCulvertId() {
+        return culvertId;
+    }
+
+    public void setCulvertId(Integer culvertId) {
+        this.culvertId = culvertId;
+    }
+
+    public String getStartLat() {
+        return startLat;
+    }
+
+    public void setStartLat(String startLat) {
+        this.startLat = startLat;
+    }
+
+    public String getStartLong() {
+        return startLong;
+    }
+
+    public void setStartLong(String startLong) {
+        this.startLong = startLong;
+    }
+
     public String getServerFlag() {
         return serverFlag;
     }

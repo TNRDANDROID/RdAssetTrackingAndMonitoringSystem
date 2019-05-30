@@ -94,6 +94,27 @@ public class AppConstant {
     public static String KEY_IMAGE_DESCRIPTION = "image_description";
     public static String KEY_IMAGE_REMARK= "remark";
 
+    /****** BRIDGES *******/
+
+    public static String KEY_BRIDGES_CULVERT = "road_asset_bridge_culvets";
+    public static String KEY_BRIDGES_CULVERT_SAVE = "road_track_bridge_culvets_save";
+    public static String KEY_DATA_TYPE = "data_type";
+    public static String KEY_CULVERT_TYPE = "culvert_type";
+    public static String KEY_CULVERT_TYPE_NAME = "culvert_type_name";
+    public static String KEY_CHAINAGE = "chainage";
+    public static String KEY_CULVERT_NAME = "culvet_name";
+    public static String KEY_SPAN = "span";
+    public static String KEY_NO_OF_SPAN = "no_of_span";
+    public static String KEY_WIDTH = "width";
+    public static String KEY_VENT_HEIGHT = "vent_height";
+    public static String KEY_LENGTH = "length";
+    public static String KEY_CULVERT_ID = "culvert_id";
+    public static String KEY_START_LAT = "start_lat";
+    public static String KEY_START_LONG = "start_long";
+    public static String KEY_SERVER_FLAG = "server_flag";
+    public static String KEY_IMAGE_FLAG = "image_flag";
+    public static String KEY_ONLINE_IMAGES = "online_images";
+
 
     public static String KEY_VERSION_CHECK= "version_check";
 }

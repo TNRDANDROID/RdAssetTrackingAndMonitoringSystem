@@ -301,7 +301,9 @@ private PrefManager prefManager;
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        assetLists = new ArrayList<>();
         new fetchAssettask().execute(jsonArray);
+        new fetchBridgestask().execute(jsonArray);
     }
 
     public class fetchAssettask extends AsyncTask<JSONObject, Void,
@@ -309,8 +311,50 @@ private PrefManager prefManager;
         @Override
         protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
             dbData.open();
-            assetLists = new ArrayList<>();
-            assetLists = dbData.select_Asset(params[0],"firstLevel");
+           ArrayList<RoadListValue> assetList = new ArrayList<>();
+            assetList = dbData.select_Asset(params[0],"firstLevel");
+
+            if (assetList.size() > 0) {
+                for (int i = 0; i < assetList.size(); i++) {
+                    RoadListValue card = new RoadListValue();
+                    card.setRoadID(assetList.get(i).getRoadID());
+                    card.setLocGroup(assetList.get(i).getLocGroup());
+                    card.setGroupName(assetList.get(i).getGroupName());
+                    card.setLevelType(assetList.get(i).getLevelType());
+
+                    assetLists.add(card);
+                }
+            }
+            return assetLists;
+        }
+
+//        @Override
+//        protected void onPostExecute(ArrayList<RoadListValue> roadList) {
+//            super.onPostExecute(roadList);
+//            assetListAdapter = new AssetListAdapter(AssetTrackingScreen.this,
+//                               roadList, dbData);
+//            recyclerView.setAdapter(assetListAdapter);
+//        }
+    }
+    public class fetchBridgestask extends AsyncTask<JSONObject, Void,
+            ArrayList<RoadListValue>> {
+        @Override
+        protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<RoadListValue> assetList = new ArrayList<>();
+            assetList = dbData.selectBridges(params[0],"firstLevel");
+
+            if (assetList.size() > 0) {
+                for (int i = 0; i < assetList.size(); i++) {
+                    RoadListValue card = new RoadListValue();
+                    card.setRoadID(assetList.get(i).getRoadID());
+                    card.setLocGroup(assetList.get(i).getLocGroup());
+                    card.setGroupName(assetList.get(i).getGroupName());
+                    card.setLevelType(assetList.get(i).getLevelType());
+
+                    assetLists.add(card);
+                }
+            }
             return assetLists;
         }
 
@@ -318,7 +362,7 @@ private PrefManager prefManager;
         protected void onPostExecute(ArrayList<RoadListValue> roadList) {
             super.onPostExecute(roadList);
             assetListAdapter = new AssetListAdapter(AssetTrackingScreen.this,
-                               roadList, dbData);
+                    assetLists, dbData);
             recyclerView.setAdapter(assetListAdapter);
         }
     }

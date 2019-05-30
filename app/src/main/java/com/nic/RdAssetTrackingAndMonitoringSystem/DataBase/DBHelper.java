@@ -15,6 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SAVE_LAT_LONG_TABLE = "LatLongTable";
     public static final String SAVE_IMAGE_LAT_LONG_TABLE = "ImageLatLongTable";
     public static final String SAVE_IMAGE_HABITATION_TABLE = "ImageHabitationTable";
+    public static final String BRIDGES_CULVERT = "BridgesAndCulvert";
 
 
     private Context context;
@@ -100,6 +101,31 @@ public class DBHelper extends SQLiteOpenHelper {
                 "road_lat TEXT," +
                 "road_long TEXT," +
                 "server_flag  INTEGER DEFAULT 0)");
+
+        db.execSQL("CREATE TABLE " + BRIDGES_CULVERT + " ("
+                + "data_type TEXT," +
+                "loc_grp INTEGER," +
+                "loc INTEGER," +
+                "dcode INTEGER," +
+                "bcode INTEGER," +
+                "pvcode INTEGER," +
+                "road_id INTEGER," +
+                "culvert_type INTEGER," +
+                "culvert_type_name TEXT," +
+                "chainage INTEGER," +
+                "culvet_name TEXT," +
+                "span INTEGER," +
+                "no_of_span INTEGER," +
+                "width INTEGER," +
+                "vent_height INTEGER," +
+                "length INTEGER," +
+                "culvert_id INTEGER," +
+                "start_lat TEXT," +
+                "start_long TEXT," +
+                "server_flag TEXT," +
+                "image_flag TEXT DEFAULT 1," +
+                "online_images blob," +
+                "images blob)");
 
     }
 

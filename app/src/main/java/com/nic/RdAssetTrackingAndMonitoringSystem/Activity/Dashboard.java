@@ -58,6 +58,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     JSONObject datasetAsset = new JSONObject();
     JSONObject datasetTrack = new JSONObject();
     JSONObject datasetHabitation = new JSONObject();
+    JSONObject datasetBridges = new JSONObject();
     private ProgressHUD progressHUD;
 
     @Override
@@ -139,6 +140,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         getPMGSYVillage();
         getPMGSYHabitation();
         getPMGSYImages();
+        getBridges();
 
         syncButtonVisibility();
     }
@@ -148,8 +150,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         ArrayList<RoadListValue> assetsCount = dbData.getSavedAsset();
         ArrayList<RoadListValue> trackCount = dbData.getSavedTrack();
         ArrayList<RoadListValue> habitationCount = dbData.getSavedHabitation("0");
+        ArrayList<RoadListValue> bridgesCount = dbData.getAllBridges("0","upload");
 
-        if (assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0) {
+
+        if (assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0 || bridgesCount.size() > 0) {
             sync.setVisibility(View.VISIBLE);
         }else {
             sync.setVisibility(View.GONE);
@@ -194,6 +198,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             new toUploadAssetTask().execute();
             new toUploadTrackTask().execute();
             new toUploadHabitation().execute();
+            new toUploadBridges().execute();
         }
         else {
             Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
@@ -279,6 +284,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public void getBridges(){
+        try {
+            new ApiService(this).makeJSONObjectRequest("Bridges", Api.Method.POST, UrlGenerator.getRoadListUrl(), bridgesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONObject roadListJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.roadListJsonParams(this).toString());
         JSONObject dataSet = new JSONObject();
@@ -324,6 +337,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         return dataSet;
     }
 
+    public JSONObject bridgesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.bridgesListJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("Bridges", "" + authKey);
+        return dataSet;
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -381,6 +402,15 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 }
                 Log.d("resp_pmgsyImages", "" + responseDecryptedBlockKey);
             }
+            if ("Bridges".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertBridgesTask().execute(jsonObject);
+                }
+                Log.d("resp_bridges", "" + responseDecryptedBlockKey);
+            }
             if ("save_dataAsset".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
@@ -427,6 +457,20 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     syncButtonVisibility();
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);
+            }
+            if ("saveBridgesList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    Utils.showAlert(this, "Saved");
+                    dbData.open();
+                    dbData.deleteBridgesTable();
+                    getBridges();
+                    datasetBridges = new JSONObject();
+                    syncButtonVisibility();
+                }
+                Log.d("saveBridgesList", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -654,6 +698,77 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public class InsertBridgesTask extends AsyncTask<JSONObject ,Void ,Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<RoadListValue> bridges_count = dbData.getAllBridges("1","insert");
+            if (bridges_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        RoadListValue bridges = new RoadListValue();
+                        try {
+                            bridges.setDataType(jsonArray.getJSONObject(i).getString(AppConstant.KEY_DATA_TYPE));
+                            bridges.setLocGroup(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_LOCATION_GROUP));
+                            bridges.setLocID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_LOCATION_ID));
+                            bridges.setdCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_DCODE));
+                            bridges.setbCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_BCODE));
+                            bridges.setPvCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PVCODE));
+                            bridges.setRoadID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_ID));
+                            bridges.setCulvertType(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_CULVERT_TYPE));
+                            bridges.setCulvertTypeName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_CULVERT_TYPE_NAME));
+                            bridges.setChainage(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_CHAINAGE));
+                            bridges.setCulvertName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_CULVERT_NAME));
+                            bridges.setSpan(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_SPAN));
+                            bridges.setNoOfSpan(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_NO_OF_SPAN));
+                            bridges.setWidth(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_WIDTH));
+                            bridges.setVentHeight(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_VENT_HEIGHT));
+                            bridges.setLength(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_LENGTH));
+                            bridges.setCulvertId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_CULVERT_ID));
+                            bridges.setStartLat(jsonArray.getJSONObject(i).getString(AppConstant.KEY_START_LAT));
+                            bridges.setStartLong(jsonArray.getJSONObject(i).getString(AppConstant.KEY_START_LONG));
+
+                            byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                            bridges.setImage(decodedByte);
+                            bridges.setServerFlag("1");
+
+                            dbData.insert_newBridges(bridges);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            progressHUD = ProgressHUD.show(Dashboard.this, "Downloading", true, false, null);
+//        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
+        }
+    }
+
 
     public class toUploadAssetTask extends AsyncTask<Void, Void,
             JSONObject> {
@@ -826,6 +941,72 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
+    public class toUploadBridges extends AsyncTask<Void, Void,
+            JSONObject> {
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+            dbData.open();
+            JSONArray BridgeArray = new JSONArray();
+            ArrayList<RoadListValue> Bridges = dbData.getAllBridges("0","upload");
+
+            if (Bridges.size() > 0) {
+                for (int i = 0; i < Bridges.size(); i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put(AppConstant.KEY_DATA_TYPE, Bridges.get(i).getDataType());
+                        jsonObject.put(AppConstant.KEY_LOCATION_GROUP, Bridges.get(i).getLocGroup());
+                        jsonObject.put(AppConstant.KEY_LOCATION_ID, Bridges.get(i).getLocID());
+                        jsonObject.put(AppConstant.KEY_DCODE, Bridges.get(i).getdCode());
+                        jsonObject.put(AppConstant.KEY_BCODE, Bridges.get(i).getbCode());
+                        jsonObject.put(AppConstant.KEY_PVCODE, Bridges.get(i).getPvCode());
+                        jsonObject.put(AppConstant.KEY_ROAD_ID, Bridges.get(i).getRoadID());
+                        jsonObject.put(AppConstant.KEY_CULVERT_TYPE, Bridges.get(i).getCulvertType());
+                        jsonObject.put(AppConstant.KEY_CULVERT_TYPE_NAME, Bridges.get(i).getCulvertTypeName());
+                        jsonObject.put(AppConstant.KEY_CHAINAGE, Bridges.get(i).getChainage());
+                        jsonObject.put(AppConstant.KEY_CULVERT_NAME, Bridges.get(i).getCulvertName());
+                        jsonObject.put(AppConstant.KEY_SPAN, Bridges.get(i).getSpan());
+                        jsonObject.put(AppConstant.KEY_NO_OF_SPAN, Bridges.get(i).getNoOfSpan());
+                        jsonObject.put(AppConstant.KEY_WIDTH, Bridges.get(i).getWidth());
+                        jsonObject.put(AppConstant.KEY_VENT_HEIGHT, Bridges.get(i).getVentHeight());
+                        jsonObject.put(AppConstant.KEY_LENGTH, Bridges.get(i).getLength());
+                        jsonObject.put(AppConstant.KEY_CULVERT_ID, Bridges.get(i).getCulvertId());
+                        jsonObject.put(AppConstant.KEY_ROAD_LAT, Bridges.get(i).getStartLat());
+                        jsonObject.put(AppConstant.KEY_ROAD_LONG, Bridges.get(i).getStartLong());
+
+                        Bitmap bitmap = Bridges.get(i).getImage();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+                        byte[] imageInByte = baos.toByteArray();
+                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+                        jsonObject.put(AppConstant.KEY_IMAGES, image_str);
+                        BridgeArray.put(jsonObject);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                datasetBridges = new JSONObject();
+
+                try {
+                    datasetBridges.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BRIDGES_CULVERT_SAVE);
+                    datasetBridges.put(AppConstant.KEY_TRACK_DATA, BridgeArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return datasetBridges;
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject dataset) {
+            super.onPostExecute(dataset);
+            syncDataBridges();
+        }
+    }
+
 
     public void syncData_Asset() {
         try {
@@ -877,6 +1058,24 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         Log.d("Habitation", "" + authKey);
         return dataSet;
     }
+
+    public void syncDataBridges() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("saveBridgesList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveBridgesListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject saveBridgesListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetBridges.toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("savebridgesList", "" + authKey);
+        return dataSet;
+    }
+
 
     @Override
     public void OnError(VolleyError volleyError) {

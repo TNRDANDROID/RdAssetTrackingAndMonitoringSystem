@@ -137,11 +137,11 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
     }
 
-    public void viewImageScreen(String type,String habcode) {
+    public void viewImageScreen(String OffOntype,String habcode) {
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, ViewImageScreen.class);
         intent.putExtra(AppConstant.KEY_PMGSY_HAB_CODE,habcode);
-        intent.putExtra("type", type);
+        intent.putExtra("OffOntype", OffOntype);
         intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"Habitation");
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);

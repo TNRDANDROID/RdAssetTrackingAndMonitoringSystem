@@ -112,7 +112,6 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
             screen_type = bundle.getString(AppConstant.KEY_SCREEN_TYPE);
-            loc_id = bundle.getString("loc_id");
             Log.d("ScreenType",""+screen_type);
         }
 
@@ -146,12 +145,16 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
         assetSave.setOnClickListener(this);
         root = TreeNode.root();
         treeView = new TreeView(root, this, new MyNodeViewFactory());
-        if(!screen_type.equalsIgnoreCase("Habitation")){
+        if(screen_type.equalsIgnoreCase("thirdLevelNode")){
             loc_id = getIntent().getStringExtra("loc_id");
              assetSave.setText("SAVE ASSET PHOTO");
-        }else{
+        }
+        else  if(screen_type.equalsIgnoreCase("Habitation")){
             description_layout.setVisibility(View.VISIBLE);
             assetSave.setText("SAVE HABITATION PHOTO");
+        }
+        else  if(screen_type.equalsIgnoreCase("bridgeLevel")){
+            assetSave.setText("SAVE PHOTO");
         }
 
     }
@@ -172,8 +175,11 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 if(screen_type.equalsIgnoreCase("Habitation")){
                     saveImage_habitation();
                 }
-                else {
+                else if(screen_type.equalsIgnoreCase("thirdLevelNode")) {
                     saveImage();
+                }
+                else if(screen_type.equalsIgnoreCase("bridgeLevel")) {
+                    saveImageBridges();
                 }
                 break;
         }
@@ -412,6 +418,38 @@ public class CameraScreen extends AppCompatActivity implements View.OnClickListe
                 treeView.refreshTreeView();
             }
             Log.d("insIdsaveHabitation", String.valueOf(id));
+
+        } catch (Exception e) {
+            Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
+            //e.printStackTrace();
+        }
+    }
+
+    public void saveImageBridges() {
+        dbData.open();
+        String culvert_id = getIntent().getStringExtra(AppConstant.KEY_CULVERT_ID);
+        ImageView imageView = (ImageView) findViewById(R.id.image_view);
+        byte[] imageInByte = new byte[0];
+        String image_str = "";
+        try {
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+            imageInByte = baos.toByteArray();
+            image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+
+            ContentValues values = new ContentValues();
+            values.put(AppConstant.KEY_START_LAT, offlatTextValue.toString());
+            values.put(AppConstant.KEY_START_LONG,offlongTextValue.toString());
+            values.put(AppConstant.KEY_IMAGES,image_str.trim());
+            values.put(AppConstant.KEY_IMAGE_FLAG,"0");
+
+            long id = db.update(DBHelper.BRIDGES_CULVERT,values,"culvert_id = ? and road_id = ?",new  String[]{culvert_id,prefManager.getRoadId()});
+            if(id > 0){
+                Toasty.success(this, "Success!", Toast.LENGTH_LONG, true).show();
+                treeView.refreshTreeView();
+            }
+            Log.d("updated_id_Bridges",String.valueOf(id));
 
         } catch (Exception e) {
             Utils.showAlert(CameraScreen.this, "Atleast Capture one Photo");
