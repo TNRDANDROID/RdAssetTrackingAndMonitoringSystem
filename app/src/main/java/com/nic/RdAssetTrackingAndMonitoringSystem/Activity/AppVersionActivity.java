@@ -13,7 +13,6 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 public class AppVersionActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-
    private MyCustomTextView btnSave;
 
     @Override
