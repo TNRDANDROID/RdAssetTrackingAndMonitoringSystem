@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 
 
@@ -19,10 +20,10 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 public class MyDialog {
     public myOnClickListener myListener;
     private dbData dbData;
-//    private PrefManager prefManager;
+    private PrefManager prefManager;
 
     public MyDialog(Activity context) {
-//        prefManager         = new PrefManager(context);
+        prefManager         = new PrefManager(context);
         this.myListener = (myOnClickListener) context;
         dbData = new dbData(context);
     }
@@ -64,6 +65,7 @@ public class MyDialog {
                 if(type.equals("Logout")) {
                     dbData.open();
                     dbData.deleteAll();
+                    prefManager.clearSession();
                 }
             }
         });
