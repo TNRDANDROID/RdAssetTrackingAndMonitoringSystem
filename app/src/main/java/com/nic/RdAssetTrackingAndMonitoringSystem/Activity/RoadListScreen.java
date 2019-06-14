@@ -28,6 +28,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import java.util.ArrayList;
 
@@ -230,4 +231,8 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
         return true;
     }
 
+    public void onResume() {
+        super.onResume();
+        Utils.hideSoftKeyboard(this);
+    }
 }

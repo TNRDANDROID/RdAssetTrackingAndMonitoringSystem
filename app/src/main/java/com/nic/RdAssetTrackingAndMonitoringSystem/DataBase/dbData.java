@@ -779,6 +779,10 @@ public class dbData {
             String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
 
             values.put(AppConstant.KEY_ONLINE_IMAGES,image_str.trim());
+            values.put(AppConstant.KEY_IMAGE_FLAG,"1");
+        }else {
+            values.put(AppConstant.KEY_ONLINE_IMAGES,"");
+            values.put(AppConstant.KEY_IMAGE_FLAG,"");
         }
 
         values.put(AppConstant.KEY_SERVER_FLAG,bridgesValue.getServerFlag());

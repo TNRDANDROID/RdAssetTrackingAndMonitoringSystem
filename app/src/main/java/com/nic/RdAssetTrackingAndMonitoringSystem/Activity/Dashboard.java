@@ -355,6 +355,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
         try {
+            Runtime.getRuntime().gc();
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
                 if ("RoadList".equals(urlType) && responseObj != null) {

@@ -123,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "start_lat TEXT," +
                 "start_long TEXT," +
                 "server_flag TEXT," +
-                "image_flag TEXT DEFAULT 1," +
+                "image_flag TEXT," +
                 "online_images blob," +
                 "images blob)");
 
