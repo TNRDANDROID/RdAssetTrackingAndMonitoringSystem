@@ -114,6 +114,9 @@ public class AppConstant {
     public static String KEY_SERVER_FLAG = "server_flag";
     public static String KEY_IMAGE_FLAG = "image_flag";
     public static String KEY_ONLINE_IMAGES = "online_images";
+    public static String KEY_IMAGE_AVAILABLE = "image_available";
+
+    public static String KEY_BRIDGES_CULVERT_IMAGES = "road_asset_bridge_culvets_images";
 
 
     public static String KEY_VERSION_CHECK= "version_check";

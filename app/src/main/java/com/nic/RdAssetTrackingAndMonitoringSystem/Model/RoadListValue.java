@@ -63,6 +63,15 @@ private Integer length;
 private Integer culvertId;
 private String startLat;
 private String startLong;
+private String imageAvailable;
+
+    public String getImageAvailable() {
+        return imageAvailable;
+    }
+
+    public void setImageAvailable(String imageAvailable) {
+        this.imageAvailable = imageAvailable;
+    }
 
     public String getCulvertTypeName() {
         return culvertTypeName;

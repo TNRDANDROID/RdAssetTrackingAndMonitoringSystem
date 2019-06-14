@@ -12,7 +12,7 @@ public class UrlGenerator {
     }
 
     public static String getRoadListUrl() {
-        return "https://tnrd.gov.in/project/webservices_forms/road_asset/road_asset_services.php";
+        return "https://tnrd.gov.in/project/webservices_forms/road_asset/road_asset_services_test.php";
     }
 
     public static String getTnrdHostName() {

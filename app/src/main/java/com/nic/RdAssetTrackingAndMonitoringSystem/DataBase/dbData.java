@@ -770,20 +770,21 @@ public class dbData {
         values.put(AppConstant.KEY_CULVERT_ID,bridgesValue.getCulvertId());
         values.put(AppConstant.KEY_START_LAT,bridgesValue.getStartLat());
         values.put(AppConstant.KEY_START_LONG,bridgesValue.getStartLong());
+        values.put(AppConstant.KEY_IMAGE_AVAILABLE,bridgesValue.getImageAvailable());
 
-        Bitmap bitmap = bridgesValue.getImage();
-        if(bitmap != null){
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-            byte[] imageInByte = baos.toByteArray();
-            String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-            values.put(AppConstant.KEY_ONLINE_IMAGES,image_str.trim());
-            values.put(AppConstant.KEY_IMAGE_FLAG,"1");
-        }else {
-            values.put(AppConstant.KEY_ONLINE_IMAGES,"");
-            values.put(AppConstant.KEY_IMAGE_FLAG,"");
-        }
+//        Bitmap bitmap = bridgesValue.getImage();
+//        if(bitmap != null){
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+//            byte[] imageInByte = baos.toByteArray();
+//            String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
+//
+//            values.put(AppConstant.KEY_ONLINE_IMAGES,image_str.trim());
+//            values.put(AppConstant.KEY_IMAGE_FLAG,"1");
+//        }else {
+//            values.put(AppConstant.KEY_ONLINE_IMAGES,"");
+//            values.put(AppConstant.KEY_IMAGE_FLAG,"");
+//        }
 
         values.put(AppConstant.KEY_SERVER_FLAG,bridgesValue.getServerFlag());
 
@@ -949,6 +950,10 @@ public class dbData {
 
                             bridge.setDataType(cursor.getString(cursor
                                     .getColumnIndexOrThrow(AppConstant.KEY_DATA_TYPE)));
+                            bridge.setLocGroup(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
+                            bridge.setRoadID(cursor.getInt(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
                             bridge.setLocID(cursor.getInt(cursor
                                     .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
                             bridge.setdCode(cursor.getInt(cursor
@@ -981,6 +986,8 @@ public class dbData {
                                     .getColumnIndexOrThrow(AppConstant.KEY_START_LAT)));
                             bridge.setStartLong(cursor.getString(cursor
                                     .getColumnIndexOrThrow(AppConstant.KEY_START_LONG)));
+                            bridge.setImageAvailable(cursor.getString(cursor
+                                    .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_AVAILABLE)));
                     }
 
                     bridges.add(bridge);

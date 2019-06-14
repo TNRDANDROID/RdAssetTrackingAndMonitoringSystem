@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
@@ -22,7 +23,10 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyEditTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,7 +70,16 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         }
         else if(screen_type.equalsIgnoreCase("bridgeScreen")) {
             description_layout.setVisibility(View.GONE);
-            bridgeImage();
+            String OffOntype = getIntent().getStringExtra("OffOntype");
+
+            if (OffOntype.equalsIgnoreCase("online")) {
+                if(Utils.isOnline()){
+                    getBridgesOnlineImage();
+                }
+            } else if (OffOntype.equalsIgnoreCase("offline")) {
+                bridgeImage("0");
+            }
+
         }
     }
 
@@ -144,20 +157,11 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             }
     }
 
-    public void bridgeImage() {
+    public void bridgeImage(String image_flag) {
 
         String culvert_id = getIntent().getStringExtra(AppConstant.KEY_CULVERT_ID);
         String road_id = getIntent().getStringExtra(AppConstant.KEY_ROAD_ID);
-        String OffOntype = getIntent().getStringExtra("OffOntype");
         Log.d("culvert_id",culvert_id);
-        String image_flag = null;
-
-        if (OffOntype.equalsIgnoreCase("online")) {
-            image_flag = "1";
-        } else if (OffOntype.equalsIgnoreCase("offline")) {
-            image_flag = "0";
-        }
-
 
         dbData.open();
         ArrayList<RoadListValue> habitation_image = dbData.selectBridgeImage(road_id,culvert_id,image_flag);
@@ -171,10 +175,54 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
+    public void getBridgesOnlineImage(){
+        try {
+            new ApiService(this).makeJSONObjectRequest("BridgesImage", Api.Method.POST, UrlGenerator.getRoadListUrl(), bridgesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject bridgesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), bridgesListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("BridgesImage", "" + authKey);
+        return dataSet;
+    }
+    public  JSONObject bridgesListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BRIDGES_CULVERT_IMAGES);
+        dataSet.put(AppConstant.KEY_LOCATION_GROUP, getIntent().getStringExtra(AppConstant.KEY_LOCATION_GROUP));
+        dataSet.put(AppConstant.KEY_LOCATION_ID, getIntent().getStringExtra(AppConstant.KEY_LOCATION_ID));
+        dataSet.put(AppConstant.KEY_ROAD_ID,prefManager.getRoadId());
+        dataSet.put(AppConstant.KEY_CULVERT_TYPE, getIntent().getStringExtra(AppConstant.KEY_CULVERT_TYPE));
+        dataSet.put(AppConstant.KEY_CULVERT_ID, getIntent().getStringExtra(AppConstant.KEY_CULVERT_ID));
+        Log.d("utils_bridgesImage", "" + dataSet);
+        return dataSet;
+    }
+
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
-
+        try {
+            String urlType = serverResponse.getApi();
+            JSONObject responseObj = serverResponse.getJsonResponse();
+            if ("BridgesImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    JSONArray jsonArray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                    byte[] decodedString = Base64.decode(jsonArray.getJSONObject(0).getString("image"), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    image_view.setImageBitmap(decodedByte);
+                }
+                Log.d("resp_bridgesImage", "" + responseDecryptedBlockKey);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

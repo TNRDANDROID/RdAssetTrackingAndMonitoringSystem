@@ -735,11 +735,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             bridges.setCulvertId(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_CULVERT_ID));
                             bridges.setStartLat(jsonArray.getJSONObject(i).getString(AppConstant.KEY_START_LAT));
                             bridges.setStartLong(jsonArray.getJSONObject(i).getString(AppConstant.KEY_START_LONG));
-
-                            byte[] decodedString = Base64.decode(jsonArray.getJSONObject(i).getString("image"), Base64.DEFAULT);
-                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-                            bridges.setImage(decodedByte);
+                            bridges.setImageAvailable(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_AVAILABLE));
                             bridges.setServerFlag("1");
 
                             dbData.insert_newBridges(bridges);

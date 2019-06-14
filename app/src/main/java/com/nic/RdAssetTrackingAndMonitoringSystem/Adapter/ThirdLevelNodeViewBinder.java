@@ -17,6 +17,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,7 +153,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             try {
 
                 visibleOfflineBridge(jsonObject.getString(AppConstant.KEY_CULVERT_ID));
-                visibleOnlineBridge(jsonObject.getString(AppConstant.KEY_CULVERT_ID));
+               // visibleOnlineBridge(jsonObject.getString(AppConstant.KEY_CULVERT_ID));
 
                 String text = jsonObject.getString(AppConstant.KEY_CULVERT_NAME)+"\n"
                         +"CHAINAGE:"+jsonObject.getString(AppConstant.KEY_CHAINAGE)+"\n"
@@ -163,6 +164,14 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
 
                 third_level_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f);
                 third_level_tv.setText(text);
+
+                image_available =  jsonObject.getString(AppConstant.KEY_IMAGE_AVAILABLE);
+                if(image_available.equalsIgnoreCase("Y")) {
+                    view_image_tv.setVisibility(View.VISIBLE);
+                }
+                else if(image_available.equalsIgnoreCase("N")) {
+                    view_image_tv.setVisibility(View.GONE);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -276,6 +285,21 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
         }
         else if(type.equalsIgnoreCase("bridgeScreen")) {
+            if(OffOntype.equalsIgnoreCase("online")) {
+                if(!Utils.isOnline()) {
+                    Utils.showAlert(this.appContext,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+                    return;
+                }
+                else {
+                    try {
+                        intent.putExtra(AppConstant.KEY_LOCATION_GROUP,jsonObject.getString(AppConstant.KEY_LOCATION_GROUP));
+                        intent.putExtra(AppConstant.KEY_LOCATION_ID,jsonObject.getString(AppConstant.KEY_LOCATION_ID));
+                        intent.putExtra(AppConstant.KEY_CULVERT_TYPE,jsonObject.getString(AppConstant.KEY_CULVERT_TYPE));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             intent.putExtra(AppConstant.KEY_CULVERT_ID,culvert_id);
             intent.putExtra(AppConstant.KEY_ROAD_ID,prefManager.getRoadId());
             intent.putExtra("OffOntype",OffOntype);

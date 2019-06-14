@@ -125,6 +125,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "server_flag TEXT," +
                 "image_flag TEXT," +
                 "online_images blob," +
+                "image_available TEXT," +
                 "images blob)");
 
     }

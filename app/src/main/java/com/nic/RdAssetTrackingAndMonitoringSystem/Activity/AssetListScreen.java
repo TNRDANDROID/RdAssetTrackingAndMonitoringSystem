@@ -321,13 +321,18 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                 for(int j = 0; j < thirdlevelList.size(); j++){
                     JSONObject thirdObject = new JSONObject();
                     try {
+                        thirdObject.put(AppConstant.KEY_LOCATION_GROUP,thirdlevelList.get(j).getLocGroup());
+                        thirdObject.put(AppConstant.KEY_LOCATION_ID,thirdlevelList.get(j).getLocID());
+                        thirdObject.put(AppConstant.KEY_ROAD_ID,thirdlevelList.get(j).getRoadID());
                         thirdObject.put(AppConstant.KEY_CHAINAGE,thirdlevelList.get(j).getChainage());
                         thirdObject.put(AppConstant.KEY_WIDTH,thirdlevelList.get(j).getWidth());
                         thirdObject.put(AppConstant.KEY_LENGTH,thirdlevelList.get(j).getLength());
                         thirdObject.put(AppConstant.KEY_VENT_HEIGHT,thirdlevelList.get(j).getVentHeight());
                         thirdObject.put(AppConstant.KEY_SPAN,thirdlevelList.get(j).getSpan());
                         thirdObject.put(AppConstant.KEY_CULVERT_ID,thirdlevelList.get(j).getCulvertId());
+                        thirdObject.put(AppConstant.KEY_CULVERT_TYPE,thirdlevelList.get(j).getCulvertType());
                         thirdObject.put(AppConstant.KEY_CULVERT_NAME,thirdlevelList.get(j).getCulvertName());
+                        thirdObject.put(AppConstant.KEY_IMAGE_AVAILABLE,thirdlevelList.get(j).getImageAvailable());
                         thirdObject.put("type","bridgeScreen");
                     } catch (JSONException e) {
                         e.printStackTrace();
