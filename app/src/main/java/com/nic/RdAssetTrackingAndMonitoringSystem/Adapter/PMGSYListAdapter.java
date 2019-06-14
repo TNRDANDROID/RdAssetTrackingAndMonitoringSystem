@@ -67,6 +67,15 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
         holder.habitation_tv.setText(pmgsyListValues.get(position).getPmgsyHabName());
 
+        String image_available = pmgsyListValues.get(position).getPmgsyHabName();
+
+        if (image_available.equalsIgnoreCase("Y")){
+            holder.view_online_image_tv.setVisibility(View.VISIBLE);
+        }
+        else if (image_available.equalsIgnoreCase("N")){
+            holder.view_online_image_tv.setVisibility(View.GONE);
+        }
+
         holder.take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,15 +85,15 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
       //  visibleOfflinebutton(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
 
-        dbData.open();
-        ArrayList<RoadListValue> habitation_imageOffline = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()),"0");
-
-        if (habitation_imageOffline.size() > 0) {
-           holder.view_offline_image_tv.setVisibility(View.VISIBLE);
-        }
-        else {
-            holder.view_offline_image_tv.setVisibility(View.GONE);
-        }
+//        dbData.open();
+//        ArrayList<RoadListValue> habitation_imageOffline = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()),"0");
+//
+//        if (habitation_imageOffline.size() > 0) {
+//           holder.view_offline_image_tv.setVisibility(View.VISIBLE);
+//        }
+//        else {
+//            holder.view_offline_image_tv.setVisibility(View.GONE);
+//        }
 
         dbData.open();
         ArrayList<RoadListValue> habitation_imageOnline = dbData.selectImage_Habitation(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()),"1");
@@ -99,14 +108,14 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
         holder.view_online_image_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewImageScreen("Online",String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+                viewImageScreen("Online",position);
             }
         });
 
         holder.view_offline_image_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewImageScreen("Offline",String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+                viewImageScreen("Offline",position);
             }
         });
     }
@@ -137,10 +146,18 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
 
     }
 
-    public void viewImageScreen(String OffOntype,String habcode) {
+    public void viewImageScreen(String OffOntype,Integer pos) {
+        Integer pmgsy_dcode =  pmgsyListValues.get(pos).getPmgsyDcode();
+        Integer pmgsy_bcode =  pmgsyListValues.get(pos).getPmgsyBcode();
+        Integer pmgsy_pvcode =  pmgsyListValues.get(pos).getPmgsyPvcode();
+        Integer pmgsy_hab_code =  pmgsyListValues.get(pos).getPmgsyHabcode();
+
         Activity activity = (Activity) context;
         Intent intent = new Intent(context, ViewImageScreen.class);
-        intent.putExtra(AppConstant.KEY_PMGSY_HAB_CODE,habcode);
+        intent.putExtra(AppConstant.KEY_PMGSY_DCODE,String.valueOf(pmgsy_dcode));
+        intent.putExtra(AppConstant.KEY_PMGSY_BCODE,String.valueOf(pmgsy_bcode));
+        intent.putExtra(AppConstant.KEY_PMGSY_PVCODE,String.valueOf(pmgsy_pvcode));
+        intent.putExtra(AppConstant.KEY_PMGSY_HAB_CODE,String.valueOf(pmgsy_hab_code));
         intent.putExtra("OffOntype", OffOntype);
         intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"Habitation");
         activity.startActivity(intent);

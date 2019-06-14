@@ -139,7 +139,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         getAssetList();
         getPMGSYVillage();
         getPMGSYHabitation();
-        getPMGSYImages();
+      //  getPMGSYImages();
         getBridges();
 
         syncButtonVisibility();
@@ -453,7 +453,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     Utils.showAlert(this, "PMGSY Habitation Saved");
                     dbData.open();
                     dbData.deleteImageHabitationTable();
-                    getPMGSYImages();
+                  //  getPMGSYImages();
                     datasetHabitation = new JSONObject();
                     syncButtonVisibility();
                 }
@@ -617,6 +617,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                             pmgsyHabitation.setPmgsyPvcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_PVCODE));
                             pmgsyHabitation.setPmgsyHabcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_HAB_CODE));
                             pmgsyHabitation.setPmgsyHabName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PMGSY_HAB_NAME));
+                            pmgsyHabitation.setImageAvailable(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_AVAILABLE));
 
                             dbData.insert_newPMGSYHabitation(pmgsyHabitation);
                         } catch (JSONException e) {

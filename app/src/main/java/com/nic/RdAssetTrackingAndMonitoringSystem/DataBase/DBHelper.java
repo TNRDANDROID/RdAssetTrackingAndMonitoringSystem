@@ -66,6 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "pmgsy_bcode INTEGER," +
                 "pmgsy_pvcode INTEGER," +
                 "pmgsy_hab_code INTEGER," +
+                "image_available TEXT,"+
                 "pmgsy_habname TEXT)");
 
         db.execSQL("CREATE TABLE " + SAVE_LAT_LONG_TABLE + " ("

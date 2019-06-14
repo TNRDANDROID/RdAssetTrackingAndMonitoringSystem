@@ -511,6 +511,7 @@ public class dbData {
         values.put(AppConstant.KEY_PMGSY_PVCODE,pmgsyhabitationValue.getPmgsyPvcode());
         values.put(AppConstant.KEY_PMGSY_HAB_CODE,pmgsyhabitationValue.getPmgsyHabcode());
         values.put(AppConstant.KEY_PMGSY_HAB_NAME,pmgsyhabitationValue.getPmgsyHabName());
+        values.put(AppConstant.KEY_IMAGE_AVAILABLE,pmgsyhabitationValue.getImageAvailable());
 
 
         long id = db.insert(DBHelper.PMGSY_HABITATION_LIST_TABLE,null,values);
@@ -771,6 +772,7 @@ public class dbData {
         values.put(AppConstant.KEY_START_LAT,bridgesValue.getStartLat());
         values.put(AppConstant.KEY_START_LONG,bridgesValue.getStartLong());
         values.put(AppConstant.KEY_IMAGE_AVAILABLE,bridgesValue.getImageAvailable());
+        values.put(AppConstant.KEY_IMAGE_FLAG,"1");
 
 //        Bitmap bitmap = bridgesValue.getImage();
 //        if(bitmap != null){

@@ -60,9 +60,15 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         description_layout = (LinearLayout) findViewById(R.id.description_layout);
         description_tv = (MyEditTextView) findViewById(R.id.description_tv);
         back_img.setOnClickListener(this);
+
         if (screen_type.equalsIgnoreCase("Habitation")) {
             description_layout.setVisibility(View.VISIBLE);
-            habitationImage();
+            String OffOntype = getIntent().getStringExtra("OffOntype");
+            if (OffOntype.equalsIgnoreCase("online")) {
+                getPMGSYOnlineImage();
+            } else if (OffOntype.equalsIgnoreCase("offline")) {
+                habitationImage("0");
+            }
         }
         else if(screen_type.equalsIgnoreCase("thirdLevelNode")) {
             description_layout.setVisibility(View.GONE);
@@ -130,19 +136,11 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    public void habitationImage() {
+    public void habitationImage(String server_flag) {
 
         String pmgsy_habcode = getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE);
-        String OffOntype = getIntent().getStringExtra("OffOntype");
+
         Log.d("pmgsy_habcode",pmgsy_habcode);
-        String server_flag = null;
-
-        if (OffOntype.equalsIgnoreCase("online")) {
-           server_flag = "1";
-        } else if (OffOntype.equalsIgnoreCase("offline")) {
-            server_flag = "0";
-        }
-
 
             dbData.open();
             ArrayList<RoadListValue> habitation_image = dbData.selectImage_Habitation(pmgsy_habcode,server_flag);
@@ -201,6 +199,31 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         Log.d("utils_bridgesImage", "" + dataSet);
         return dataSet;
     }
+    public void getPMGSYOnlineImage(){
+        try {
+            new ApiService(this).makeJSONObjectRequest("PMGSYImage", Api.Method.POST, UrlGenerator.getRoadListUrl(), pmgsyImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    public JSONObject pmgsyImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), pmgsyImagesListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("pmgsyImagesList", "" + authKey);
+        return dataSet;
+    }
+    public  JSONObject pmgsyImagesListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_PMGSY_ONLINE_IMAGES);
+        dataSet.put(AppConstant.KEY_PMGSY_DCODE, getIntent().getStringExtra(AppConstant.KEY_PMGSY_DCODE));
+        dataSet.put(AppConstant.KEY_PMGSY_BCODE, getIntent().getStringExtra(AppConstant.KEY_PMGSY_BCODE));
+        dataSet.put(AppConstant.KEY_PMGSY_PVCODE,getIntent().getStringExtra(AppConstant.KEY_PMGSY_PVCODE));
+        dataSet.put(AppConstant.KEY_PMGSY_HAB_CODE, getIntent().getStringExtra(AppConstant.KEY_PMGSY_HAB_CODE));
+        Log.d("utils_pmgsyImages", "" + dataSet);
+        return dataSet;
+    }
 
 
     @Override
@@ -209,6 +232,18 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             String urlType = serverResponse.getApi();
             JSONObject responseObj = serverResponse.getJsonResponse();
             if ("BridgesImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    JSONArray jsonArray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                    byte[] decodedString = Base64.decode(jsonArray.getJSONObject(0).getString("image"), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    image_view.setImageBitmap(decodedByte);
+                }
+                Log.d("resp_bridgesImage", "" + responseDecryptedBlockKey);
+            }
+            if ("PMGSYImage".equals(urlType) && responseObj != null) {
                 String key = responseObj.getString(AppConstant.ENCODE_DATA);
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
