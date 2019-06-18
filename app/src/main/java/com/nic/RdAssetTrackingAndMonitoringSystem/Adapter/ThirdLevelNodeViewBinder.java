@@ -284,6 +284,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             if(OffOntype.equalsIgnoreCase("online")) {
                 if(!Utils.isOnline()) {
                     Utils.showAlert(this.appContext,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+                    return;
                 }
                 else {
                     try {
@@ -307,6 +308,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             if(OffOntype.equalsIgnoreCase("online")) {
                 if(!Utils.isOnline()) {
                     Utils.showAlert(this.appContext,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+                    return;
                 }
                 else {
                     try {
