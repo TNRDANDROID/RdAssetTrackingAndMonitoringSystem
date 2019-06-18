@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -72,7 +71,15 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         }
         else if(screen_type.equalsIgnoreCase("thirdLevelNode")) {
             description_layout.setVisibility(View.GONE);
-            thirdLevelNodeImage();
+            String OffOntype = getIntent().getStringExtra("OffOntype");
+
+            if (OffOntype.equalsIgnoreCase("online")) {
+                if (Utils.isOnline()) {
+                    getAssetOnlineImage();
+                }
+            } else if (OffOntype.equalsIgnoreCase("offline")) {
+                thirdLevelNodeImage("0");
+            }
         }
         else if(screen_type.equalsIgnoreCase("bridgeScreen")) {
             description_layout.setVisibility(View.GONE);
@@ -89,39 +96,18 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    public void thirdLevelNodeImage() {
+    public void thirdLevelNodeImage(String server_flag) {
         String image = getIntent().getStringExtra("imageData");
         String OffOntype = getIntent().getStringExtra("OffOntype");
 
         try {
-            jsonObject = new JSONObject(image);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (OffOntype.equalsIgnoreCase("online")) {
-            String imagestr = "";
-            try {
-                imagestr = jsonObject.getString("image");
-                String image_available = jsonObject.getString("image_available");
-
-                if (imagestr != "") {
-                    byte[] decodedString = Base64.decode(jsonObject.getString("image"), Base64.DEFAULT);
-                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    image_view.setImageBitmap(decodedByte);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (OffOntype.equalsIgnoreCase("offline")) {
-            try {
+                jsonObject = new JSONObject(image);
                 String asset_id = jsonObject.getString("id");
                 String road_id = prefManager.getRoadId();
                 String road_category = prefManager.getRoadCategoty();
 
                 dbData.open();
-                ArrayList<RoadListValue> assets = dbData.selectImage(road_id, road_category, asset_id);
+                ArrayList<RoadListValue> assets = dbData.selectImage(road_id, road_category, asset_id,server_flag);
 
                 if (assets.size() > 0) {
                     for (int i = 0; i < assets.size(); i++) {
@@ -133,7 +119,7 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+
     }
 
     public void habitationImage(String server_flag) {
@@ -225,6 +211,34 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         return dataSet;
     }
 
+    public void getAssetOnlineImage() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("AssetImage", Api.Method.POST, UrlGenerator.getRoadListUrl(), assetImagesJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject assetImagesJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), assetImagesListJsonParams().toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("utils_AssetEncrydataSet", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject assetImagesListJsonParams() throws JSONException {
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ASSET_ONLINE_IMAGES);
+        dataSet.put(AppConstant.KEY_ROAD_CATEGORY, getIntent().getStringExtra(AppConstant.KEY_ROAD_CATEGORY));
+        dataSet.put(AppConstant.KEY_ROAD_ID, prefManager.getRoadId());
+        dataSet.put(AppConstant.KEY_LOCATION_GROUP,prefManager.getLocationGroup());
+        dataSet.put(AppConstant.KEY_LOCATION_ID, prefManager.getLocationId());
+        Log.d("utils_AssetDataset", "" + dataSet);
+        return dataSet;
+    }
+
 
     @Override
     public void OnMyResponse(ServerResponse serverResponse) {
@@ -249,11 +263,32 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     JSONArray jsonArray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
+                    String remark = jsonArray.getJSONObject(0).getString("remark");
+                    byte[] decodedString = Base64.decode(jsonArray.getJSONObject(0).getString("image"), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    if(remark.equalsIgnoreCase("")) {
+                        description_tv.setVisibility(View.GONE);
+                    }
+                    else{
+                        description_tv.setVisibility(View.VISIBLE);
+                        description_tv.setText(remark);
+                    }
+                    image_view.setImageBitmap(decodedByte);
+                }
+                Log.d("resp_PMGSYImage", "" + responseDecryptedBlockKey);
+            }
+            if ("AssetImage".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    JSONArray jsonArray = jsonObject.getJSONArray(AppConstant.JSON_DATA);
                     byte[] decodedString = Base64.decode(jsonArray.getJSONObject(0).getString("image"), Base64.DEFAULT);
                     Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     image_view.setImageBitmap(decodedByte);
                 }
-                Log.d("resp_bridgesImage", "" + responseDecryptedBlockKey);
+                Log.d("resp_AssetImage", "" + responseDecryptedBlockKey);
             }
         } catch (JSONException e) {
             e.printStackTrace();

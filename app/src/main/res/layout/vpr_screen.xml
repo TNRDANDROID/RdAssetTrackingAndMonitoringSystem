@@ -88,7 +88,7 @@
         android:layout_height="@dimen/_130sdp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/_10sdp"
-        app:srcCompat="@drawable/full_corner_bg_white"
+        android:background="@drawable/full_corner_bg_white"
        >
 
         <RelativeLayout

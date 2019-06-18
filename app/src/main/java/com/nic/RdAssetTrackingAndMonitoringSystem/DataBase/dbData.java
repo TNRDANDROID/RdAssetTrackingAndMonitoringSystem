@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -21,6 +22,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
+
+import static com.nic.RdAssetTrackingAndMonitoringSystem.Application.NICApplication.TAG;
 
 public class dbData {
     private SQLiteDatabase db;
@@ -251,12 +254,12 @@ public class dbData {
         return cards;
     }
 
-    public ArrayList<RoadListValue> selectImage(String road_id,String road_category,String asset_id) {
+    public ArrayList<RoadListValue> selectImage(String road_id,String road_category,String asset_id,String server_flag) {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
         Cursor cursor = null;
         String selection = "road_id = ? and road_category = ? and asset_id = ? and server_flag = ?";
-        String[] selectionArgs = new String[]{road_id,road_category,asset_id,"0"};
+        String[] selectionArgs = new String[]{road_id,road_category,asset_id,server_flag};
 
         try {
             //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
@@ -345,6 +348,8 @@ public class dbData {
                     asset.setGroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
                     asset.setLevelType(type);
+//                    asset.setLocID(cursor.getInt(cursor
+//                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
 
                     if (type.equalsIgnoreCase("secondLevel")) {
                         asset.setSubgroupName(cursor.getString(cursor
@@ -601,6 +606,8 @@ public class dbData {
                             .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_CODE)));
                     habitation.setPmgsyHabName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_NAME)));
+                    habitation.setImageAvailable(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_AVAILABLE)));
 
 
                     habits.add(habitation);
@@ -744,6 +751,9 @@ public class dbData {
 
     public void deleteImageHabitationTable() {
         db.execSQL("delete from "+ DBHelper.SAVE_IMAGE_HABITATION_TABLE);
+    }
+    public void deletePmgsyHabitationTable() {
+        db.execSQL("delete from "+ DBHelper.PMGSY_HABITATION_LIST_TABLE);
     }
 
     /********************** BRIDGES AND CULVERT ****************************/

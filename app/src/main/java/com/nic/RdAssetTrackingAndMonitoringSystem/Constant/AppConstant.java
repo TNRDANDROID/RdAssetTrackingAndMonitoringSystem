@@ -118,6 +118,7 @@ public class AppConstant {
 
     public static String KEY_BRIDGES_CULVERT_IMAGES = "road_asset_bridge_culvets_images";
     public static String KEY_PMGSY_ONLINE_IMAGES = "pmgsy_habitation_location_view_image";
+    public static String KEY_ASSET_ONLINE_IMAGES = "road_asset_images";
 
 
     public static String KEY_VERSION_CHECK= "version_check";

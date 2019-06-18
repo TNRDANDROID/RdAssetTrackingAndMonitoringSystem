@@ -40,6 +40,8 @@ public class PrefManager {
     private static final String KEY_LEVELS = "Levels";
     private static final String KEY_ROAD_CATEGOTY = "road_category";
     private static final String KEY_ROAD_ID = "road_id";
+    private static final String KEY_LOCATION_GROUP = "location_group";
+    private static final String KEY_LOCATION_ID = "location_id";
 
 
     private static final String IMEI = "imei";
@@ -204,6 +206,24 @@ public class PrefManager {
 
     public void setRoadId(String RoadId) {
         editor.putString(KEY_ROAD_ID,RoadId);
+        editor.commit();
+    }
+
+    public String getLocationGroup() {
+        return pref.getString(KEY_LOCATION_GROUP,null);
+    }
+
+    public void setLocationGroup(String LocationGroup) {
+        editor.putString(KEY_LOCATION_GROUP,LocationGroup);
+        editor.commit();
+    }
+
+    public String getLocationId() {
+        return pref.getString(KEY_LOCATION_ID,null);
+    }
+
+    public void setLocationId(String LocationId) {
+        editor.putString(KEY_LOCATION_ID,LocationId);
         editor.commit();
     }
 }

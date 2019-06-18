@@ -60,11 +60,16 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     JSONObject datasetHabitation = new JSONObject();
     JSONObject datasetBridges = new JSONObject();
     private ProgressHUD progressHUD;
+    private String isHome;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
+        Bundle bundle = this.getIntent().getExtras();
+        if (bundle != null) {
+            isHome = bundle.getString("Home");
+        }
         intializeUI();
 
     }
@@ -135,12 +140,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         district_tv.setText(prefManager.getDistrictName());
         block_tv.setText(prefManager.getBlockName());
         logout_tv.setOnClickListener(this);
-        getRoadList();
-        getAssetList();
-        getPMGSYVillage();
-        getPMGSYHabitation();
-      //  getPMGSYImages();
-        getBridges();
+        if(!isHome.equalsIgnoreCase("Home")) {
+            getRoadList();
+            getAssetList();
+            getPMGSYVillage();
+            getPMGSYHabitation();
+            //  getPMGSYImages();
+            getBridges();
+        }Log.d("isHome",isHome);
 
         syncButtonVisibility();
     }
@@ -164,7 +171,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logout_tv:
-                closeApplication();
+                dbData.open();
+                ArrayList<RoadListValue> assetsCount = dbData.getSavedAsset();
+                ArrayList<RoadListValue> trackCount = dbData.getSavedTrack();
+                ArrayList<RoadListValue> habitationCount = dbData.getSavedHabitation("0");
+                ArrayList<RoadListValue> bridgesCount = dbData.getAllBridges("0","upload");
+
+
+                if (!(assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0 || bridgesCount.size() > 0)) {
+                    closeApplication();
+                }else{
+                    Utils.showAlert(this,"Sync all the data before logout!");
+                }
                 break;
             case R.id.VPR_Layout:
                 roadlistScreen("2");
@@ -453,7 +471,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     Utils.showAlert(this, "PMGSY Habitation Saved");
                     dbData.open();
                     dbData.deleteImageHabitationTable();
-                  //  getPMGSYImages();
+                    dbData.deletePmgsyHabitationTable();
+                    getPMGSYHabitation();
                     datasetHabitation = new JSONObject();
                     syncButtonVisibility();
                 }
@@ -629,6 +648,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
         }
 
         @Override

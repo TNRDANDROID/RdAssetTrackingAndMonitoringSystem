@@ -85,6 +85,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     public void dashboard() {
         Intent intent = new Intent(this, Dashboard.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
         startActivity(intent);
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
@@ -222,7 +223,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                 for (int l = 0; l < jsonObject.length(); l++)
                 {
                     String value = "";
-                    String id = "",image_available =  "",image = "";
+                    String id = "",image_available =  "",image = "",data_type = "";
                     try {
                         int label_id = 0;
                         Iterator keys = jsonObject.keys();
@@ -237,6 +238,9 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                             }
                             if(key.equals("image")) {
                                 image = jsonObject.getString(String.valueOf(key));
+                            }
+                            if(key.equals("data_type")) {
+                                data_type = jsonObject.getString(String.valueOf(key));
                             }
                             if(!key.equals("image")) {
                                 if(!key.equals("id")) {
@@ -263,6 +267,7 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                         value1.put("image_available",image_available);
                         value1.put("image",image);
                         value1.put("type","assetScreen");
+                        value1.put("data_type",data_type);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

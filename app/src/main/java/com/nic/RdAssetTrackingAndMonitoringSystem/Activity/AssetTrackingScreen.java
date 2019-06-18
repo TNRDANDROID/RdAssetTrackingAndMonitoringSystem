@@ -183,6 +183,7 @@ private PrefManager prefManager;
     public void dashboard() {
         Intent intent = new Intent(this, Dashboard.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
         startActivity(intent);
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
@@ -319,6 +320,7 @@ private PrefManager prefManager;
                     RoadListValue card = new RoadListValue();
                     card.setRoadID(assetList.get(i).getRoadID());
                     card.setLocGroup(assetList.get(i).getLocGroup());
+//                    card.setLocID(assetList.get(i).getLocID());
                     card.setGroupName(assetList.get(i).getGroupName());
                     card.setLevelType(assetList.get(i).getLevelType());
 

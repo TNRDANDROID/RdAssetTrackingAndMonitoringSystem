@@ -186,7 +186,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         String road_id = prefManager.getRoadId();
         String road_category = prefManager.getRoadCategoty();
         dbData.open();
-        ArrayList<RoadListValue> assets = dbData.selectImage(road_id,road_category,asset_id);
+        ArrayList<RoadListValue> assets = dbData.selectImage(road_id,road_category,asset_id,"0");
 
         if (assets.size() > 0) {
             view_offline_image.setVisibility(View.VISIBLE);
@@ -270,6 +270,7 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
     public void viewImageScreen(JSONObject jsonObject,String  OffOntype) {
         String type = "";
         String culvert_id = "";
+        String data_type = "";
         try {
             type = jsonObject.getString("type");
             culvert_id = jsonObject.getString(AppConstant.KEY_CULVERT_ID);
@@ -280,6 +281,19 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
         Intent intent = new Intent(appContext, ViewImageScreen.class);
 
         if(type.equalsIgnoreCase("assetScreen")) {
+            if(OffOntype.equalsIgnoreCase("online")) {
+                if(!Utils.isOnline()) {
+                    Utils.showAlert(this.appContext,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+                }
+                else {
+                    try {
+                        data_type = jsonObject.getString("data_type");
+                        intent.putExtra(AppConstant.KEY_ROAD_CATEGORY,data_type);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
             intent.putExtra("imageData", String.valueOf(jsonObject));
             intent.putExtra("OffOntype",OffOntype);
             intent.putExtra(AppConstant.KEY_SCREEN_TYPE,"thirdLevelNode");
@@ -288,7 +302,6 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
             if(OffOntype.equalsIgnoreCase("online")) {
                 if(!Utils.isOnline()) {
                     Utils.showAlert(this.appContext,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
-                    return;
                 }
                 else {
                     try {
