@@ -277,6 +277,7 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                     else{
                         description_tv.setVisibility(View.VISIBLE);
                         description_tv.setText(remark);
+                        description_tv.setFocusable(false);
                         description_tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/circular-bold.ttf"));
                         description_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
                     }
