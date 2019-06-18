@@ -16,6 +16,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,12 @@ public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyVi
         holder.view_online_image_tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewImageScreen("Online",position);
+                if(Utils.isOnline()) {
+                    viewImageScreen("Online", position);
+                }
+                else{
+                    Utils.showAlert(context,"Your Internet seems to be Offline.Images can be viewed only in Online mode.");
+                }
             }
         });
 

@@ -3,11 +3,13 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -275,6 +277,8 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
                     else{
                         description_tv.setVisibility(View.VISIBLE);
                         description_tv.setText(remark);
+                        description_tv.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/circular-bold.ttf"));
+                        description_tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
                     }
                     image_view.setImageBitmap(decodedByte);
                 }

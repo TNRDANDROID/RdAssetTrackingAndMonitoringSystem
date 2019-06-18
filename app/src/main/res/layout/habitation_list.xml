@@ -66,7 +66,7 @@ card_view:cardBackgroundColor="@android:color/white"
                                     android:padding="5dp"
                                     android:text="View Offline Image"
                                     android:textColor="@android:color/black"
-                                    android:textSize="@dimen/_15sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     style="@style/font_circular_bold"
                                     android:visibility="visible"/>
                                 <View
@@ -86,7 +86,7 @@ card_view:cardBackgroundColor="@android:color/white"
                                     android:padding="10dp"
                                     android:text="01ffdfdfdfdfdsdsdsdsdsdsdsdsdsdsdsdsdsd"
                                     android:textColor="#000080"
-                                    android:textSize="@dimen/_15sdp"
+                                    android:textSize="@dimen/_13sdp"
                                     android:textStyle="bold" />
 
 
@@ -126,7 +126,7 @@ card_view:cardBackgroundColor="@android:color/white"
                                         android:padding="5dp"
                                         android:text="View Image"
                                         android:textColor="#ce000000"
-                                        android:textSize="@dimen/_15sdp"
+                                        android:textSize="@dimen/_13sdp"
                                         android:visibility="gone"
                                         style="@style/font_circular_bold" />
                                 </RelativeLayout>
