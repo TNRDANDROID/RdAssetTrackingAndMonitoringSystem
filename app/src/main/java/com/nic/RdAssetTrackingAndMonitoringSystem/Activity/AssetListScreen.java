@@ -197,7 +197,10 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
     private void buildTreeAssets(ArrayList<RoadListValue> listValues) {
 
         for (int i = 0; i < listValues.size(); i++) {
+
             String subgrpname = listValues.get(i).getSubgroupName();
+            Integer loc_id = listValues.get(i).getLocID();
+            Integer loc_grp = listValues.get(i).getLocGroup();
             String col_label = listValues.get(i).getColLabel();
             String location_details = listValues.get(i).getLocationDetails();
 
@@ -268,6 +271,8 @@ public class AssetListScreen extends AppCompatActivity implements View.OnClickLi
                         value1.put("image",image);
                         value1.put("type","assetScreen");
                         value1.put("data_type",data_type);
+                        value1.put("loc_id",loc_id);
+                        value1.put(AppConstant.KEY_LOCATION_GROUP,loc_grp);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

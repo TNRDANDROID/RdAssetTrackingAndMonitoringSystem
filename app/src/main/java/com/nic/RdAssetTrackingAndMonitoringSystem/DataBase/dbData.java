@@ -348,8 +348,6 @@ public class dbData {
                     asset.setGroupName(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_GROUP_NAME)));
                     asset.setLevelType(type);
-//                    asset.setLocID(cursor.getInt(cursor
-//                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
 
                     if (type.equalsIgnoreCase("secondLevel")) {
                         asset.setSubgroupName(cursor.getString(cursor
@@ -358,6 +356,10 @@ public class dbData {
                                 .getColumnIndexOrThrow(AppConstant.KEY_COLUMN_LABEL)));
                         asset.setLocationDetails(cursor.getString(cursor
                                 .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_DETAILS)));
+                        asset.setLocID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                        asset.setLocGroup(cursor.getInt(cursor
+                                .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
                     }
                     assets.add(asset);
                 }

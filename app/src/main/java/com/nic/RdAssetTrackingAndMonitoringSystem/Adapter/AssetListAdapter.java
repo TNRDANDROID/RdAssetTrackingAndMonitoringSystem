@@ -80,7 +80,7 @@ public class AssetListAdapter extends RecyclerView.Adapter<AssetListAdapter.MyVi
         intent.putExtra(AppConstant.KEY_ROAD_ID,String.valueOf(road_id));
         intent.putExtra(AppConstant.KEY_LOCATION_GROUP,String.valueOf(loc_grp));
         prefManager.setLocationGroup(String.valueOf(loc_grp));
-        prefManager.setLocationId(String.valueOf(loc_ID));
+
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 

@@ -234,7 +234,9 @@ public class ViewImageScreen extends AppCompatActivity implements View.OnClickLi
         dataSet.put(AppConstant.KEY_ROAD_CATEGORY, getIntent().getStringExtra(AppConstant.KEY_ROAD_CATEGORY));
         dataSet.put(AppConstant.KEY_ROAD_ID, prefManager.getRoadId());
         dataSet.put(AppConstant.KEY_LOCATION_GROUP,prefManager.getLocationGroup());
-        dataSet.put(AppConstant.KEY_LOCATION_ID, prefManager.getLocationId());
+        dataSet.put(AppConstant.KEY_LOCATION_ID, getIntent().getStringExtra(AppConstant.KEY_LOCATION_ID));
+        dataSet.put("asset_id", getIntent().getStringExtra("asset_id"));
+        dataSet.put(AppConstant.KEY_LOCATION_GROUP, getIntent().getStringExtra(AppConstant.KEY_LOCATION_GROUP));
         Log.d("utils_AssetDataset", "" + dataSet);
         return dataSet;
     }

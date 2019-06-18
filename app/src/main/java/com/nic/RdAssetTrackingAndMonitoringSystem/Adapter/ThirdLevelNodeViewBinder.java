@@ -288,7 +288,12 @@ public class ThirdLevelNodeViewBinder extends ClickableNodeViewBinder {
                 else {
                     try {
                         data_type = jsonObject.getString("data_type");
+                         Integer loc_id = jsonObject.getInt("loc_id");
+                         Integer asset_id = jsonObject.getInt("id");
                         intent.putExtra(AppConstant.KEY_ROAD_CATEGORY,data_type);
+                        intent.putExtra(AppConstant.KEY_LOCATION_ID,String.valueOf(loc_id));
+                        intent.putExtra("asset_id",String.valueOf(asset_id));
+                        intent.putExtra(AppConstant.KEY_LOCATION_GROUP,String.valueOf(jsonObject.getInt(AppConstant.KEY_LOCATION_GROUP)));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
