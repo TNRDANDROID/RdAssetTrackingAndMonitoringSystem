@@ -178,10 +178,14 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 ArrayList<RoadListValue> bridgesCount = dbData.getAllBridges("0","upload");
 
 
-                if (!(assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0 || bridgesCount.size() > 0)) {
-                    closeApplication();
-                }else{
-                    Utils.showAlert(this,"Sync all the data before logout!");
+                if(!Utils.isOnline()) {
+                    Utils.showAlert(this,"Logging out while offline may leads to loss of data!");
+                }else {
+                    if (!(assetsCount.size() > 0 || trackCount.size() > 0 || habitationCount.size() > 0 || bridgesCount.size() > 0)) {
+                        closeApplication();
+                    } else {
+                        Utils.showAlert(this, "Sync all the data before logout!");
+                    }
                 }
                 break;
             case R.id.VPR_Layout:
