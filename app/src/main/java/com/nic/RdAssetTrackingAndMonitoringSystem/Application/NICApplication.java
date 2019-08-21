@@ -80,7 +80,7 @@ public class NICApplication extends Application {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-          //  mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+//            mRequestQueue = Volley.newRequestQueue(getApplicationContext());
            mRequestQueue = Volley.newRequestQueue(this, new HurlStack(null, getSocketFactory())); //This for SSl Certificate
         }
 

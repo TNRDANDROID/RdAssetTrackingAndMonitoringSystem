@@ -75,8 +75,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "road_category TEXT," +
                 "road_id TEXT," +
                 "point_type TEXT," +
-                "road_lat TEXT," +
-                "road_long TEXT, " +
+                "road_lat TEXT UNIQUE," +
+                "road_long TEXT UNIQUE, " +
                 "server_flag  INTEGER DEFAULT 0," +
                 "created_date TEXT)");
 

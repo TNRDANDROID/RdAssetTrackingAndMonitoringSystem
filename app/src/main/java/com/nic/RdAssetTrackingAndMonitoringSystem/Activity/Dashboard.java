@@ -217,6 +217,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     public void toUpload() {
         if(Utils.isOnline()) {
+            sync.setClickable(false);
             new toUploadAssetTask().execute();
             new toUploadTrackTask().execute();
             new toUploadHabitation().execute();
@@ -225,7 +226,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         else {
             Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
         }
-
     }
 
 
@@ -447,6 +447,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     getAssetList();
                     getRoadList();
                     Utils.showAlert(this,"Asset Saved");
+                    sync.setClickable(true);
+                    syncButtonVisibility();
+                }else {
+                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
@@ -463,6 +467,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     getRoadList();
                    // getAssetList();
                     Utils.showAlert(this, "Lat Long Saved");
+                    sync.setClickable(true);
+                    syncButtonVisibility();
+                }else {
+                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
@@ -478,6 +486,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.deletePmgsyHabitationTable();
                     getPMGSYHabitation();
                     datasetHabitation = new JSONObject();
+                    sync.setClickable(true);
+                    syncButtonVisibility();
+                }else {
+                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);
@@ -492,6 +504,10 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.deleteBridgesTable();
                     getBridges();
                     datasetBridges = new JSONObject();
+                    sync.setClickable(true);
+                    syncButtonVisibility();
+                }else {
+                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saveBridgesList", "" + responseDecryptedBlockKey);
@@ -1108,6 +1124,8 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void OnError(VolleyError volleyError) {
+        sync.setClickable(true);
+        syncButtonVisibility();
     }
 
     @Override

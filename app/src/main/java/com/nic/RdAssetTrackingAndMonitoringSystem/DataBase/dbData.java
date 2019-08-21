@@ -395,6 +395,8 @@ public class dbData {
                 Toasty.success(context, "End Point Inserted", Toast.LENGTH_SHORT, true).show();
             }
 
+        }else{
+            Toasty.error(context, "Same Lat Long are Detected! Please change your Position", Toast.LENGTH_SHORT, true).show();
         }
         Log.d("Inserted_id_saveLatLong", String.valueOf(id));
 
