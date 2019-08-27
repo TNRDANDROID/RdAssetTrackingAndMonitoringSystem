@@ -258,7 +258,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
 
         protected void onPostExecute(JSONObject dataset) {
             super.onPostExecute(dataset);
-           // ((PendingScreen)context).syncData_Track(dataset);
+            ((PendingScreen)context).syncData_Track(dataset);
         }
     }
 

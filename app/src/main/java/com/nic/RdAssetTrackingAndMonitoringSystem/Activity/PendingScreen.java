@@ -356,6 +356,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     dbData.deleteRoadListTable();
                     dbData.deleteAssetTable();
                     db.delete(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
+                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.notifyDataSetChanged();
                     getAssetList();
                     getRoadList();
                     Utils.showAlert(this,"Asset Saved");
@@ -369,6 +371,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     dbData.open();
                     db.delete(DBHelper.SAVE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
+                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.notifyDataSetChanged();
                     dbData.deleteRoadListTable();
                     getRoadList();
                     // getAssetList();
@@ -386,6 +390,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     values.put("image_flag",1);
                     values.put("image_available","Y");
                     long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
+                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.notifyDataSetChanged();
 
                 }
                 Log.d("saveBridgesList", "" + responseDecryptedBlockKey);
