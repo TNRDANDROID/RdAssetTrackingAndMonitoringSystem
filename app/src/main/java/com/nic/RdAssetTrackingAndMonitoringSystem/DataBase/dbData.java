@@ -251,6 +251,50 @@ public class dbData {
         return cards;
     }
 
+    public ArrayList<RoadListValue> getParticularAssetInfo(String road_id) {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+            cursor = db.query(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,
+                    new String[]{"*"}, "server_flag = ? and road_id = ?", new String[]{"0",road_id}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    RoadListValue card = new RoadListValue();
+                    card.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    card.setRoadCategory(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
+                    card.setAssetId(cursor.getString(cursor
+                            .getColumnIndex(AppConstant.KEY_ASSET_ID)));
+                    card.setRoadLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
+                    card.setRoadLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    card.setImage(decodedByte);
+                    card.setCreatedDate(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CREATED_DATE)));
+
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+    }
+
     public ArrayList<RoadListValue> selectImage(String road_id,String road_category,String asset_id,String server_flag) {
 
         ArrayList<RoadListValue> cards = new ArrayList<>();
@@ -477,10 +521,18 @@ public class dbData {
     }
 
     public void update_Track() {
-        String whereClause = "server_flag = server_flag";
+        String whereClause = "server_flag = server_flag ";
         Log.d("Update id is " ,"id");
         ContentValues values = new ContentValues();
         values.put("server_flag",1);
+        db.update(DBHelper.SAVE_LAT_LONG_TABLE, values, whereClause, null);
+    }
+
+    public void updateBridges(Integer road_id) {
+        String whereClause = "image_flag = image_flag and road_id ="+road_id;
+        Log.d("Update id is " ,"id");
+        ContentValues values = new ContentValues();
+        values.put("image_flag",1);
         db.update(DBHelper.SAVE_LAT_LONG_TABLE, values, whereClause, null);
     }
 
@@ -711,6 +763,59 @@ public class dbData {
         return cards;
     }
 
+    public ArrayList<RoadListValue> getPendingSavedHabitation(Integer pmgsy_dcode,Integer pmgsy_bcode, Integer pmgsy_pvcode,Integer pmgsy_hab_code) {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+// cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
+            cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
+                    new String[]{"*"}, "server_flag = ? and pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ? and pmgsy_hab_code = ?", new String[]{"0",String.valueOf(pmgsy_dcode), String.valueOf(pmgsy_bcode), String.valueOf(pmgsy_pvcode), String.valueOf(pmgsy_hab_code)}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+
+                    byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                    byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                    RoadListValue card = new RoadListValue();
+                    card.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    card.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    card.setPvCode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PVCODE)));
+                    card.setHabCode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_HABCODE)));
+                    card.setPmgsyDcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_DCODE)));
+                    card.setPmgsyBcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_BCODE)));
+                    card.setPmgsyPvcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_PVCODE)));
+                    card.setPmgsyHabcode(cursor.getInt(cursor
+                            .getColumnIndex(AppConstant.KEY_PMGSY_HAB_CODE)));
+                    card.setRoadLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
+                    card.setRoadLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    card.setImage(decodedByte);
+                    card.setRemark(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            // Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
+        }
+
     public RoadListValue insert_newPMGSYImages(RoadListValue pmgsyImageValue) {
 
 
@@ -852,6 +957,82 @@ public class dbData {
         try {
             cursor = db.query(DBHelper.BRIDGES_CULVERT,
                     new String[]{"*"},selection , new String[]{flagCode}, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue bridge = new RoadListValue();
+                    bridge.setDataType(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DATA_TYPE)));
+                    bridge.setLocGroup(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_GROUP)));
+                    bridge.setLocID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LOCATION_ID)));
+                    bridge.setdCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_DCODE)));
+                    bridge.setbCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_BCODE)));
+                    bridge.setPvCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PVCODE)));
+                    bridge.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    bridge.setCulvertType(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE)));
+                    bridge.setCulvertTypeName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_TYPE_NAME)));
+                    bridge.setChainage(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CHAINAGE)));
+                    bridge.setCulvertName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_NAME)));
+                    bridge.setSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_SPAN)));
+                    bridge.setNoOfSpan(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_NO_OF_SPAN)));
+                    bridge.setWidth(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_WIDTH)));
+                    bridge.setVentHeight(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_VENT_HEIGHT)));
+                    bridge.setLength(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_LENGTH)));
+                    bridge.setCulvertId(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_CULVERT_ID)));
+                    bridge.setStartLat(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LAT)));
+                    bridge.setStartLong(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_START_LONG)));
+                    if(purpose.equalsIgnoreCase("upload"))
+                    {
+                        byte[] photo = cursor.getBlob(cursor.getColumnIndexOrThrow(AppConstant.KEY_IMAGES));
+                        byte[] decodedString = Base64.decode(photo, Base64.DEFAULT);
+                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                        bridge.setImage(decodedByte);
+                    }
+
+
+                    bridges.add(bridge);
+                }
+            }
+        } catch (Exception e){
+            Log.d( "Exception", String.valueOf(e));
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return bridges;
+    }
+
+    public ArrayList<RoadListValue> getParticularBridgesInfo(String road_id,String flagCode,String purpose) {
+
+        ArrayList<RoadListValue> bridges = new ArrayList<>();
+        Cursor cursor = null;
+        String selection = "server_flag = ?";
+        if(purpose.equalsIgnoreCase("upload")){
+            selection = "image_flag = ? and road_id = ?";
+        }
+
+        try {
+            cursor = db.query(DBHelper.BRIDGES_CULVERT,
+                    new String[]{"*"},selection , new String[]{flagCode,road_id}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
                     RoadListValue bridge = new RoadListValue();
@@ -1131,6 +1312,47 @@ public class dbData {
 
     public void deleteBridgesTable() {
         db.execSQL("delete from "+ DBHelper.BRIDGES_CULVERT);
+    }
+
+    public ArrayList<RoadListValue> getPendingList() {
+
+        ArrayList<RoadListValue> cards = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("select distinct b.* from (SELECT road_id FROM LatLongTable\n" +
+                    "UNION\n" +
+                    "SELECT road_id FROM ImageLatLongTable\n" +
+                    "UNION\n" +
+                    "SELECT road_id FROM BridgesAndCulvert where image_flag = 0) a inner join (select * from RoadList) b on a.road_id = b.road_id",null);
+            // cursor = db.query(CardsDBHelper.TABLE_CARDS,
+            //       COLUMNS, null, null, null, null, null);
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue card = new RoadListValue();
+                    card.setRoadID(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    card.setRoadCode(cursor.getInt(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CODE)));
+                    card.setRoadCategoryCode(cursor
+                            .getInt(cursor.getColumnIndex(AppConstant.KEY_ROAD_CATEGORY_CODE)));
+                    card.setRoadName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_NAME)));
+                    card.setRoadCategory(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
+                    card.setRoadVillage(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_ROAD_VILLAGE_NAME)));
+                    cards.add(card);
+                }
+            }
+        } catch (Exception e){
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally{
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return cards;
     }
 
     public void refreshTable(){

@@ -42,6 +42,11 @@ public class PrefManager {
     private static final String KEY_ROAD_ID = "road_id";
     private static final String KEY_LOCATION_GROUP = "location_group";
     private static final String KEY_LOCATION_ID = "location_id";
+    private static final String KEY_DELETE_ID = "deleteId";
+    private static final String KEY_PMGSY_DCODE = "pmgsy_dcode";
+    private static final String KEY_PMGSY_BCODE = "pmgsy_bcode";
+    private static final String KEY_PMGSY_PVCODE = "pmgsy_pvcode";
+    private static final String KEY_PMGSY_HABCODE = "pmgsy_habcode";
 
 
     private static final String IMEI = "imei";
@@ -224,6 +229,51 @@ public class PrefManager {
 
     public void setLocationId(String LocationId) {
         editor.putString(KEY_LOCATION_ID,LocationId);
+        editor.commit();
+    }
+
+    public String getKeyDeleteId() {
+        return pref.getString(KEY_DELETE_ID,null);
+    }
+
+    public void setKeyDeleteId(String deleteId) {
+        editor.putString(KEY_DELETE_ID,deleteId);
+        editor.commit();
+    }
+
+    public String getKeyPmgsyDcode() {
+        return pref.getString(KEY_PMGSY_DCODE,null);
+    }
+
+    public void setKeyPmgsyDcode(String pmgsyDcode) {
+        editor.putString(KEY_PMGSY_DCODE,pmgsyDcode);
+        editor.commit();
+    }
+
+    public String getKeyPmgsyBcode() {
+        return pref.getString(KEY_PMGSY_BCODE,null);
+    }
+
+    public void setKeyPmgsyBcode(String pmgsyBcode) {
+        editor.putString(KEY_PMGSY_BCODE,pmgsyBcode);
+        editor.commit();
+    }
+
+    public String getKeyPmgsyPvcode() {
+        return pref.getString(KEY_PMGSY_PVCODE,null);
+    }
+
+    public void setKeyPmgsyPvcode(String pmgsyPvcode) {
+        editor.putString(KEY_PMGSY_PVCODE,pmgsyPvcode);
+        editor.commit();
+    }
+
+    public String getKeyPmgsyHabcode() {
+        return pref.getString(KEY_PMGSY_HABCODE,null);
+    }
+
+    public void setKeyPmgsyHabcode(String pmgsyHabcode) {
+        editor.putString(KEY_PMGSY_HABCODE,pmgsyHabcode);
         editor.commit();
     }
 }

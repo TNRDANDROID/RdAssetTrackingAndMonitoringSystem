@@ -57,10 +57,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     RelativeLayout vpr_layout,pur_layout,vpr_pur_layout,highway_layout;
     RoadListAdapter roadListAdapter;
     RecyclerView recyclerView;
-    JSONObject datasetAsset = new JSONObject();
-    JSONObject datasetTrack = new JSONObject();
     JSONObject datasetHabitation = new JSONObject();
-    JSONObject datasetBridges = new JSONObject();
     private ProgressHUD progressHUD;
     private String isHome;
     private final @NonNull Handler Animationhandler = new Handler();
@@ -473,7 +470,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.deleteRoadListTable();
                     dbData.deleteAssetTable();
                     dbData.update_image();
-                    datasetAsset = new JSONObject();
                     getAssetList();
                     getRoadList();
                     Utils.showAlert(this,"Asset Saved");
@@ -493,7 +489,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.open();
                     dbData.update_Track();
                     dbData.deleteRoadListTable();
-                    datasetTrack = new JSONObject();
                     getRoadList();
                    // getAssetList();
                     Utils.showAlert(this, "Lat Long Saved");
@@ -533,7 +528,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.open();
                     dbData.deleteBridgesTable();
                     getBridges();
-                    datasetBridges = new JSONObject();
                     sync.setClickable(true);
                     syncButtonVisibility();
                 }else {
@@ -846,118 +840,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     }
 
 
-    public class toUploadAssetTask extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... voids) {
-            dbData.open();
-            JSONArray track_data = new JSONArray();
-            ArrayList<RoadListValue> assets = dbData.getSavedAsset();
-
-            if (assets.size() > 0) {
-                for (int i = 0; i < assets.size(); i++) {
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put(AppConstant.KEY_ROAD_CATEGORY,assets.get(i).getRoadCategory());
-                        jsonObject.put(AppConstant.KEY_ROAD_ID,assets.get(i).getRoadID());
-                        jsonObject.put(AppConstant.KEY_ASSET_ID,assets.get(i).getAssetId());
-                        jsonObject.put(AppConstant.KEY_ROAD_LAT,assets.get(i).getRoadLat());
-                        jsonObject.put(AppConstant.KEY_ROAD_LONG,assets.get(i).getRoadLong());
-
-                        Bitmap bitmap = assets.get(i).getImage();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        byte[] imageInByte = baos.toByteArray();
-                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-                        jsonObject.put(AppConstant.KEY_IMAGES,image_str);
-
-                        track_data.put(jsonObject);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                datasetAsset = new JSONObject();
-
-                try {
-                    datasetAsset.put(AppConstant.KEY_SERVICE_ID,AppConstant.KEY_ROAD_TRACK_ASSET_SAVE);
-                    datasetAsset.put(AppConstant.KEY_TRACK_DATA,track_data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return datasetAsset;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncData_Asset();
-        }
-    }
-
-    public class toUploadTrackTask extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-            try {
-                dbData.open();
-                ArrayList<RoadListValue> saveLatLongLists = dbData.getSavedTrack();
-                JSONArray saveLatLongArray = new JSONArray();
-                if (saveLatLongLists.size() > 0) {
-                    for (int i = 0; i < saveLatLongLists.size(); i++) {
-                        JSONObject latLongData = new JSONObject();
-                        latLongData.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongLists.get(i).getRoadCategory());
-                        latLongData.put(AppConstant.KEY_ROAD_ID, saveLatLongLists.get(i).getRoadID());
-                        latLongData.put(AppConstant.KEY_POINT_TYPE, saveLatLongLists.get(i).getPointType());
-                        latLongData.put(AppConstant.KEY_ROAD_LAT, saveLatLongLists.get(i).getRoadLat());
-                        latLongData.put(AppConstant.KEY_ROAD_LONG, saveLatLongLists.get(i).getRoadLong());
-                        latLongData.put(AppConstant.KEY_CREATED_DATE, saveLatLongLists.get(i).getCreatedDate());
-
-                        saveLatLongArray.put(latLongData);
-                    }
-                }
-
-                datasetTrack = new JSONObject();
-                try {
-                    datasetTrack.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_ROAD_TRACK_SAVE);
-                    datasetTrack.put(AppConstant.KEY_TRACK_DATA, saveLatLongArray);
-
-//                    String authKey = datasetTrack.toString();
-//                    int maxLogSize = 2000;
-//                    for (int i = 0; i <= authKey.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i + 1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey.length() : end;
-//                        Log.v("to_send_plain", authKey.substring(start, end));
-//                    }
-//
-//                    String authKey1 = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), saveLatLongData.toString());
-//
-//                    for(int i = 0; i <= authKey1.length() / maxLogSize; i++) {
-//                        int start = i * maxLogSize;
-//                        int end = (i+1) * maxLogSize;
-//                        end = end > authKey.length() ? authKey1.length() : end;
-//                        Log.v("to_send_encryt", authKey1.substring(start, end));
-//                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return datasetTrack;
-        }
-
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncData_Track();
-        }
-    }
-
     public class toUploadHabitation extends AsyncTask<Void, Void,
             JSONObject> {
         @Override
@@ -1017,107 +899,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    public class toUploadBridges extends AsyncTask<Void, Void,
-            JSONObject> {
-        @Override
-        protected JSONObject doInBackground(Void... voids) {
-            dbData.open();
-            JSONArray BridgeArray = new JSONArray();
-            ArrayList<RoadListValue> Bridges = dbData.getAllBridges("0","upload");
-
-            if (Bridges.size() > 0) {
-                for (int i = 0; i < Bridges.size(); i++) {
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put(AppConstant.KEY_DATA_TYPE, Bridges.get(i).getDataType());
-                        jsonObject.put(AppConstant.KEY_LOCATION_GROUP, Bridges.get(i).getLocGroup());
-                        jsonObject.put(AppConstant.KEY_LOCATION_ID, Bridges.get(i).getLocID());
-                        jsonObject.put(AppConstant.KEY_DCODE, Bridges.get(i).getdCode());
-                        jsonObject.put(AppConstant.KEY_BCODE, Bridges.get(i).getbCode());
-                        jsonObject.put(AppConstant.KEY_PVCODE, Bridges.get(i).getPvCode());
-                        jsonObject.put(AppConstant.KEY_ROAD_ID, Bridges.get(i).getRoadID());
-                        jsonObject.put(AppConstant.KEY_CULVERT_TYPE, Bridges.get(i).getCulvertType());
-                        jsonObject.put(AppConstant.KEY_CULVERT_TYPE_NAME, Bridges.get(i).getCulvertTypeName());
-                        jsonObject.put(AppConstant.KEY_CHAINAGE, Bridges.get(i).getChainage());
-                        jsonObject.put(AppConstant.KEY_CULVERT_NAME, Bridges.get(i).getCulvertName());
-                        jsonObject.put(AppConstant.KEY_SPAN, Bridges.get(i).getSpan());
-                        jsonObject.put(AppConstant.KEY_NO_OF_SPAN, Bridges.get(i).getNoOfSpan());
-                        jsonObject.put(AppConstant.KEY_WIDTH, Bridges.get(i).getWidth());
-                        jsonObject.put(AppConstant.KEY_VENT_HEIGHT, Bridges.get(i).getVentHeight());
-                        jsonObject.put(AppConstant.KEY_LENGTH, Bridges.get(i).getLength());
-                        jsonObject.put(AppConstant.KEY_CULVERT_ID, Bridges.get(i).getCulvertId());
-                        jsonObject.put(AppConstant.KEY_ROAD_LAT, Bridges.get(i).getStartLat());
-                        jsonObject.put(AppConstant.KEY_ROAD_LONG, Bridges.get(i).getStartLong());
-
-                        Bitmap bitmap = Bridges.get(i).getImage();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
-                        byte[] imageInByte = baos.toByteArray();
-                        String image_str = Base64.encodeToString(imageInByte, Base64.DEFAULT);
-
-                        jsonObject.put(AppConstant.KEY_IMAGES, image_str);
-                        BridgeArray.put(jsonObject);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                datasetBridges = new JSONObject();
-
-                try {
-                    datasetBridges.put(AppConstant.KEY_SERVICE_ID, AppConstant.KEY_BRIDGES_CULVERT_SAVE);
-                    datasetBridges.put(AppConstant.KEY_TRACK_DATA, BridgeArray);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return datasetBridges;
-        }
-
-        @Override
-        protected void onPostExecute(JSONObject dataset) {
-            super.onPostExecute(dataset);
-            syncDataBridges();
-        }
-    }
-
-
-    public void syncData_Asset() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("save_dataAsset", Api.Method.POST, UrlGenerator.getRoadListUrl(), dataTobeSavedJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject dataTobeSavedJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetAsset.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("saving", "" + authKey);
-        return dataSet;
-    }
-
-    public void syncData_Track() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("saveLatLongList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveLatLongListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject saveLatLongListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetTrack.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("saveLatLongList", "" + authKey);
-        return dataSet;
-    }
-
     public void syncHabitation() {
         try {
             new ApiService(this).makeJSONObjectRequest("saveHabitation", Api.Method.POST, UrlGenerator.getRoadListUrl(), habitaionSavedJsonParams(), "not cache", this);
@@ -1132,23 +913,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("Habitation", "" + authKey);
-        return dataSet;
-    }
-
-    public void syncDataBridges() {
-        try {
-            new ApiService(this).makeJSONObjectRequest("saveBridgesList", Api.Method.POST, UrlGenerator.getRoadListUrl(), saveBridgesListJsonParams(), "not cache", this);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public JSONObject saveBridgesListJsonParams() throws JSONException {
-        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetBridges.toString());
-        JSONObject dataSet = new JSONObject();
-        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
-        dataSet.put(AppConstant.DATA_CONTENT, authKey);
-        Log.d("savebridgesList", "" + authKey);
         return dataSet;
     }
 

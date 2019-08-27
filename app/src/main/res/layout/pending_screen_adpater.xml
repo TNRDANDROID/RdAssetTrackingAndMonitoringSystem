@@ -206,7 +206,7 @@
 
 
                     <LinearLayout
-                        android:id="@+id/third_layout"
+                        android:id="@+id/third_layout_village"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
@@ -338,7 +338,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/del_sync_track_info"
+                                android:id="@+id/del_track_info"
                                 style="@string/font_circular_book"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
