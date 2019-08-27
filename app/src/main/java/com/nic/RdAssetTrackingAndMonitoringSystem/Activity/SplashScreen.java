@@ -26,11 +26,12 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
         prefManager = new PrefManager(this);
-        if(Utils.isOnline()){
-            checkAppVersion();
-        }else{
-            showSignInScreen();
-        }
+        showSignInScreen();
+//        if(Utils.isOnline()){
+//            checkAppVersion();
+//        }else{
+//            showSignInScreen();
+//        }
 }
 
 

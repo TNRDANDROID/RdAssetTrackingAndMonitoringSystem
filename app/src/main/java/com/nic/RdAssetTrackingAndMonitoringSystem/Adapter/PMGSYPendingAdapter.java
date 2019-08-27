@@ -2,11 +2,13 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PMGSYPendingScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -35,12 +37,14 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView habitation_tv, village_tv;
+        private TextView habitation_tv, village_tv, upload,delete;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             habitation_tv = (TextView) itemView.findViewById(R.id.hab_name);
             village_tv = (TextView) itemView.findViewById(R.id.village_name);
+            upload = (TextView) itemView.findViewById(R.id.upload);
+            delete = (TextView) itemView.findViewById(R.id.delete);
         }
 
 
@@ -55,12 +59,33 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        holder.habitation_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
+        holder.village_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyPvcode()));
+        holder.upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((PMGSYPendingScreen)context).new toUploadHabitation().execute();;
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                deletePending(position);
+            }
+        });
     }
 
+    public void deletePending(int position) {
+        pmgsyListValues.remove(position);
+        notifyItemRemoved(position);
+        notifyItemChanged(position, pmgsyListValues.size());
+    }
 
     @Override
     public int getItemCount() {
-        return 20;
+        return pmgsyListValues.size();
     }
 
 }
