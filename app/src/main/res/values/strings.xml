@@ -14,4 +14,5 @@
     <string name="marquee" translatable="false">Your internet seems</string>
     <string name="app_Name" translatable="false">Road Assets \n Monitoring \n And Tracking</string>
     <string name="init_vector" translatable="false">2SN22SkJGDyOAXUU</string>
+    <string name="font_circular_book"  translatable="false">circular-book.ttf</string>
 </resources>

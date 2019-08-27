@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -22,8 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
-
-import static com.nic.RdAssetTrackingAndMonitoringSystem.Application.NICApplication.TAG;
 
 public class dbData {
     private SQLiteDatabase db;
@@ -374,7 +371,7 @@ public class dbData {
         return assets;
     }
 
-    public RoadListValue saveLatLong(RoadListValue saveLatLongValue) {
+    public long saveLatLong(RoadListValue saveLatLongValue) {
         ContentValues values = new ContentValues();
         values.put(AppConstant.KEY_ROAD_CATEGORY, saveLatLongValue.getRoadCategory());
         values.put(AppConstant.KEY_ROAD_ID, saveLatLongValue.getRoadID());
@@ -400,7 +397,7 @@ public class dbData {
         }
         Log.d("Inserted_id_saveLatLong", String.valueOf(id));
 
-        return saveLatLongValue;
+        return id;
     }
 
     public ArrayList<RoadListValue> getSavedTrack() {
@@ -412,6 +409,40 @@ public class dbData {
            // cursor = db.rawQuery("select * from " + DBHelper.SAVE_LAT_LONG_TABLE, null);
             cursor = db.query(DBHelper.SAVE_LAT_LONG_TABLE,
                     new String[]{"*"}, "server_flag = ?", new String[]{"0"}, null, null, null);
+
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    RoadListValue postLatLong = new RoadListValue();
+
+                    postLatLong.setRoadCategory(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_CATEGORY)));
+                    postLatLong.setRoadID(cursor.getInt(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
+                    postLatLong.setPointType(cursor.getString(cursor.getColumnIndex(AppConstant.KEY_POINT_TYPE)));
+                    postLatLong.setRoadLat(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_LAT)));
+                    postLatLong.setRoadLong(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_ROAD_LONG)));
+                    postLatLong.setCreatedDate(cursor.getString(cursor.getColumnIndexOrThrow(AppConstant.KEY_CREATED_DATE)));
+
+                    sendPostLatLong.add(postLatLong);
+                }
+            }
+        } catch (Exception e) {
+            //   Log.d(DEBUG_TAG, "Exception raised with a value of " + e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return sendPostLatLong;
+    }
+
+    public ArrayList<RoadListValue> getParticularRoadTrackInfo(String road_id) {
+
+        ArrayList<RoadListValue> sendPostLatLong = new ArrayList<>();
+        Cursor cursor = null;
+
+        try {
+            // cursor = db.rawQuery("select * from " + DBHelper.SAVE_LAT_LONG_TABLE, null);
+            cursor = db.query(DBHelper.SAVE_LAT_LONG_TABLE,
+                    new String[]{"*"}, "server_flag = ? and road_id = ?", new String[]{"0",road_id}, null, null, null);
 
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
@@ -1100,6 +1131,13 @@ public class dbData {
 
     public void deleteBridgesTable() {
         db.execSQL("delete from "+ DBHelper.BRIDGES_CULVERT);
+    }
+
+    public void refreshTable(){
+        db.execSQL("delete from "+ DBHelper.ASSET_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.ROAD_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.PMGSY_VILLAGE_LIST_TABLE);
+        db.execSQL("delete from "+ DBHelper.PMGSY_HABITATION_LIST_TABLE);
     }
 
     /************** DELETE ALL TABLE *************/

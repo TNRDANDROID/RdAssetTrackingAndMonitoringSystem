@@ -272,24 +272,34 @@ private PrefManager prefManager;
 
             if (pointType.equalsIgnoreCase("1")) {
                 roadListValue.setPointType(pointType);
-                marquee_tv.setVisibility(View.VISIBLE);
-                start_lat_long_click_view.setBackgroundResource(R.drawable.start_disable_button);
-                start_lat_long_click_view.setClickable(false);
-                Animation marquee = AnimationUtils.loadAnimation(this, R.anim.marquee);
-                marquee_tv.startAnimation(marquee);
             } else if (pointType.equalsIgnoreCase("2")) {
                 roadListValue.setPointType(pointType);
             } else {
                 roadListValue.setPointType(pointType);
-                start_lat_long_click_view.setBackgroundResource(R.drawable.start_button);
-                start_lat_long_click_view.setClickable(true);
             }
 
             roadListValue.setRoadLat(offlatTextValue.toString());
             roadListValue.setRoadLong(offlongTextValue.toString());
             roadListValue.setCreatedDate(dateOfSaveLatLong);
 
-            dbData.saveLatLong(roadListValue);
+            long id = dbData.saveLatLong(roadListValue);
+
+            if( id > 0 ){
+                if (pointType.equalsIgnoreCase("1")) {
+                    marquee_tv.setVisibility(View.VISIBLE);
+                    start_lat_long_click_view.setBackgroundResource(R.drawable.start_disable_button);
+                    start_lat_long_click_view.setClickable(false);
+                    Animation marquee = AnimationUtils.loadAnimation(this, R.anim.marquee);
+                    marquee_tv.startAnimation(marquee);
+                }  else {
+                    start_lat_long_click_view.setBackgroundResource(R.drawable.start_button);
+                    start_lat_long_click_view.setClickable(true);
+                }
+            }
+            else
+            {
+
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -112,9 +114,39 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.road_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openAssetList(position);
+                ArrayList<RoadListValue> roadListLocal = dbData.getParticularRoadTrackInfo(String.valueOf(roadListValuesFiltered.get(position).getRoadID()));
+
+                if(roadListLocal.size() < 1) {
+                    openAssetList(position);
+                }
+                else {
+                   showAlert(position);
+                }
+
             }
         });
+
+
+    }
+
+    public void showAlert(final int position) {
+        String Alert = "This road has been already tracked and data found in local database. Do you want to continue?";
+
+        new AlertDialog.Builder(context)
+                .setTitle("WARNING")
+                .setMessage(Alert)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        openAssetList(position);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.cancel();
+                    }
+                }).show();
+
     }
 
     private void initLayoutTwo(ViewHolderTwo holder, final int position) {

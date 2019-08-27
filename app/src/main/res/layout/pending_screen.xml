@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top"
+    android:padding="10px"
+    android:background="#EDE2E0">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/road_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Close"
+            android:textColor="#FFF"
+            android:background="@color/dashboard_color_4"
+            android:id="@+id/closePopupBtn"/>
+        <View
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_weight="1" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:textColor="#FFF"
+            android:background="@color/dashboard_green"
+            android:id="@+id/continuePopupBtn"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>
