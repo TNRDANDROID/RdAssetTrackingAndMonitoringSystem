@@ -384,6 +384,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     Utils.showAlert(this, "Saved");
                     ContentValues values = new ContentValues();
                     values.put("image_flag",1);
+                    values.put("image_available","Y");
                     long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
 
                 }
