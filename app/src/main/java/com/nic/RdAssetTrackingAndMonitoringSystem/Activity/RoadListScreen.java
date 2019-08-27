@@ -233,6 +233,6 @@ public class RoadListScreen extends AppCompatActivity implements View.OnClickLis
 
     public void onResume() {
         super.onResume();
-        Utils.hideSoftKeyboard(this);
+//        Utils.hideSoftKeyboard(this);
     }
 }

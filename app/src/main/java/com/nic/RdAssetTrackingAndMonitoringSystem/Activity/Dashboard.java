@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,7 +50,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     private MyCustomTextView on_road_tv, district_tv, block_tv , sync;
     private LinearLayout district_user_layout, block_user_layout,pmgsy_layout;
-    private ImageView logout_tv;
+    private ImageView logout_tv,refresh_icon;
     Handler myHandler = new Handler();
     private PrefManager prefManager;
     public dbData dbData = new dbData(this);
@@ -61,6 +63,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
     JSONObject datasetBridges = new JSONObject();
     private ProgressHUD progressHUD;
     private String isHome;
+    private final @NonNull Handler Animationhandler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +86,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         block_tv = (MyCustomTextView) findViewById(R.id.block_tv);
         on_road_tv = (MyCustomTextView) findViewById(R.id.on_road_tv);
         logout_tv = (ImageView) findViewById(R.id.logout_tv);
+        refresh_icon = (ImageView) findViewById(R.id.refresh_icon);
         vpr_layout = (RelativeLayout) findViewById(R.id.VPR_Layout);
         pur_layout= (RelativeLayout) findViewById(R.id.PUR_Layout);
         vpr_pur_layout= (RelativeLayout) findViewById(R.id.VPR_PUR_Layout);
@@ -95,6 +99,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         highway_layout.setOnClickListener(this);
         sync.setOnClickListener(this);
         pmgsy_layout.setOnClickListener(this);
+        refresh_icon.setOnClickListener(this);
 
         on_road_tv.setAlpha(0);
         final Runnable onroad = new Runnable() {
@@ -152,6 +157,13 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         syncButtonVisibility();
     }
 
+    public void fetchApi(){
+        getRoadList();
+        getAssetList();
+        getPMGSYVillage();
+        getPMGSYHabitation();
+    }
+
     public void syncButtonVisibility() {
         dbData.open();
         ArrayList<RoadListValue> assetsCount = dbData.getSavedAsset();
@@ -201,10 +213,17 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                 roadlistScreen("3");
                 break;
             case R.id.sync:
-                toUpload();
+                openPendingScreen();
                 break;
             case R.id.pmgsy_layout:
                 pmgsyScreen();
+                break;
+            case R.id.refresh_icon:
+                if(Utils.isOnline()) {
+                    refreshScreenCallApi();
+                }else{
+                    Utils.showAlert(this,getResources().getString(R.string.no_internet));
+                }
                 break;
         }
     }
@@ -215,19 +234,30 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 
-    public void toUpload() {
-        if(Utils.isOnline()) {
-            sync.setClickable(false);
-            new toUploadAssetTask().execute();
-            new toUploadTrackTask().execute();
-            new toUploadHabitation().execute();
-            new toUploadBridges().execute();
-        }
-        else {
-            Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
-        }
+    public void refreshScreenCallApi(){
+        setAnimationView();
+        dbData.open();
+        dbData.refreshTable();
+        fetchApi();
     }
 
+//    public void toUpload() {
+//        if(Utils.isOnline()) {
+//            sync.setClickable(false);
+//            new toUploadAssetTask().execute();
+//            new toUploadTrackTask().execute();
+//            new toUploadHabitation().execute();
+//            new toUploadBridges().execute();
+//        }
+//        else {
+//            Utils.showAlert(this,"Please Turn on Your Mobile Data to Upload");
+//        }
+//    }
+    public void openPendingScreen() {
+        Intent intent = new Intent(this,PendingScreen.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
 
     public void roadlistScreen(String code) {
         Intent intent = new Intent(this,RoadListScreen.class);
@@ -675,6 +705,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
             if (progressHUD != null) {
                 progressHUD.cancel();
             }
+            clearAnimations();
 
         }
 
@@ -1133,4 +1164,18 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
         super.onResume();
         syncButtonVisibility();
     }
+
+    public void setAnimationView(){
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        rotation.setRepeatCount(Animation.INFINITE);
+        refresh_icon.startAnimation(rotation);
+
+//        Animationhandler.removeCallbacks(animationRunnable);
+//        Animationhandler.postDelayed(animationRunnable, 12000);
+    }
+
+    public void clearAnimations() {
+        refresh_icon.clearAnimation();
+    }
+
 }

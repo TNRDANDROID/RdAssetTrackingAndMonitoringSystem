@@ -1,6 +1,7 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.android.volley.VolleyError;
@@ -36,7 +38,9 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     public dbData dbData = new dbData(this);
     ArrayList<RoadListValue> pendingList = new ArrayList<>();
     private PendingScreenAdapter pendingScreenAdapter;
-    private ImageView back_img;
+    private ImageView back_img, home_img;
+    private LinearLayout sync_pmgsy_data;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +52,9 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     public void intializeUI() {
 
         pendingRecycler = (RecyclerView) findViewById(R.id.road_list);
-
+        back_img = (ImageView) findViewById(R.id.back_img);
+        home_img = (ImageView) findViewById(R.id.home_img);
+        sync_pmgsy_data = (LinearLayout) findViewById(R.id.sync_pmgsy_data);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         pendingRecycler.setLayoutManager(mLayoutManager);
         pendingRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -58,7 +64,10 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         pendingScreenAdapter = new PendingScreenAdapter(this, pendingList, dbData);
         pendingRecycler.setAdapter(pendingScreenAdapter);
 
-      //  new fetchHabitationtask().execute();
+        back_img.setOnClickListener(this);
+        home_img.setOnClickListener(this);
+        sync_pmgsy_data.setOnClickListener(this);
+        new fetchpendingtask().execute();
 
 //        pmgsy_village_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -91,7 +100,15 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.back_img:
+                onBackPress();
+                break;
+            case R.id.home_img:
+                dashboard();
+                break;
+            case R.id.sync_pmgsy_data:
+                PMGSYPendingScreen();
+                break;
         }
     }
 
@@ -101,6 +118,22 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
+    public void dashboard() {
+        Intent intent = new Intent(this, Dashboard.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("Home", "Home");
+        startActivity(intent);
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+    }
+
+    public void PMGSYPendingScreen() {
+        Intent intent = new Intent(this, PMGSYPendingScreen.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -108,13 +141,13 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
     }
 
-    public class fetchHabitationtask extends AsyncTask<JSONObject, Void,
+    public class fetchpendingtask extends AsyncTask<JSONObject, Void,
             ArrayList<RoadListValue>> {
         @Override
         protected ArrayList<RoadListValue> doInBackground(JSONObject... params) {
             dbData.open();
             pendingList = new ArrayList<>();
-            pendingList = dbData.select_Habitation(params[0]);
+            pendingList = dbData.getPendingList();
             return pendingList;
         }
 
@@ -168,6 +201,5 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     @Override
     protected void onResume() {
         super.onResume();
-        pendingScreenAdapter.notifyDataSetChanged();
     }
 }

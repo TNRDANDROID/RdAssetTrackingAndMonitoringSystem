@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#EDE2E0"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -283,27 +282,149 @@
                         android:layout_marginRight="15dp"
                         android:background="@drawable/background" />
 
-                    <RelativeLayout
-                        android:id="@+id/camera_activity"
+                    <LinearLayout
+                        android:id="@+id/sync_delete_track_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_below="@+id/activity_name_layout">
 
-                        <TextView
-                            android:id="@+id/sync_track_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_centerInParent="true"
-                            android:layout_marginRight="@dimen/_50sdp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="8"
                             android:gravity="center"
-                            android:text="Sync Track Info"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            />
+                            android:orientation="vertical">
 
-                    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/sync_track_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="Sync Track"
+                                android:textAlignment="viewEnd"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+
+                                style="@string/font_circular_book"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text=" "
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/del_sync_track_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="Delete Track"
+                                android:textAlignment="inherit"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View
+                        android:id="@+id/view"
+                        android:layout_width="match_parent"
+                        android:layout_height="1.5dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/background" />
+
+                    <LinearLayout
+                        android:id="@+id/sync_del_asset_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="8"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/sync_asset_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="Sync Asset"
+                                android:textAlignment="viewEnd"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+
+                                style="@string/font_circular_book"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text=" "
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/del_asset_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="Delete Asset"
+                                android:textAlignment="inherit"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                     <View
                         android:id="@+id/image_available_view"
@@ -314,58 +435,73 @@
                         android:layout_marginRight="15dp"
                         android:background="@drawable/background" />
 
-                    <RelativeLayout
-                        android:id="@+id/sync_asset_layout"
+                    <LinearLayout
+                        android:id="@+id/sync_delete_bridges_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_below="@+id/activity_name_layout">
 
-                        <TextView
-                            android:id="@+id/sync_asset_info"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_centerInParent="true"
-                            android:layout_marginRight="@dimen/_50sdp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="8"
                             android:gravity="center"
-                            android:text="Sync Asset Photo"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            />
+                            android:orientation="vertical">
 
-                    </RelativeLayout>
+                            <TextView
+                                android:id="@+id/sync_culverts_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="5dp"
+                                android:text="Sync Bridges"
+                                android:textAlignment="viewEnd"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1.5dp"
-                        android:layout_gravity="bottom"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:background="@drawable/background" />
+                        </LinearLayout>
 
-                    <RelativeLayout
-                        android:id="@+id/sync_culverts_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_below="@+id/activity_name_layout">
 
-                        <TextView
-                            android:id="@+id/sync_culverts_info"
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:layout_centerInParent="true"
-                            android:layout_marginRight="@dimen/_50sdp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical">
+
+                            <TextView
+
+                                style="@string/font_circular_book"
+                                android:layout_width="wrap_content"
+
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text=" "
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
                             android:gravity="center"
-                            android:text="Sync Bridges &amp; Culverts"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            />
+                            android:orientation="vertical">
 
-                    </RelativeLayout>
-
+                            <TextView
+                                android:id="@+id/Del_culverts_info"
+                                style="@string/font_circular_book"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp"
+                                android:text="Delete Bridges"
+                                android:textAlignment="inherit"
+                                android:textColor="#000"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 
