@@ -2,6 +2,7 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +22,12 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ServerResponse;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
+import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Support.ProgressHUD;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
@@ -43,12 +46,21 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
     private ImageView back_img, home_img;
     JSONObject datasetHabitation = new JSONObject();
     private PrefManager prefManager;
+    public static DBHelper dbHelper;
+    public static SQLiteDatabase db;
+    private ProgressHUD progressHUD;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pmgsy_pending_screen);
+        try {
+            dbHelper = new DBHelper(this);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         intializeUI();
     }
 
@@ -68,8 +80,7 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
         home_img = (ImageView) findViewById(R.id.home_img);
         back_img.setOnClickListener(this);
         home_img.setOnClickListener(this);
-
-          new fetchHabitationtask().execute();
+        new fetchHabitationtask().execute();
 
 
     }
@@ -126,13 +137,14 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
             pendingRecycler.setAdapter(pmgsyPendingAdapter);
         }
     }
-    public class toUploadHabitation extends AsyncTask<Void, Void,
+
+    public class toUploadHabitation extends AsyncTask<RoadListValue, Void,
             JSONObject> {
         @Override
-        protected JSONObject doInBackground(Void... voids) {
+        protected JSONObject doInBackground(RoadListValue... roadListValues) {
             dbData.open();
             JSONArray habitation = new JSONArray();
-            ArrayList<RoadListValue> Habitation = dbData.getSavedHabitation("0");
+            ArrayList<RoadListValue> Habitation = dbData.getPendingSavedHabitation(roadListValues[0].getPmgsyDcode(), roadListValues[0].getPmgsyBcode(), roadListValues[0].getPmgsyPvcode(), roadListValues[0].getPmgsyHabcode());
 
             if (Habitation.size() > 0) {
                 for (int i = 0; i < Habitation.size(); i++) {
@@ -192,12 +204,29 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
         }
     }
 
+    public void getPMGSYHabitation() {
+        try {
+            new ApiService(this).makeJSONObjectRequest("PMGSYHabitationList", Api.Method.POST, UrlGenerator.getRoadListUrl(), pmgsyHabitationListJsonParams(), "not cache", this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONObject habitaionSavedJsonParams() throws JSONException {
         String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), datasetHabitation.toString());
         JSONObject dataSet = new JSONObject();
         dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
         dataSet.put(AppConstant.DATA_CONTENT, authKey);
         Log.d("Habitation", "" + authKey);
+        return dataSet;
+    }
+
+    public JSONObject pmgsyHabitationListJsonParams() throws JSONException {
+        String authKey = Utils.encrypt(prefManager.getUserPassKey(), getResources().getString(R.string.init_vector), Utils.pmgsyHabitationListJsonParams(this).toString());
+        JSONObject dataSet = new JSONObject();
+        dataSet.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        dataSet.put(AppConstant.DATA_CONTENT, authKey);
+        Log.d("pmgsyHabitationList", "" + authKey);
         return dataSet;
     }
     @Override
@@ -213,16 +242,83 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     Utils.showAlert(this, "PMGSY Habitation Saved");
                     dbData.open();
-                    dbData.deleteImageHabitationTable();
+                    db.delete(DBHelper.SAVE_IMAGE_HABITATION_TABLE, "pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ? and pmgsy_hab_code = ?", new String[]{prefManager.getKeyPmgsyDcode(), prefManager.getKeyPmgsyBcode(), prefManager.getKeyPmgsyPvcode(), prefManager.getKeyPmgsyHabcode()});
                     dbData.deletePmgsyHabitationTable();
-                    Dashboard dashboard = new Dashboard();
-                    dashboard.getPMGSYHabitation();
+                    new fetchHabitationtask().execute();
+                    pmgsyPendingAdapter.notifyDataSetChanged();
+                    getPMGSYHabitation();
                     datasetHabitation = new JSONObject();
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);
             }
+            if ("PMGSYHabitationList".equals(urlType) && responseObj != null) {
+                String key = responseObj.getString(AppConstant.ENCODE_DATA);
+                String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
+                JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
+                if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
+                    new InsertPMGSYHabitationListTask().execute(jsonObject);
+                }
+                Log.d("resp_pmgsyHabitation", "" + responseDecryptedBlockKey);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    public class InsertPMGSYHabitationListTask extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            dbData.open();
+            ArrayList<RoadListValue> pmgsyHabitation_count = dbData.getAll_PMGSYHabitation();
+            if (pmgsyHabitation_count.size() <= 0) {
+                if (params.length > 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    try {
+                        jsonArray = params[0].getJSONArray(AppConstant.JSON_DATA);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        RoadListValue pmgsyHabitation = new RoadListValue();
+                        try {
+                            pmgsyHabitation.setdCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_DCODE));
+                            pmgsyHabitation.setbCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_BCODE));
+                            pmgsyHabitation.setPvCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PVCODE));
+                            pmgsyHabitation.setHabCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_HABCODE));
+                            pmgsyHabitation.setPmgsyDcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_DCODE));
+                            pmgsyHabitation.setPmgsyBcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_BCODE));
+                            pmgsyHabitation.setPmgsyPvcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_PVCODE));
+                            pmgsyHabitation.setPmgsyHabcode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_PMGSY_HAB_CODE));
+                            pmgsyHabitation.setPmgsyHabName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_PMGSY_HAB_NAME));
+                            pmgsyHabitation.setImageAvailable(jsonArray.getJSONObject(i).getString(AppConstant.KEY_IMAGE_AVAILABLE));
+
+                            dbData.insert_newPMGSYHabitation(pmgsyHabitation);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (progressHUD != null) {
+                progressHUD.cancel();
+            }
+
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressHUD = ProgressHUD.show(PMGSYPendingScreen.this, "Downloading", true, false, null);
         }
     }
 

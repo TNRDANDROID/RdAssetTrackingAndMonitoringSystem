@@ -1,14 +1,15 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PMGSYPendingScreen;
+import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
@@ -22,8 +23,15 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     private Context context;
     private List<RoadListValue> pmgsyListValues;
     private PrefManager prefManager;
-
+    public static DBHelper dbHelper;
+    public static SQLiteDatabase db;
     public PMGSYPendingAdapter(Context context, List<RoadListValue> pmgsyListValues, dbData dbData) {
+        try {
+            dbHelper = new DBHelper(context);
+            db = dbHelper.getWritableDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.context = context;
         this.pmgsyListValues = pmgsyListValues;
         this.dbData = dbData;
@@ -61,11 +69,23 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         holder.habitation_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
         holder.village_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyPvcode()));
+        final int pmgsy_dcode = pmgsyListValues.get(position).getPmgsyDcode();
+        final int pmgsy_bcode = pmgsyListValues.get(position).getPmgsyBcode();
+        final int pmgsy_pvcode = pmgsyListValues.get(position).getPmgsyPvcode();
+        final int pmgsy_hab_code = pmgsyListValues.get(position).getPmgsyHabcode();
         holder.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                ((PMGSYPendingScreen)context).new toUploadHabitation().execute();;
+                RoadListValue roadListValue = new RoadListValue();
+                roadListValue.setPmgsyDcode(pmgsy_dcode);
+                roadListValue.setPmgsyBcode(pmgsy_bcode);
+                roadListValue.setPmgsyPvcode(pmgsy_pvcode);
+                roadListValue.setPmgsyHabcode(pmgsy_hab_code);
+                prefManager.setKeyPmgsyDcode(String.valueOf(pmgsy_dcode));
+                prefManager.setKeyPmgsyBcode(String.valueOf(pmgsy_bcode));
+                prefManager.setKeyPmgsyPvcode(String.valueOf(pmgsy_pvcode));
+                prefManager.setKeyPmgsyHabcode(String.valueOf(pmgsy_hab_code));
+                ((PMGSYPendingScreen) context).new toUploadHabitation().execute(roadListValue);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +98,11 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     }
 
     public void deletePending(int position) {
+        int pmgsy_dcode = pmgsyListValues.get(position).getPmgsyDcode();
+        int pmgsy_bcode = pmgsyListValues.get(position).getPmgsyBcode();
+        int pmgsy_pvcode = pmgsyListValues.get(position).getPmgsyPvcode();
+        int pmgsy_hab_code = pmgsyListValues.get(position).getPmgsyHabcode();
+        int sdsm = db.delete(DBHelper.SAVE_IMAGE_HABITATION_TABLE, "pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ? and pmgsy_hab_code = ?", new String[]{String.valueOf(pmgsy_dcode), String.valueOf(pmgsy_bcode), String.valueOf(pmgsy_pvcode), String.valueOf(pmgsy_hab_code)});
         pmgsyListValues.remove(position);
         notifyItemRemoved(position);
         notifyItemChanged(position, pmgsyListValues.size());
