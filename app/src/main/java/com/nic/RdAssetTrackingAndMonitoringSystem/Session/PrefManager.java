@@ -46,7 +46,7 @@ public class PrefManager {
     private static final String KEY_ROAD_CATEGOTY = "road_category";
     private static final String KEY_ROAD_ID = "road_id";
     private static final String KEY_LOCATION_GROUP = "location_group";
-    private static final String KEY_LOCATION_ID = "location_id";
+    private static final String KEY_PMGSY_DELETE_ID = "pmgsy_Delete_id";
     private static final String KEY_DELETE_ID = "deleteId";
     private static final String KEY_PMGSY_DCODE = "pmgsy_dcode";
     private static final String KEY_PMGSY_BCODE = "pmgsy_bcode";
@@ -230,12 +230,12 @@ public class PrefManager {
         editor.commit();
     }
 
-    public String getLocationId() {
-        return pref.getString(KEY_LOCATION_ID,null);
+    public String getKeyPmgsyDeleteId() {
+        return pref.getString(KEY_PMGSY_DELETE_ID,null);
     }
 
-    public void setLocationId(String LocationId) {
-        editor.putString(KEY_LOCATION_ID,LocationId);
+    public void setKeyPmgsyDeleteId(String LocationId) {
+        editor.putString(KEY_PMGSY_DELETE_ID,LocationId);
         editor.commit();
     }
 

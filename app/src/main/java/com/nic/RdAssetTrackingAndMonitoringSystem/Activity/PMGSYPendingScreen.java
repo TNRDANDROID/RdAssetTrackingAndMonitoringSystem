@@ -248,6 +248,11 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
                     pmgsyPendingAdapter.notifyDataSetChanged();
                     getPMGSYHabitation();
                     datasetHabitation = new JSONObject();
+                }else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("ERROR")) {
+                    db.delete(DBHelper.SAVE_IMAGE_HABITATION_TABLE, "pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ? and pmgsy_hab_code = ?", new String[]{prefManager.getKeyPmgsyDcode(), prefManager.getKeyPmgsyBcode(), prefManager.getKeyPmgsyPvcode(), prefManager.getKeyPmgsyHabcode()});
+                    pmgsyPendingAdapter.deletePending(Integer.valueOf(prefManager.getKeyPmgsyDeleteId()));
+                    pmgsyPendingAdapter.notifyDataSetChanged();
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);
             }

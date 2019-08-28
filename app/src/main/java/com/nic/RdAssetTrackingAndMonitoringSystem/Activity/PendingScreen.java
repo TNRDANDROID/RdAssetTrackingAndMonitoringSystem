@@ -373,6 +373,12 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     getRoadList();
                     Utils.showAlert(this,"Synchronized Asset Data to the server");
                 }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("ERROR")) {
+                    db.delete(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
+                    pendingScreenAdapter.notifyDataSetChanged();
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
+                }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
             }
             if ("saveLatLongList".equals(urlType) && responseObj != null) {
@@ -416,6 +422,14 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
                     pendingScreenAdapter.notifyDataSetChanged();
 
+                }
+                else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("ERROR")) {
+                    ContentValues values = new ContentValues();
+                    values.put("image_flag",0);
+                    long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
+                    pendingScreenAdapter.notifyDataSetChanged();
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
                 Log.d("saveBridgesList", "" + responseDecryptedBlockKey);
             }

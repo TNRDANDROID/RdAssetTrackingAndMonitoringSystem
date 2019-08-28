@@ -100,6 +100,7 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
             public void onClick(View v) {
 
                 deletePending(position);
+                prefManager.setKeyPmgsyDeleteId(String.valueOf(position));
             }
         });
     }
