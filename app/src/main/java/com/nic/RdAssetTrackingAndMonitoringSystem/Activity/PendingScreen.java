@@ -388,6 +388,12 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     getRoadList();
                     // getAssetList();
                     Utils.showAlert(this, "Synchronized Track Data to the server");
+                }else if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("ERROR")) {
+                    dbData.open();
+                    db.delete(DBHelper.SAVE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
+                    pendingScreenAdapter.notifyDataSetChanged();
+                    Utils.showAlert(this, jsonObject.getString("MESSAGE"));
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
             }
