@@ -716,9 +716,14 @@ public class dbData {
         Cursor cursor = null;
 
         try {
-            //  cursor = db.rawQuery("select * from "+DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,null);
-            cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
-                    new String[]{"*"}, "server_flag = ?", new String[]{flag_code}, null, null, null);
+            cursor = db.rawQuery("select a.*,b.pmgsy_habname as pmgsy_habname,c.pmgsy_pvname as  pmgsy_pvname from (select * from ImageHabitationTable where server_flag = "+flag_code+")a left join (select * from PMGSYHabitationList) b on a.pmgsy_dcode= b.pmgsy_dcode\n" +
+                    "and a.pmgsy_bcode = b.pmgsy_bcode\n" +
+                    "and a.pmgsy_pvcode = b.pmgsy_pvcode\n" +
+                    "and a.pmgsy_hab_code = b.pmgsy_hab_code \n" +
+                    "left join (select * from PMGSYVillageList)c on a.pmgsy_dcode = c.pmgsy_dcode and a.pmgsy_bcode = c.pmgsy_bcode\n" +
+                    "and a.pmgsy_pvcode = c.pmgsy_pvcode",null);
+//            cursor = db.query(DBHelper.SAVE_IMAGE_HABITATION_TABLE,
+//                    new String[]{"*"}, "server_flag = ?", new String[]{flag_code}, null, null, null);
             if (cursor.getCount() > 0) {
                 while (cursor.moveToNext()) {
 
@@ -750,6 +755,10 @@ public class dbData {
                     card.setImage(decodedByte);
                     card.setRemark(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_IMAGE_REMARK)));
+                    card.setPmgsyHabName(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_HAB_NAME)));
+                    card.setPmgsyPvname(cursor.getString(cursor
+                            .getColumnIndexOrThrow(AppConstant.KEY_PMGSY_PVNAME)));
                     cards.add(card);
                 }
             }

@@ -67,8 +67,8 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        holder.habitation_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyHabcode()));
-        holder.village_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyPvcode()));
+        holder.habitation_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyHabName()));
+        holder.village_tv.setText(String.valueOf(pmgsyListValues.get(position).getPmgsyPvname()));
         final int pmgsy_dcode = pmgsyListValues.get(position).getPmgsyDcode();
         final int pmgsy_bcode = pmgsyListValues.get(position).getPmgsyBcode();
         final int pmgsy_pvcode = pmgsyListValues.get(position).getPmgsyPvcode();
