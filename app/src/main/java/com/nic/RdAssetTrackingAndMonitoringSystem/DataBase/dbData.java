@@ -90,7 +90,7 @@ public class dbData {
                     RoadListValue card = new RoadListValue();
                     card.setRoadID(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
-                    card.setRoadCode(cursor.getInt(cursor
+                    card.setRoadCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CODE)));
                     card.setRoadCategoryCode(cursor
                             .getInt(cursor.getColumnIndex(AppConstant.KEY_ROAD_CATEGORY_CODE)));
@@ -1341,7 +1341,7 @@ public class dbData {
                     RoadListValue card = new RoadListValue();
                     card.setRoadID(cursor.getInt(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_ID)));
-                    card.setRoadCode(cursor.getInt(cursor
+                    card.setRoadCode(cursor.getString(cursor
                             .getColumnIndexOrThrow(AppConstant.KEY_ROAD_CODE)));
                     card.setRoadCategoryCode(cursor
                             .getInt(cursor.getColumnIndex(AppConstant.KEY_ROAD_CATEGORY_CODE)));

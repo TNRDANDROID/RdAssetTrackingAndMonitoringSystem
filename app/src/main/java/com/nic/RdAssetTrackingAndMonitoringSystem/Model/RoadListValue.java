@@ -12,7 +12,7 @@ public class RoadListValue {
 public Integer roadCategoryCode;
 public String roadCategory;
 public Integer roadID;
-public Integer roadCode;
+public String roadCode;
 public String roadName;
 public String roadVillage;
 private ItemType type;
@@ -391,11 +391,11 @@ private String imageAvailable;
     public void setType(ItemType type) {
         this.type = type;
     }
-    public Integer getRoadCode() {
+    public String getRoadCode() {
         return roadCode;
     }
 
-    public void setRoadCode(Integer roadCode) {
+    public void setRoadCode(String roadCode) {
         this.roadCode = roadCode;
     }
 

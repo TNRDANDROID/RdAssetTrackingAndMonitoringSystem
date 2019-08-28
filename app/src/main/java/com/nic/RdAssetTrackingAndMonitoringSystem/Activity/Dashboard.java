@@ -473,10 +473,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     getAssetList();
                     getRoadList();
                     Utils.showAlert(this,"Asset Saved");
-                    sync.setClickable(true);
-                    syncButtonVisibility();
-                }else {
-                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
@@ -492,10 +488,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     getRoadList();
                    // getAssetList();
                     Utils.showAlert(this, "Lat Long Saved");
-                    sync.setClickable(true);
-                    syncButtonVisibility();
-                }else {
-                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
@@ -511,10 +503,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.deletePmgsyHabitationTable();
                     getPMGSYHabitation();
                     datasetHabitation = new JSONObject();
-                    sync.setClickable(true);
-                    syncButtonVisibility();
-                }else {
-                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("savedHabitation", "" + responseDecryptedBlockKey);
@@ -528,10 +516,6 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                     dbData.open();
                     dbData.deleteBridgesTable();
                     getBridges();
-                    sync.setClickable(true);
-                    syncButtonVisibility();
-                }else {
-                    sync.setClickable(true);
                     syncButtonVisibility();
                 }
                 Log.d("saveBridgesList", "" + responseDecryptedBlockKey);
@@ -559,7 +543,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
                         RoadListValue roadListValue = new RoadListValue();
                         try {
                             roadListValue.setRoadID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_ID));
-                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CODE));
+                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CODE));
                             roadListValue.setRoadCategoryCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CATEGORY_CODE));
                             roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
                             roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));
@@ -919,8 +903,7 @@ public class Dashboard extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void OnError(VolleyError volleyError) {
-        sync.setClickable(true);
-        syncButtonVisibility();
+
     }
 
     @Override

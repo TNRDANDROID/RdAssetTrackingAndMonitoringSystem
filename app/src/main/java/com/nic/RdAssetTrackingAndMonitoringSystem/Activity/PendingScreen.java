@@ -456,7 +456,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                         RoadListValue roadListValue = new RoadListValue();
                         try {
                             roadListValue.setRoadID(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_ID));
-                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CODE));
+                            roadListValue.setRoadCode(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CODE));
                             roadListValue.setRoadCategoryCode(jsonArray.getJSONObject(i).getInt(AppConstant.KEY_ROAD_CATEGORY_CODE));
                             roadListValue.setRoadCategory(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_CATEGORY));
                             roadListValue.setRoadName(jsonArray.getJSONObject(i).getString(AppConstant.KEY_ROAD_NAME));

@@ -32,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + ROAD_LIST_TABLE + " ("
                 + "road_category_code INTEGER," +
                 "road_id INTEGER," +
-                "road_code INTEGER," +
+                "road_code TEXT," +
                 "tot_asset INTEGER," +
                 "asset_cap_cnt INTEGER," +
                 "tot_start_point INTEGER," +

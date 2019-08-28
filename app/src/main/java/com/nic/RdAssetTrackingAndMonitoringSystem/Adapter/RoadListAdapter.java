@@ -89,7 +89,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void initLayoutOne(ViewHolderOne holder, final int position) {
 
         String string = String.valueOf(roadListValuesFiltered.get(position).getRoadCategory());
-        String code = String.valueOf(roadListValuesFiltered.get(position).getRoadCode());
+        String code = roadListValuesFiltered.get(position).getRoadCode();
         String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
@@ -152,7 +152,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void initLayoutTwo(ViewHolderTwo holder, final int position) {
 
         String string = String.valueOf(roadListValuesFiltered.get(position).getRoadCategory());
-        String code = String.valueOf(roadListValuesFiltered.get(position).getRoadCode());
+        String code = roadListValuesFiltered.get(position).getRoadCode();
         String village_code = String.valueOf(roadListValuesFiltered.get(position).getRoadCategoryCode());
 
         holder.road_code.setText("R"+code);
@@ -296,7 +296,7 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.getRoadName().toLowerCase().contains(charString.toLowerCase()) || String.valueOf(row.getRoadCode()).contains(charString)) {
+                        if (row.getRoadName().toLowerCase().contains(charString.toLowerCase()) || row.getRoadCode().contains(charString)) {
                             filteredList.add(row);
                         }
                     }
