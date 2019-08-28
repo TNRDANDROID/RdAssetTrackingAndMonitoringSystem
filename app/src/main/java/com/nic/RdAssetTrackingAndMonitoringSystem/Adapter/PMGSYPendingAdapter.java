@@ -89,6 +89,7 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
                     prefManager.setKeyPmgsyBcode(String.valueOf(pmgsy_bcode));
                     prefManager.setKeyPmgsyPvcode(String.valueOf(pmgsy_pvcode));
                     prefManager.setKeyPmgsyHabcode(String.valueOf(pmgsy_hab_code));
+                    prefManager.setKeyPmgsyDeleteId(String.valueOf(position));
                     ((PMGSYPendingScreen) context).new toUploadHabitation().execute(roadListValue);
                 } else {
                     Utils.showAlert(context, "Turn On Mobile Data To Synchronize!");
@@ -100,7 +101,6 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
             public void onClick(View v) {
 
                 deletePending(position);
-                prefManager.setKeyPmgsyDeleteId(String.valueOf(position));
             }
         });
     }
