@@ -240,7 +240,7 @@ public class PMGSYPendingScreen extends AppCompatActivity implements Api.ServerR
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "PMGSY Habitation Saved");
+                    Utils.showAlert(this, "Synchronized PMGSY Habitation Data to the server");
                     dbData.open();
                     db.delete(DBHelper.SAVE_IMAGE_HABITATION_TABLE, "pmgsy_dcode = ? and pmgsy_bcode = ? and pmgsy_pvcode = ? and pmgsy_hab_code = ?", new String[]{prefManager.getKeyPmgsyDcode(), prefManager.getKeyPmgsyBcode(), prefManager.getKeyPmgsyPvcode(), prefManager.getKeyPmgsyHabcode()});
                     dbData.deletePmgsyHabitationTable();

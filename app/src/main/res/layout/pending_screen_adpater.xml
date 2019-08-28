@@ -2,13 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/android_card_view_example"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        app:cardCornerRadius="10dp">
 
         <RelativeLayout
             android:id="@+id/pmay_layout"
@@ -197,6 +202,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/village_view"
                         android:layout_width="match_parent"
                         android:layout_height="1.5dp"
                         android:layout_gravity="bottom"
@@ -275,18 +281,19 @@
 
 
                     <View
+                        android:id="@+id/syn_tack_view"
                         android:layout_width="match_parent"
                         android:layout_height="1.5dp"
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
+                        android:visibility="gone"
                         android:background="@drawable/background" />
 
                     <LinearLayout
-                        android:id="@+id/sync_delete_track_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -297,7 +304,6 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/sync_track_info"
                                 style="@string/font_circular_book"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -335,7 +341,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="8"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/del_track_info"
@@ -349,20 +356,41 @@
                                 android:textSize="18sp" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/sync_delete_track_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/gradient">
+
+                        <TextView
+                            android:id="@+id/sync_track_info"
+                            style="@string/font_circular_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="7dp"
+                            android:text="Sync Track Data"
+                            android:textAlignment="viewEnd"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
                     <View
-                        android:id="@+id/view"
+                        android:id="@+id/syn_asset_view"
                         android:layout_width="match_parent"
                         android:layout_height="1.5dp"
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
+                        android:visibility="gone"
                         android:background="@drawable/background" />
 
                     <LinearLayout
-                        android:id="@+id/sync_del_asset_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -373,7 +401,6 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/sync_asset_info"
                                 style="@string/font_circular_book"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -411,7 +438,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="8"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/del_asset_info"
@@ -426,20 +454,42 @@
                         </LinearLayout>
                     </LinearLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/sync_del_asset_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/gradient_pink">
+
+                        <TextView
+                            android:id="@+id/sync_asset_info"
+                            style="@string/font_circular_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="7dp"
+                            android:text="Sync Asset Data"
+                            android:textStyle="bold"
+                            android:textAlignment="viewEnd"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
                     <View
-                        android:id="@+id/image_available_view"
+                        android:id="@+id/sync_bridges_view"
                         android:layout_width="match_parent"
                         android:layout_height="1.5dp"
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
+                        android:visibility="gone"
                         android:background="@drawable/background" />
 
                     <LinearLayout
-                        android:id="@+id/sync_delete_bridges_layout"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
+                        android:layout_gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -450,7 +500,6 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/sync_culverts_info"
                                 style="@string/font_circular_book"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -488,7 +537,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="8"
                             android:gravity="center"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/Del_culverts_info"
@@ -502,6 +552,27 @@
                                 android:textSize="18sp" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/sync_delete_bridges_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/gradient_blue">
+
+                        <TextView
+                            android:id="@+id/sync_culverts_info"
+                            style="@string/font_circular_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="7dp"
+                            android:text="Sync Bridges and Culverts"
+                            android:textAlignment="viewEnd"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
 
                 </LinearLayout>
 

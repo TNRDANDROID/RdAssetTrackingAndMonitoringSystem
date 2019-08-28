@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,14 +14,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 
 import com.android.volley.VolleyError;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.CommonAdapter;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.PMGSYListAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Adapter.PendingScreenAdapter;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.Api;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Api.ApiService;
@@ -31,7 +29,6 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Support.ProgressHUD;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.UrlGenerator;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
@@ -54,6 +51,7 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
     private ProgressHUD progressHUD;
+    Handler myHandler = new Handler();
 
 
     @Override
@@ -88,16 +86,8 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
         back_img.setOnClickListener(this);
         home_img.setOnClickListener(this);
         sync_pmgsy_data.setOnClickListener(this);
+        pendingPmgsyVisibility();
         new fetchpendingtask().execute();
-
-        ArrayList<RoadListValue> habitationCount = dbData.getSavedHabitation("0");
-        if(!(habitationCount.size() > 0)){
-            sync_pmgsy_data.setVisibility(View.VISIBLE);
-        }
-        else{
-            sync_pmgsy_data.setVisibility(View.GONE);
-        }
-
 //        pmgsy_village_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -138,6 +128,27 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
             case R.id.sync_pmgsy_data:
                 PMGSYPendingScreen();
                 break;
+        }
+    }
+
+    public void pendingPmgsyVisibility() {
+        dbData.open();
+        ArrayList<RoadListValue> habitationCount = dbData.getSavedHabitation("0");
+        if ((habitationCount.size() > 0)) {
+            sync_pmgsy_data.setAlpha(0);
+            final Runnable pmgsy = new Runnable() {
+                @Override
+                public void run() {
+                    sync_pmgsy_data.setAlpha(1);
+                    sync_pmgsy_data.startAnimation(AnimationUtils.loadAnimation(PendingScreen.this, R.anim.text_view_move_right));
+
+                }
+            };
+            myHandler.postDelayed(pmgsy, 800);
+
+            sync_pmgsy_data.setVisibility(View.VISIBLE);
+        } else {
+            sync_pmgsy_data.setVisibility(View.GONE);
         }
     }
 
@@ -356,11 +367,11 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                     dbData.deleteRoadListTable();
                     dbData.deleteAssetTable();
                     db.delete(DBHelper.SAVE_IMAGE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
-                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
                     pendingScreenAdapter.notifyDataSetChanged();
                     getAssetList();
                     getRoadList();
-                    Utils.showAlert(this,"Asset Saved");
+                    Utils.showAlert(this,"Synchronized Asset Data to the server");
                 }
                 Log.d("saved_Asset", "" + responseDecryptedBlockKey);
             }
@@ -371,12 +382,12 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     dbData.open();
                     db.delete(DBHelper.SAVE_LAT_LONG_TABLE,"road_id=?",new String[] {prefManager.getKeyDeleteId()});
-                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
                     pendingScreenAdapter.notifyDataSetChanged();
                     dbData.deleteRoadListTable();
                     getRoadList();
                     // getAssetList();
-                    Utils.showAlert(this, "Lat Long Saved");
+                    Utils.showAlert(this, "Synchronized Track Data to the server");
                 }
                 Log.d("saved_Track", "" + responseDecryptedBlockKey);
             }
@@ -385,12 +396,12 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 String responseDecryptedBlockKey = Utils.decrypt(prefManager.getUserPassKey(), key);
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
-                    Utils.showAlert(this, "Saved");
+                    Utils.showAlert(this, "Synchronized Bridges and Culverts Data to the server");
                     ContentValues values = new ContentValues();
                     values.put("image_flag",1);
                     values.put("image_available","Y");
                     long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
-                    new fetchpendingtask().execute();
+                    pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
                     pendingScreenAdapter.notifyDataSetChanged();
 
                 }
@@ -554,5 +565,6 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
     @Override
     protected void onResume() {
         super.onResume();
+        pendingPmgsyVisibility();
     }
 }

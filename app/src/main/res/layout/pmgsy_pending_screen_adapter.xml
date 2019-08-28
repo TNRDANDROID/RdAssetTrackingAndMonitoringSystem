@@ -4,13 +4,16 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="10dp">
+     >
 
     <android.support.v7.widget.CardView
         android:id="@+id/android_card_view_example"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
         app:cardCornerRadius="10dp">
 
         <RelativeLayout
@@ -205,25 +208,27 @@
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
+                        android:visibility="gone"
                         android:background="@drawable/background" />
 
                     <RelativeLayout
+                        android:id="@+id/upload"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/pink_background">
 
                         <TextView
-                            android:id="@+id/upload"
-                            android:layout_width="90dp"
-                            android:layout_height="40dp"
-                            android:layout_alignParentStart="true"
-                            android:gravity="center"
-                            android:text="Upload"
-                            android:textAlignment="center"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:id="@+id/sync_track_info"
+                            style="@string/font_circular_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:padding="5dp"
+                            android:text="Sync Habitation"
+                            android:textAlignment="viewEnd"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/delete"
@@ -235,7 +240,8 @@
                             android:textAlignment="center"
                             android:textColor="@android:color/black"
                             android:textSize="18sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone"/>
                     </RelativeLayout>
 
 

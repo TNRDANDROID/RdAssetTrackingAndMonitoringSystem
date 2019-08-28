@@ -158,7 +158,19 @@
 
 
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_version_number"
+        style="@style/font_circular_medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/_34sdp"
+        android:padding="@dimen/_13sdp"
+        android:text="adaadadadad"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/_15sdp" />
 
     <com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView
         android:id="@+id/textView1"

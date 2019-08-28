@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PMGSYPendingScreen;
@@ -14,6 +15,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import java.util.List;
 
@@ -45,13 +47,14 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView habitation_tv, village_tv, upload,delete;
+        private TextView habitation_tv, village_tv,delete;
+        private RelativeLayout upload;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             habitation_tv = (TextView) itemView.findViewById(R.id.hab_name);
             village_tv = (TextView) itemView.findViewById(R.id.village_name);
-            upload = (TextView) itemView.findViewById(R.id.upload);
+            upload = (RelativeLayout) itemView.findViewById(R.id.upload);
             delete = (TextView) itemView.findViewById(R.id.delete);
         }
 
@@ -76,16 +79,20 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
         holder.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RoadListValue roadListValue = new RoadListValue();
-                roadListValue.setPmgsyDcode(pmgsy_dcode);
-                roadListValue.setPmgsyBcode(pmgsy_bcode);
-                roadListValue.setPmgsyPvcode(pmgsy_pvcode);
-                roadListValue.setPmgsyHabcode(pmgsy_hab_code);
-                prefManager.setKeyPmgsyDcode(String.valueOf(pmgsy_dcode));
-                prefManager.setKeyPmgsyBcode(String.valueOf(pmgsy_bcode));
-                prefManager.setKeyPmgsyPvcode(String.valueOf(pmgsy_pvcode));
-                prefManager.setKeyPmgsyHabcode(String.valueOf(pmgsy_hab_code));
-                ((PMGSYPendingScreen) context).new toUploadHabitation().execute(roadListValue);
+                if (Utils.isOnline()) {
+                    RoadListValue roadListValue = new RoadListValue();
+                    roadListValue.setPmgsyDcode(pmgsy_dcode);
+                    roadListValue.setPmgsyBcode(pmgsy_bcode);
+                    roadListValue.setPmgsyPvcode(pmgsy_pvcode);
+                    roadListValue.setPmgsyHabcode(pmgsy_hab_code);
+                    prefManager.setKeyPmgsyDcode(String.valueOf(pmgsy_dcode));
+                    prefManager.setKeyPmgsyBcode(String.valueOf(pmgsy_bcode));
+                    prefManager.setKeyPmgsyPvcode(String.valueOf(pmgsy_pvcode));
+                    prefManager.setKeyPmgsyHabcode(String.valueOf(pmgsy_hab_code));
+                    ((PMGSYPendingScreen) context).new toUploadHabitation().execute(roadListValue);
+                } else {
+                    Utils.showAlert(context, "Turn On Mobile Data To Synchronize!");
+                }
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {

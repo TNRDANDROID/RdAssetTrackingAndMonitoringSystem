@@ -3,6 +3,7 @@ package com.nic.RdAssetTrackingAndMonitoringSystem.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
     private Button login_btn;
     private String name, pass, randString;
+    private TextView tv_version_number;
 
     private MyEditTextView userName;
 
@@ -76,6 +78,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         prefManager = new PrefManager(this);
         login_btn = (Button) findViewById(R.id.btn_sign_in);
         userName = (MyEditTextView) findViewById(R.id.user_name);
+        tv_version_number = (TextView) findViewById(R.id.tv_version_number);
         redEye = (ImageView) findViewById(R.id.red_eye);
         passwordEditText = (MyEditTextView) findViewById(R.id.password);
 
@@ -93,6 +96,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 return false;
             }
         });
+        try {
+            String versionName = getPackageManager()
+                    .getPackageInfo(getPackageName(), 0).versionName;
+            tv_version_number.setText("Version" + " " + versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         passwordEditText.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Avenir-Roman.ttf"));
         randString = Utils.randomChar();
         setPType = 1;

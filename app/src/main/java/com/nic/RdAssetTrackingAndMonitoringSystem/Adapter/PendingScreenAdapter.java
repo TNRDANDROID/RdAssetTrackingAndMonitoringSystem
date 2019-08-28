@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
@@ -76,7 +77,9 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView road_name, road_code, village_name,sync_track_info,sync_asset_info,sync_culverts_info;
         private TextView del_track_info,del_asset_info,Del_culverts_info;
-        private LinearLayout sync_delete_track_layout,sync_del_asset_layout,sync_delete_bridges_layout,third_layout_village;
+        private LinearLayout third_layout_village;
+        private RelativeLayout sync_delete_track_layout,sync_del_asset_layout,sync_delete_bridges_layout;
+        private View village_view;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -91,10 +94,11 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
             del_asset_info = (TextView) itemView.findViewById(R.id.del_asset_info);
             Del_culverts_info = (TextView) itemView.findViewById(R.id.Del_culverts_info);
 
-            sync_delete_track_layout = (LinearLayout) itemView.findViewById(R.id.sync_delete_track_layout);
-            sync_del_asset_layout = (LinearLayout) itemView.findViewById(R.id.sync_del_asset_layout);
-            sync_delete_bridges_layout = (LinearLayout) itemView.findViewById(R.id.sync_delete_bridges_layout);
+            sync_delete_track_layout = (RelativeLayout) itemView.findViewById(R.id.sync_delete_track_layout);
+            sync_del_asset_layout = (RelativeLayout) itemView.findViewById(R.id.sync_del_asset_layout);
+            sync_delete_bridges_layout = (RelativeLayout) itemView.findViewById(R.id.sync_delete_bridges_layout);
             third_layout_village = (LinearLayout) itemView.findViewById(R.id.third_layout_village);
+            village_view = (View) itemView.findViewById(R.id.village_view);
         }
 
 
@@ -109,11 +113,14 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        dbData.open();
         if(!pendingListValues.get(position).getRoadVillage().equals("")) {
             holder.third_layout_village.setVisibility(View.VISIBLE);
+            holder.village_view.setVisibility(View.VISIBLE);
             holder.village_name.setText(pendingListValues.get(position).getRoadVillage());
         }else {
             holder.third_layout_village.setVisibility(View.GONE);
+            holder.village_view.setVisibility(View.GONE);
         }
 
        holder.road_code.setText("R"+pendingListValues.get(position).getRoadCode());
@@ -154,8 +161,9 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                 if (Utils.isOnline()) {
                     new toUploadTrackTask().execute(road_id);
                     prefManager.setKeyDeleteId(String.valueOf(road_id));
+                    prefManager.setKeyClickedPosition(String.valueOf(position));
                 } else {
-                    Utils.showAlert(context, "Turn On Mobile Data To Upload");
+                    Utils.showAlert(context, "Turn On Mobile Data To Synchronize!");
                 }
 
             }
@@ -166,8 +174,9 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                 if (Utils.isOnline()) {
                     new toUploadAssetTask().execute(road_id);
                     prefManager.setKeyDeleteId(String.valueOf(road_id));
+                    prefManager.setKeyClickedPosition(String.valueOf(position));
                 } else {
-                    Utils.showAlert(context, "Turn On Mobile Data To Upload");
+                    Utils.showAlert(context, "Turn On Mobile Data To Synchronize!");
                 }
             }
         });
@@ -177,8 +186,9 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                 if (Utils.isOnline()) {
                     new toUploadBridges().execute(road_id);
                     prefManager.setKeyDeleteId(String.valueOf(road_id));
+                    prefManager.setKeyClickedPosition(String.valueOf(position));
                 } else {
-                    Utils.showAlert(context, "Turn On Mobile Data To Upload");
+                    Utils.showAlert(context, "Turn On Mobile Data To Synchronize!");
                 }
             }
         });
@@ -414,6 +424,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     }
 
     public void itemRemove(int road_id,int position){
+        dbData.open();
         ArrayList<RoadListValue> bridgesListLocal = dbData.getParticularBridgesInfo(String.valueOf(road_id),"0","upload");
         ArrayList<RoadListValue> assetListLocal = dbData.getParticularAssetInfo(String.valueOf(road_id));
         ArrayList<RoadListValue> roadListLocal = dbData.getParticularRoadTrackInfo(String.valueOf(road_id));

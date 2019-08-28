@@ -47,6 +47,7 @@ public class PrefManager {
     private static final String KEY_PMGSY_BCODE = "pmgsy_bcode";
     private static final String KEY_PMGSY_PVCODE = "pmgsy_pvcode";
     private static final String KEY_PMGSY_HABCODE = "pmgsy_habcode";
+    private static final String KEY_CLICKED_POSITION = "clickedPositionId";
 
 
     private static final String IMEI = "imei";
@@ -274,6 +275,15 @@ public class PrefManager {
 
     public void setKeyPmgsyHabcode(String pmgsyHabcode) {
         editor.putString(KEY_PMGSY_HABCODE,pmgsyHabcode);
+        editor.commit();
+    }
+
+    public String getKeyClickedPosition() {
+        return pref.getString(KEY_CLICKED_POSITION,null);
+    }
+
+    public void setKeyClickedPosition(String clickedPosition) {
+        editor.putString(KEY_CLICKED_POSITION,clickedPosition);
         editor.commit();
     }
 }

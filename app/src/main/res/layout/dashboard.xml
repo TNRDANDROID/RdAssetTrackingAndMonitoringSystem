@@ -341,7 +341,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="@dimen/_14sdp"
-        android:background="@drawable/gradient_pink"
+        android:background="@drawable/gradient_curved_pink"
         customfontdemo:fontName="@string/font_demi_bold" />
 
     <LinearLayout
