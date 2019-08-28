@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
+import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
+
+import org.json.JSONArray;
+
+import java.util.List;
 
 
 /**
@@ -48,6 +53,7 @@ public class PrefManager {
     private static final String KEY_PMGSY_PVCODE = "pmgsy_pvcode";
     private static final String KEY_PMGSY_HABCODE = "pmgsy_habcode";
     private static final String KEY_CLICKED_POSITION = "clickedPositionId";
+    private static final String KEY_CULVERT_ID_ARRAY = "culvertIdArray";
 
 
     private static final String IMEI = "imei";
@@ -285,5 +291,27 @@ public class PrefManager {
     public void setKeyClickedPosition(String clickedPosition) {
         editor.putString(KEY_CLICKED_POSITION,clickedPosition);
         editor.commit();
+    }
+
+    public void setLocalSaveCulvertIdJsonList(JSONArray jsonarray) {
+        editor.putString(KEY_CULVERT_ID_ARRAY, jsonarray.toString());
+        editor.commit();
+    }
+
+    public String getLocalSaveJsonList() {
+        return pref.getString(KEY_CULVERT_ID_ARRAY, null);
+    }
+
+    public JSONArray getLocalSaveCulvertIdJson() {
+        JSONArray jsonData = null;
+        String strJson = getLocalSaveJsonList();//second parameter is necessary ie.,Value to return if this preference does not exist.
+        try {
+            if (strJson != null) {
+                jsonData = new JSONArray(strJson);
+            }
+        } catch (Exception e) {
+
+        }
+        return jsonData;
     }
 }

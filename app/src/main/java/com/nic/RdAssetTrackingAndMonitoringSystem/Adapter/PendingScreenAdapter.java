@@ -48,6 +48,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     JSONObject datasetTrack = new JSONObject();
     JSONObject datasetAsset = new JSONObject();
     JSONObject datasetBridges = new JSONObject();
+    JSONArray prefCulvertidArray = new JSONArray();
     static PrefManager prefManager;
 
     public static DBHelper dbHelper;
@@ -331,6 +332,7 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
         protected JSONObject doInBackground(Integer... params) {
             dbData.open();
             JSONArray BridgeArray = new JSONArray();
+            prefCulvertidArray = new JSONArray();
             ArrayList<RoadListValue> Bridges = dbData.getParticularBridgesInfo(String.valueOf(params[0]),"0","upload");
 
             if (Bridges.size() > 0) {
@@ -366,6 +368,8 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
                         jsonObject.put(AppConstant.KEY_IMAGES, image_str);
                         BridgeArray.put(jsonObject);
 
+                        prefCulvertidArray.put(Bridges.get(i).getCulvertId());
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -388,6 +392,8 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
         protected void onPostExecute(JSONObject dataset) {
             super.onPostExecute(dataset);
            ((PendingScreen)context).syncDataBridges(dataset);
+           prefManager.setLocalSaveCulvertIdJsonList(prefCulvertidArray);
+
         }
     }
 

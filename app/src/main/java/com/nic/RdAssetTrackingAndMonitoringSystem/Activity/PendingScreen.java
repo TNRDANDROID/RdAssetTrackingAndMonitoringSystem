@@ -397,10 +397,16 @@ public class PendingScreen extends AppCompatActivity implements Api.ServerRespon
                 JSONObject jsonObject = new JSONObject(responseDecryptedBlockKey);
                 if (jsonObject.getString("STATUS").equalsIgnoreCase("OK") && jsonObject.getString("RESPONSE").equalsIgnoreCase("OK")) {
                     Utils.showAlert(this, "Synchronized Bridges and Culverts Data to the server");
-                    ContentValues values = new ContentValues();
-                    values.put("image_flag",1);
-                    values.put("image_available","Y");
-                    long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
+
+                    JSONArray jsonArray = prefManager.getLocalSaveCulvertIdJson();
+                    for(int i = 0;i < jsonArray.length();i++ ){
+                        ContentValues values = new ContentValues();
+                        values.put("image_flag",1);
+                        values.put("image_available","Y");
+                        long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ? and culvert_id = ?",new String[] {prefManager.getKeyDeleteId(),"0", String.valueOf(jsonArray.get(i))});
+                        Log.d("culvert_id",String.valueOf(jsonArray.get(i)));
+                    }
+                    //long id = db.update(DBHelper.BRIDGES_CULVERT,values,"road_id=? and image_flag = ?",new String[] {prefManager.getKeyDeleteId(),"0"});
                     pendingScreenAdapter.itemRemove(Integer.valueOf(prefManager.getKeyDeleteId()),Integer.valueOf(prefManager.getKeyClickedPosition()));
                     pendingScreenAdapter.notifyDataSetChanged();
 
