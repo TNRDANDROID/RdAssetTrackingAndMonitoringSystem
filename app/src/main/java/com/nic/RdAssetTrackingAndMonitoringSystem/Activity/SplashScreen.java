@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nic.RdAssetTrackingAndMonitoringSystem.BuildConfig;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Helper.AppVersionHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
@@ -26,9 +27,14 @@ public class SplashScreen extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
         prefManager = new PrefManager(this);
-        if(Utils.isOnline()){
-            checkAppVersion();
-        }else{
+        if (BuildConfig.BUILD_TYPE.equalsIgnoreCase("production")) {
+            if (Utils.isOnline()) {
+                checkAppVersion();
+            } else {
+                showSignInScreen();
+
+            }
+        } else {
             showSignInScreen();
         }
 }
