@@ -114,7 +114,10 @@ public class dbData {
 
                         if ((tot_start_point != 0) && (tot_mid_point != 0) && (tot_end_point != 0)) {
                             state = "completed";
-                        } else {
+                        } else if ((asset_cap_cnt == 0) && (tot_start_point == 0) && (tot_mid_point == 0) && (tot_end_point == 0)) {
+                            state = "Not_Started";
+                        }
+                        else {
                             state = "partial";
                         }
                     } else {
