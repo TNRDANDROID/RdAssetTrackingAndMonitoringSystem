@@ -22,12 +22,13 @@
 
         <ImageView
             android:id="@+id/back_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_marginLeft="@dimen/_15sdp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin"
+            android:layout_centerInParent="true"
+            android:layout_gravity="start"
+            android:padding="@dimen/_7sdp"
             android:src="@drawable/back" />
 
     </RelativeLayout>

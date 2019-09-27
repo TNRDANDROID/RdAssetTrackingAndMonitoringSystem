@@ -93,5 +93,6 @@ dependencies {
     implementation files('libs/volley.jar')
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+    implementation 'android.arch.paging:runtime:1.0.1'
     implementation project(path:':treeview_lib')
 }

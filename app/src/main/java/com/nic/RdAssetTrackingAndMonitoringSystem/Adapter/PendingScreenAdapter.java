@@ -1,35 +1,29 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
+import android.arch.paging.PagedListAdapter;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.CameraScreen;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.Dashboard;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PMGSYPendingScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.PendingScreen;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Activity.ViewImageScreen;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Constant.AppConstant;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.DBHelper;
 import com.nic.RdAssetTrackingAndMonitoringSystem.DataBase.dbData;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Model.RoadListValue;
 import com.nic.RdAssetTrackingAndMonitoringSystem.R;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Session.PrefManager;
-import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import org.json.JSONArray;
@@ -40,7 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdapter.MyViewHolder>{
+public class PendingScreenAdapter extends PagedListAdapter<RoadListValue, PendingScreenAdapter.MyViewHolder> {
 
     private final dbData dbData;
     private Context context;
@@ -55,7 +49,22 @@ public class PendingScreenAdapter extends RecyclerView.Adapter<PendingScreenAdap
     public static SQLiteDatabase db;
     //  private PrefManager prefManager;
 
+    private static DiffUtil.ItemCallback<RoadListValue> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<RoadListValue>() {
+                @Override
+                public boolean areItemsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+
     public PendingScreenAdapter(Context context, List<RoadListValue> pendingListValues, dbData dbData) {
+        super(DIFF_CALLBACK);
         this.context = context;
         prefManager = new PrefManager(context);
         this.pendingListValues = pendingListValues;

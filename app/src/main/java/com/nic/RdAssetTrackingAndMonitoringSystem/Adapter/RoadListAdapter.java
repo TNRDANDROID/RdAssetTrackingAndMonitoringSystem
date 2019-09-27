@@ -1,10 +1,13 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +28,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Support.MyCustomTextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
+public class RoadListAdapter extends PagedListAdapter<RoadListValue,RecyclerView.ViewHolder> implements Filterable {
     private static final int TYPE_ONE = 1;
     private static final int TYPE_TWO = 2;
 
@@ -35,8 +38,21 @@ public class RoadListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<RoadListValue> roadListValuesFiltered;
     private PrefManager prefManager;
     private static  RoadListAdapterListener listener;
+    private static DiffUtil.ItemCallback<RoadListValue> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<RoadListValue>() {
+                @Override
+                public boolean areItemsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
 
     public RoadListAdapter(Context context, List<RoadListValue> roadListValues,dbData dbData) {
+        super(DIFF_CALLBACK);
         this.context = context;
         this.roadListValues = roadListValues;
         this.dbData = dbData;

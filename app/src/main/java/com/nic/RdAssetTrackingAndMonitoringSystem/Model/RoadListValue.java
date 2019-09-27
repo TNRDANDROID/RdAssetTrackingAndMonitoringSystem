@@ -494,4 +494,8 @@ private String imageAvailable;
     public void setImageDescription(String imageDescription) {
         this.imageDescription = imageDescription;
     }
+    public Integer getId() {
+        return id;
+    }
+    private Integer id;
 }

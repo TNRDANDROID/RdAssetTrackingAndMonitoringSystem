@@ -1,8 +1,11 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +24,28 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PMGSYListAdapter extends RecyclerView.Adapter<PMGSYListAdapter.MyViewHolder>{
+public class PMGSYListAdapter extends PagedListAdapter<RoadListValue, PMGSYListAdapter.MyViewHolder> {
 
     private final dbData dbData;
     private Context context;
     private List<RoadListValue> pmgsyListValues;
   //  private PrefManager prefManager;
 
+    private static DiffUtil.ItemCallback<RoadListValue> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<RoadListValue>() {
+                @Override
+                public boolean areItemsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
     public PMGSYListAdapter(Context context, List<RoadListValue> pmgsyListValues, dbData dbData) {
+        super(DIFF_CALLBACK);
         this.context = context;
         this.pmgsyListValues = pmgsyListValues;
         this.dbData = dbData;

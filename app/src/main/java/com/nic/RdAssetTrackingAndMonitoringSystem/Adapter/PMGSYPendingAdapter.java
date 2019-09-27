@@ -1,7 +1,10 @@
 package com.nic.RdAssetTrackingAndMonitoringSystem.Adapter;
 
+import android.annotation.SuppressLint;
+import android.arch.paging.PagedListAdapter;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +22,7 @@ import com.nic.RdAssetTrackingAndMonitoringSystem.Utils.Utils;
 
 import java.util.List;
 
-public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapter.MyViewHolder> {
+public class PMGSYPendingAdapter extends PagedListAdapter<RoadListValue,PMGSYPendingAdapter.MyViewHolder> {
 
     private dbData dbData;
     private Context context;
@@ -27,7 +30,23 @@ public class PMGSYPendingAdapter extends RecyclerView.Adapter<PMGSYPendingAdapte
     private PrefManager prefManager;
     public static DBHelper dbHelper;
     public static SQLiteDatabase db;
+
+    private static DiffUtil.ItemCallback<RoadListValue> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<RoadListValue>() {
+                @Override
+                public boolean areItemsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.getId() == newItem.getId();
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                @Override
+                public boolean areContentsTheSame(RoadListValue oldItem, RoadListValue newItem) {
+                    return oldItem.equals(newItem);
+                }
+            };
+
     public PMGSYPendingAdapter(Context context, List<RoadListValue> pmgsyListValues, dbData dbData) {
+        super(DIFF_CALLBACK);
         try {
             dbHelper = new DBHelper(context);
             db = dbHelper.getWritableDatabase();
