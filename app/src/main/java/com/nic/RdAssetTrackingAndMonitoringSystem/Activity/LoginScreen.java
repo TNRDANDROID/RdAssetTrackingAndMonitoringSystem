@@ -210,6 +210,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         Log.d("randchar", "" + random);
 
         params.put(AppConstant.KEY_USER_NAME, prefManager.getUserName());
+        params.put(AppConstant.KEY_APP_CODE, "A");
         Log.d("user", "" + userName.getText().toString().trim());
 
         String encryptUserPass = Utils.md5(passwordEditText.getText().toString().trim());
