@@ -226,6 +226,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
 
 
         Log.d("user", "" + userName.getText().toString().trim());
+        Log.d("params", "" + params);
 
 
         return params;
