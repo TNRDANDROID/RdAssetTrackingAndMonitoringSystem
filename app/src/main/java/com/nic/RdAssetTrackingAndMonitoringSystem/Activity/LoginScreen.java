@@ -267,8 +267,11 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         prefManager.setUserPassKey(decryptedKey);
                         showHomeScreen();
                     } else {
-                        if (response.equals("LOGIN_FAILED")) {
+                        if (response.equals("LOGIN_FAILED") && (!message.equals("User Locked by State Level Admin"))) {
                             Utils.showAlert(this, "Invalid UserName Or Password");
+                        }
+                        else {
+                            Utils.showAlert(this, message);
                         }
                     }
                 }
